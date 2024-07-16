@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home</title>
+    <style>
+         @import url('https://fonts.googleapis.com/css2?family=GFS+Didot&display=swap');
+
+body, html {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    font-family: "GFS Didot", serif;
+    font-weight: 400;
+    font-style: normal;
+}
+
+.content-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    min-height: 100vh;
+    padding: 0;
+    box-sizing: border-box;
+    overflow-y: auto;
+}
+
+h2 {
+    text-align: center;
+    margin-top: 0;
+    margin-bottom: 0;
+    padding-top: 4px;
+}
+
+#dynamic-content {
+    width: 100%;
+    max-width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 10px;
+}
+
+img {
+    max-width: 100%;
+    height: auto;
+    object-fit: contain;
+}
+
+    </style>
+</head>
+<body>
+    <div class="content-container">
+        <h2>ΧΑΙΡΕΤΕ ΠΑΝΘΕΣ</h2>
+        <div id="dynamic-content">
+            <a href="ΜΕΛΕΤΗΜΑΤΑ/ΜΕΛΕΤΗΜΑΤΑ_ς´.html">ΜΕΛΗΜΑΤΑ Ζ</a>
+            <!-- Dynamic content will be loaded here -->
+        </div>
+    </div>
+</body>
+</html>

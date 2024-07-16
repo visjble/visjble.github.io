@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ΠΙΝΑΞ</title>
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+    }
+    .top-menu {
+        display: flex;
+        align-items: center;
+        background-color: #333;
+        overflow: hidden;
+        white-space: nowrap;
+    }
+    .top-menu .scroll-button {
+        background-color: #333;
+        color: #f2f2f2;
+        border: none;
+        cursor: pointer;
+        font-size: 24px;
+        padding: 10px;
+    }
+    .top-menu .scroll-button:hover {
+        background-color: #ddd;
+        color: black;
+    }
+    .top-menu .menu-items {
+        display: flex;
+        overflow-x: auto;
+        scroll-behavior: smooth;
+    }
+    .top-menu .menu-items a {
+        display: inline-block;
+        color: #f2f2f2;
+        text-align: center;
+        padding: 10px;
+        text-decoration: none;
+    }
+    .top-menu .menu-items a img {
+        width: 85px;
+        height: 130px;
+    }
+    .top-menu .menu-items a:hover {
+        background-color: #ddd;
+        color: black;
+    }
+    .attike-logo {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        text-decoration: none;
+        border: 2px solid #f2f2f2;
+        height: 130px; /* same height as thumbnails */
+        width: 85px; /* same width as thumbnails */
+        box-sizing: border-box;
+        margin: 10px 6px; /* Adjust the margin to align with other menu items */
+        /* padding: 0px 10; /* Add padding to the top and bottom to prevent text from being cut off */ */
+    }
+    .attike-logo div {
+        font-size: 32px; /* Reduce the font size to prevent text from being cut off */
+        font-weight: bold;
+        line-height: 1;
+        text-align: center;
+        margin: 0px 0; /* Reduce the margin between syllables */
+        letter-spacing: 3px;
+    }
+    .attike-logo .line1 { color: #FFB3BA; } /* Pastel Pink */
+    .attike-logo .line2 { color: #FFDFBA; letter-spacing: 5px;} /* Pastel Orange */ 
+    .attike-logo .line3 { color: #BAFFC9; } /* Pastel Green */
+    iframe {
+        width: 100%;
+        height: calc(100vh - 160px); /* Adjust height to account for the Attike logo */
+        border: none;
+        margin-top: 0px;
+    }
+
+</style>
+</head>
+<body>
+    <div class="top-menu">
+        <button class="scroll-button" onclick="scrollLeft()">&#9664;</button>
+    <div class="menu-items">
+        <a href="home.html" class="attike-logo" target="content-frame">
+            <div class="line1">Ἀτ</div>
+            <div class="line2">τι</div>
+            <div class="line3">κή</div>
+        </a>
+            <a href="html/δυονισους.html" target="content-frame"><img src="thumbs/dionysus.jpg" alt="Bous"></a>
+            <a href="html/bous2.html" target="content-frame"><img src="thumbs/bous_thumb.jpg" alt="Deipnon"></a>
+            <a href="δυονισους.html" target="content-frame"><img src="δυονισους_thumb.jpg" alt="Dionysus"></a>
+            <a href="εντοισαγροισ.html" target="content-frame"><img src="εντοισαγροισ_thumb.jpg" alt="Entoisa Grosis"></a>
+            <a href="peiraieus.html" target="content-frame"><img src="peiraieus_thumb.jpg" alt="Peiraieus"></a>
+            <a href="ελαια.html" target="content-frame"><img src="ελαια_thumb.jpg" alt="Elaia"></a>
+            <a href="οινον.html" target="content-frame"><img src="οινον_thumb.jpg" alt="Oinon"></a>
+            <a href="ολιστανει.html" target="content-frame"><img src="ολιστανει_thumb.jpg" alt="Olisthanei"></a>
+            <a href="θεατρον.html" target="content-frame"><img src="θεατρον_thumb.jpg" alt="Theatron"></a>
+            <a href="θποτοδεντρο.html" target="content-frame"><img src="θποτοδεντρο_thumb.jpg" alt="Thpotodendro"></a>
+            <a href="λυκος.html" target="content-frame"><img src="λυκος_thumb.jpg" alt="Lykos"></a>
+            <a href="μινοταυρο.html" target="content-frame"><img src="μινοταυρο_thumb.jpg" alt="Minotaur"></a>
+            <a href="παιδια.html" target="content-frame"><img src="παιδια_thumb.jpg" alt="Paida"></a>
+            <a href="παρθενον.html" target="content-frame"><img src="παρθενον_thumb.jpg" alt="Parthenon"></a>
+            <a href="προστενκρενεν.html" target="content-frame"><img src="προστενκρενεν_thumb.jpg" alt="Prostenkrenen"></a>
+        </div>
+        <button class="scroll-button" onclick="scrollRight()">&#9654;</button>
+    </div>
+    <iframe name="content-frame" src="home.html"></iframe> <!-- Default content -->
+
+    <script>
+        function scrollLeft() {
+            document.querySelector('.menu-items').scrollBy({
+                top: 0,
+                left: -150,
+                behavior: 'smooth'
+            });
+        }
+        function scrollRight() {
+            document.querySelector('.menu-items').scrollBy({
+                top: 0,
+                left: 150,
+                behavior: 'smooth'
+            });
+        }
+    </script>
+</body>
+</html>
