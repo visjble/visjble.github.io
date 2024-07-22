@@ -215,7 +215,7 @@
                 // Store the original text
                 const words = originalText.split(' ');
                 obfuscatedText.innerHTML = words.map(word=>{
-                    if (word.length > 2) {
+                    if (word.length > 3) {
                         return '<span class="blurred-text">' + '*'.repeat(word.length) + '</span>';
                     } else {
                         return word;
