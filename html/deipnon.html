@@ -209,20 +209,31 @@
                     imageContainer.appendChild(radio);
                 }
                 );
-                // Obfuscate words longer than 2 characters
+            }
+
+            function initializeObfuscatedText() {
                 const obfuscatedText = document.getElementById('obfuscatedText');
                 originalText = obfuscatedText.textContent;
-                // Store the original text
-                const words = originalText.split(' ');
-                obfuscatedText.innerHTML = words.map(word=>{
-                    if (word.length > 3) {
-                        return '<span class="blurred-text">' + '*'.repeat(word.length) + '</span>';
-                    } else {
-                        return word;
-                    }
-                }
-                ).join(' ');
+                updateObfuscatedText();
             }
+
+            function updateObfuscatedText() {
+                const obfuscatedText = document.getElementById('obfuscatedText');
+                if (isRevealed) {
+                    obfuscatedText.textContent = originalText;
+                } else {
+                    const words = originalText.split(' ');
+                    obfuscatedText.innerHTML = words.map(word=>{
+                        if (word.length > 3) {
+                            return '<span class="blurred-text">' + '*'.repeat(word.length) + '</span>';
+                        } else {
+                            return word;
+                        }
+                    }
+                    ).join(' ');
+                }
+            }
+
             function hideRadials() {
                 const radials = document.querySelectorAll('.radio-button');
                 radials.forEach(radial=>radial.style.display = 'none');
@@ -272,26 +283,12 @@
             }
 
             document.getElementById('revealButton').addEventListener('click', function() {
-                const obfuscatedText = document.getElementById('obfuscatedText');
-                if (isRevealed) {
-                    const words = originalText.split(' ');
-                    obfuscatedText.innerHTML = words.map(word=>{
-                        if (word.length > 2) {
-                            return '<span class="blurred-text">' + '*'.repeat(word.length) + '</span>';
-                        } else {
-                            return word;
-                        }
-                    }
-                    ).join(' ');
-                    isRevealed = false;
-                } else {
-                    obfuscatedText.textContent = originalText;
-                    isRevealed = true;
-                }
-
+                isRevealed = !isRevealed;
+                updateObfuscatedText();
             });
 
             createGameBoard();
+            initializeObfuscatedText();
             selectRandomLocation();
             document.getElementById("imageContainer").addEventListener("click", checkGuess);
         </script>
