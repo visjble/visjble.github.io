@@ -143,7 +143,7 @@
             <span id="obfuscatedText">ὁ Θησεὺς οὐ φοβεῖται τὸν Μινώταυρον</span>
         </div>
         <div id="score">
-            ἀριθμός: <span id="scoreCount">0</span>
+            <span id="scoreCount">0</span>
         </div>
         <script>
 
@@ -164,12 +164,12 @@
                 "x": 0.14222222222222222,
                 "y": 0.8609794628751974
             }, {
-                "name": "\u1f21 \u03c0\u03cd\u03bb\u03b7",
+                "name": "\u1f21 \u03b8\u03cd\u03c1\u03b1",
                 "x": 0.14666666666666667,
                 "y": 0.7519747235387045
             }, {
                 "name": "\u1f41 \u039c\u03b9\u03bd\u03ce\u03c4\u03b1\u03c5\u03c1\u03bf\u03c2",
-                "x": 0.5155555555555555,
+                "x": 0.6455555555555555,
                 "y": 0.37598736176935227
             }, {
                 "name": "\u1f41 \u03bb\u03b1\u03b2\u03cd\u03c1\u03b9\u03bd\u03b8\u03bf\u03c2",
@@ -243,16 +243,19 @@
                     obfuscatedText.textContent = originalText;
                 } else {
                     const words = originalText.split(' ');
-                    obfuscatedText.innerHTML = words.map(word=>{
+                    obfuscatedText.innerHTML = words.map(word => {
                         if (word.length > 3) {
-                            return '<span class="blurred-text">' + '*'.repeat(word.length) + '</span>';
+                            const firstChar = word[0];
+                            const lastChar = word[word.length - 1];
+                            const middleObfuscated = '*'.repeat(word.length - 2);
+                            return '<span class="blurred-text">' + firstChar + middleObfuscated + lastChar + '</span>';
                         } else {
                             return word;
                         }
-                    }
-                    ).join(' ');
+                    }).join(' ');
                 }
             }
+
 
             function hideRadials() {
                 const radials = document.querySelectorAll('.radio-button');
