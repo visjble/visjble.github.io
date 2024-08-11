@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ἀσκήσεις Ἑλληνικαί</title>
+
+    <style>
+			@import url('https://fonts.googleapis.com/css2?family=GFS+Didot&display=swap'); .gfs-didot-regular {
+			font-family: "GFS Didot", serif;
+			font-weight: 400;
+			font-style: normal;
+            }
+
+        body {
+	        font-family: "GFS Didot", serif;
+            background-color: #f4f4f4;
+            color: #333;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+        }
+        
+        #memory_board {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            grid-gap: 5px;
+            background: #1abc9c;
+            border: 2px solid #16a085;
+            border-radius: 12px;
+            width: 95%;
+            max-width: 400px;
+            padding: 5px;
+        }
+
+        #memory_board div {
+            background: #15967D;
+            border: 2px solid #333;
+            border-radius: 8px;
+            height: 60px;
+            font-size: clamp(18px, 6vw, 22px);
+            text-align: center;
+            line-height: 1.2;
+            cursor: pointer;
+            color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            word-wrap: break-word;
+            padding: 2px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        @media (max-width: 480px) {
+            #memory_board {
+                grid-gap: 5px;
+                padding: 5px;
+            }
+
+            #memory_board div {
+                height: 60px;
+                font-size: clamp(10px, 4.5vw, 18px);
+                padding: 3px;
+            }
+        }
+
+        @media (min-width: 481px) and (max-width: 767px) {
+            #memory_board div {
+                height: 65px;
+                font-size: clamp(12px, 4.5vw, 22px);
+            }
+        }
+
+        @media (min-width: 768px) {
+            #memory_board div {
+                height: 80px;
+                font-size: clamp(16px, 3.5vw, 26px);
+                padding: 10px;
+            }
+        }
+
+        #memory_board div:active {
+            background-color: #1FF;
+        }
+
+        #response {
+            color: #333;
+            font-size: 18px;
+            margin-top: 10px;
+            text-align: center;
+        }
+
+        #score {
+            color: #007bff;
+            font-size: 20px;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+	<h3>λέξεις ἀντίθετα </h3>
+	<div>
+	<span>ἠ τάξις<span>
+	<label><input type="radio" name="difficulty" value="3" checked> 3</label>
+	<label><input type="radio" name="difficulty" value="4"> 4</label>
+	<label><input type="radio" name="difficulty" value="5"> 5</label>
+    </div></br>
+    <div id="memory_board"></div>
+    <div id="response">Ἑλοῦ δύο!😈</div>
+    <div id="score">0</div>
+
+    <script>
+var memory_array_a = [
+    ['ἀγαθός', 'κακός'],         // good, bad
+    ['μέγας', 'μικρός'],         // big, small
+    ['δίκαιος', 'ἄδικος'],       // just, unjust
+    ['ὑψηλός', 'χαμηλός'],       // high, low
+    ['γλυκύς', 'πικρός'],        // sweet, bitter
+    ['ἴσος', 'ἄνισος'],          // equal, unequal
+    ['ὀρθός', 'καμπύλος'],       // straight, curved
+    ['ταχύς', 'βραδύς'],         // fast, slow
+    ['μακρός', 'βραχύς'],        // long, short
+    ['λαμπρός', 'σκοτεινός'],    // bright, dark
+    ['νέος', 'γέρων'],           // young, old
+    ['φίλος', 'ἐχθρός'],         // friend, enemy
+    ['θερμός', 'ψυχρός'],        // hot, cold
+    ['ἁπλοῦς', 'διπλοῦς'],       // simple, double
+    ['ἴδιος', 'κοινός'],         // private, public
+    ['ἐλεύθερος', 'δοῦλος'],     // free, slave
+    ['ἀληθής', 'ψευδής'],        // true, false
+    ['καθαρός', 'ῥυπαρός'],      // clean, dirty
+    ['καλός', 'αἰσχρός'],        // beautiful, ugly
+    ['πλούσιος', 'πτωχός'],      // rich, poor
+    ['πιστός', 'ἄπιστος'],       // faithful, unfaithful
+    ['ἀθάνατος', 'θνητός'],      // immortal, mortal
+    ['ἀνδρεῖος', 'δειλός'],      // brave, cowardly
+    ['βέβαιος', 'ἀβέβαιος'],     // certain, uncertain
+    ['εὔκολος', 'δυσκόλος'],     // easy, difficult
+    ['σοφός', 'μωρός'],          // wise, foolish
+    ['ἰσχυρός', 'ἀσθενής'],      // strong, weak
+    ['εὐγενής', 'ἀγενής'],       // noble, ignoble
+    ['ἀμείνων', 'χείρων'],       // better, worse
+    ['ἄριστος', 'κάκιστος'],     // best, worst
+    ['μαλακός', 'σκληρός'],      // soft, hard
+    ['ὀλίγος', 'πολύς'],         // few, many
+    ['ἀρχαῖος', 'νέος'],         // ancient, new
+    ['δυνατός', 'ἀδύνατος'],     // possible, impossible
+    ['ἥσυχος', 'ταραχώδης'],     // quiet, noisy
+    ['εὐτυχής', 'δυστυχής'],     // fortunate, unfortunate
+    ['εὐθύς', 'στρεβλός'],       // straight, crooked
+    ['ἀκριβής', 'ἀσαφής'],       // precise, vague
+    ['αἰσθητός', 'ἀναίσθητος'],  // perceptible, imperceptible
+    ['ἄγριος', 'ἥμερος'],        // wild, tame
+    ['χαίρων', 'λυπηρός'],       // joyful, sorrowful
+    ['γρήγορος', 'ἀργός'],       // quick, lazy
+    ['εὔθυμος', 'δύσθυμος'],     // cheerful, gloomy
+	['πρίασθαι', 'ὠνεῖσθαι'],     // sell, buy
+	['εὐλογεῖν' , 'καταράσασθαι'] // lodare, maledire
+		
+];
+        
+        var memory_array_o = [];
+        var memory_array = [];
+
+        function loadArray() {
+		    var selectedRows = document.querySelector('input[name="difficulty"]:checked').value;
+		    memory_array_o = [];
+		    while (memory_array_o.length < selectedRows) {
+		        let rand_pair = memory_array_a[Math.floor(Math.random() * memory_array_a.length)];
+		        if (!memory_array_o.some(pair => JSON.stringify(pair) === JSON.stringify(rand_pair))) {
+		            memory_array_o.push(rand_pair);
+		        }
+		    }
+		    memory_array = memory_array_o.flat();
+		}
+
+
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+        }
+
+        var memory_values = [];
+        var memory_tile_ids = [];
+        var tiles_flipped = 0;
+        var score = 0;
+
+		function newGame() {
+		    score = 0;
+		    document.getElementById('response').innerHTML = 'ἑλοῦ δύο 😈';
+		    document.getElementById('score').innerHTML = score;
+		    memory_array_o = [];
+		    memory_array = [];
+		    loadArray();
+		    newBoard();
+		}
+		
+		// Add event listeners to radio buttons to start a new game when the difficulty is changed
+		document.querySelectorAll('input[name="difficulty"]').forEach(function(radio) {
+		    radio.addEventListener('change', newGame);
+		});
+
+
+        function newBoard() {
+            tiles_flipped = 0;
+            var output = '';
+            shuffleArray(memory_array);
+            for (var i = 0; i < memory_array.length; i++) {
+                output += '<div id="tile_' + i + '" onclick="memoryFlipTile(this,\'' + memory_array[i] + '\')"></div>';
+            }
+            document.getElementById('memory_board').innerHTML = output;
+        }
+
+        function memoryFlipTile(tile, val) {
+            if (tile.innerHTML === "" && memory_values.length < 2) {
+                tile.style.background = '#1FF';
+                tile.innerHTML = val;
+                if (memory_values.length === 0) {
+                    memory_values.push(val);
+                    memory_tile_ids.push(tile.id);
+                } else if (memory_values.length === 1) {
+                    memory_values.push(val);
+                    memory_tile_ids.push(tile.id);
+
+                    if (checkWordPair()) {
+                        tiles_flipped += 2;
+                        memory_values = [];
+                        memory_tile_ids = [];
+                        document.getElementById('response').innerHTML = getIncite() + getSmiley();
+                        document.getElementById('score').innerHTML = ++score;
+                        setTimeout(clearFields, 3000);
+
+                        if (tiles_flipped === memory_array.length) {
+                            document.getElementById('response').innerHTML = 'Πέπρακται!__-😅-__';
+                            setTimeout(newGame, 3000);
+                        }
+                    } else {
+                        setTimeout(flip2Back, 200);
+                    }
+                }
+            }
+        }
+
+        function checkWordPair() {
+            return memory_array_o.some(pair => 
+                pair.includes(memory_values[0]) && pair.includes(memory_values[1])
+            );
+        }
+
+		function flip2Back() {
+		    document.getElementById('response').innerHTML = '😱 Οὐδαμῶς... αὖθις πειρῶ';
+		    document.getElementById('score').innerHTML = --score;
+		    var tile_1 = document.getElementById(memory_tile_ids[0]);
+		    var tile_2 = document.getElementById(memory_tile_ids[1]);
+		
+		    // Set background to red immediately
+		    tile_1.style.background = '#FF6347';  // Red color
+		    tile_2.style.background = '#FF6347';  // Red color
+		
+		    // Flip tiles back after a brief delay
+		    setTimeout(() => {
+		        tile_1.style.background = '#15967D';
+		        tile_1.innerHTML = "";
+		        tile_2.style.background = '#15967D';
+		        tile_2.innerHTML = "";
+		        memory_values = [];
+		        memory_tile_ids = [];
+		        clearFields();
+		    }, 2000);  // Adjust delay as needed
+		}
+
+        function clearFields() {
+            document.getElementById('response').innerHTML = 'Ἑλοῦ δύο!😈';
+        }
+
+        function getIncite() {
+            var incites = ['Ἴθι!', 'Εὖ γε!', 'ΚΑΛΩΣ!', 'Εὖγε τῆς ἀρετῆς!', 'Πρόιθι!', 'Ἄριστα!', 'Ὀρθῶς!'];
+            return incites[Math.floor(Math.random() * incites.length)];
+        }
+
+        function getSmiley() {
+            var smileys = [' 😍', ' 😅', ' 😎', ' 😈', ' 😂', ' 😃', ' 😆', ' 😏'];
+            return smileys[Math.floor(Math.random() * smileys.length)];
+        }
+
+        newGame();
+    </script>
+</body>
+</html>
