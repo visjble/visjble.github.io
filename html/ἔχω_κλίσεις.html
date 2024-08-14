@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+    <meta content="width=device-width, initial-scale=1" name="viewport">
+    <style>
+        body, html {
+            width: 99.9%;
+            clear: both;
+            border: 1px solid;
+            text-align: center;
+            padding-right: 0px;
+            margin: auto;
+            border-color: #ffffff;
+        }
+
+        table {
+            border-collapse: collapse;
+            table-layout: fixed;
+            width: 100%;
+            white-space: nowrap;
+            font-size: 12px;
+            border: 3px solid;
+            display: inline-block;
+            background: #a250ff;
+            color: #FFFFFF;
+            padding: 5px 10px;
+            border-radius: 10px;
+        }
+
+                /* Style for the vertical separation */
+        .vertical-separator td {
+            border-left: 3px solid black; /* Adjust thickness and color as needed */
+        }
+
+        .vertical-separator td:first-of-type {
+            border-left: none; /* Remove left border for the first column */
+        }
+
+        .thick-bottom-border {
+            border-bottom: 3px solid black; /* Adjust thickness and color as needed */
+        }
+        tbody tr:nth-child(n+4) th { text-align: right; }
+        
+        .back-link {
+            font-size: 32px; /* Adjust size as needed */
+            text-decoration: none; /* Remove underline */
+            color: #000; /* Set color if needed */
+        }
+
+    </style>
+    <title>ΕΧΩ ΚΛΙΣΕΙΣ</title>
+</head>
+<body>
+    <table id="table">
+        <tbody>
+            <tr>
+                <th rowspan="3"></th>
+                <th colspan="6">
+                    <b><i style="font-size: 30px; margin: 0;">ἔχω</i><br></b>
+                    ἔχω κλίσεις</b>
+                    <hr>
+                </th>
+            </tr>
+            <tr class="bottom-border">
+                <th colspan="3"><b>Ἑνικός</b></th>
+                <th colspan="3"><b>Πληθυντικός</b></th>
+            </tr>
+            <tr class="bottom-border">
+                <th colspan="1"><b>Πρῶτον</b></th>
+                <th colspan="1"><b>Δεύτερον</b></th>
+                <th colspan="1"><b>Τρίτον</b></th>
+                <th colspan="1" class="separator-column"><b>Πρῶτον</b></th>
+                <th colspan="1"><b>Δεύτερον</b></th>
+                <th colspan="1"><b>Τρίτον</b></th>
+            </tr>
+            <tr>
+                <th><b>Ἐνεστώς</b></th>
+                <td id="1"></td>
+                <td id="2"></td>
+                <td id="3"></td>
+                <td id="4">&nbsp;&nbsp;</td>
+                <td id="5"></td>
+                <td id="6"></td>
+            </tr>
+            <tr>
+                <th><b>Παρατατικός</b></th>
+                <td id="7"></td>
+                <td id="8"></td>
+                <td id="9"></td>
+                <td id="10">&nbsp;&nbsp;</td>
+                <td id="11"></td>
+                <td id="12"></td>
+            </tr>
+            <tr>
+                <th><b>Μέλλων</b></th>
+                <td id="13"></td>
+                <td id="14"></td>
+                <td id="15"></td>
+                <td id="16">&nbsp;&nbsp;</td>
+                <td id="17"></td>
+                <td id="18"></td>
+            </tr>
+            <tr>
+                <th><b>Ἀόριστος</b></th>
+                <td id="19"></td>
+                <td id="20"></td>
+                <td id="21"></td>
+                <td id="22">&nbsp;&nbsp;</td>
+                <td id="23"></td>
+                <td id="24"></td>
+            </tr>
+            <tr>
+                <th><b>Παρακείμενος</b></th>
+                <td id="25"></td>
+                <td id="26"></td>
+                <td id="27"></td>
+                <td id="28">&nbsp;&nbsp;</td>
+                <td id="29"></td>
+                <td id="30"></td>
+            </tr>
+            <tr>
+                <th><b>Ὑπερσυντέλικος</b></th>
+                <td id="31"></td>
+                <td id="32"></td>
+                <td id="33"></td>
+                <td id="34">&nbsp;&nbsp;</td>
+                <td id="35"></td>
+                <td id="36"></td>
+            </tr>
+        </tbody>
+    </table>
+<script>
+    var flag = 0;
+    var score = 0;
+    var attempts = {}; // Keeps track of attempts per field
+    var counter = 0;
+    var dict = {
+        1: 'ἔχω', 2: 'ἔχεις', 3: 'ἔχει', 4: 'ἔχομεν', 5: 'ἔχετε', 6: 'ἔχουσι(ν)',
+        7: 'εἶχον', 8: 'εἶχες', 9: 'εἶχε(ν)', 10: 'εἴχομεν', 11: 'εἴχετε', 12: 'εἶχον',
+        13: 'ἕξω', 14: 'ἕξεις', 15: 'ἕξει', 16: 'ἕξομεν', 17: 'ἕξετε', 18: 'ἕξουσι(ν)',
+        19: 'ἔσχον', 20: 'ἔσχες', 21: 'ἔσχε(ν)', 22: 'ἔσχομεν', 23: 'ἔσχετε', 24: 'ἔσχον',
+        25: 'ἔσχηκα', 26: 'ἔσχηκας', 27: 'ἔσχηκε(ν)', 28: 'ἐσχήκαμεν', 29: 'ἐσχήκατε', 30: 'ἐσχήκασι(ν)',
+        31: 'ἐσχήκειν', 32: 'ἐσχήκεις', 33: 'ἐσχήκει', 34: 'ἐσχήκεμεν', 35: 'ἐσχήκετε', 36: 'ἐσχήκεσαν'
+    };
+
+    for (var i = 1; i < 37; i++) {
+        var element = document.createElement("input");
+        element.setAttribute("style", "width:95%;");
+        element.setAttribute("type", "text");
+        var tempID = document.getElementById(i);
+        tempID.appendChild(element);
+        tempID.querySelector("input").addEventListener("keydown", keydownFunc);
+        attempts[i] = 0; // Initialize attempts for each field
+    }
+
+    function keydownFunc(event) {
+        var x = event.keyCode || event.which;
+        if (x === 13 && flag === 0) { // 13 is the Enter key
+            event.preventDefault(); // Prevent default action of "Enter" key
+            var path = event.target.parentElement.id; // id of input
+            var value = event.target.value.toLowerCase();
+            inscipitVocabulum(path, value, event.target);
+        }
+    }
+
+    function inscipitVocabulum(path, value, target) {
+        if (value === dict[path] && flag === 0) {
+            target.value = value;
+            target.parentElement.style.backgroundColor = '#7FFF00';
+            target.style.textAlign = 'center';
+            if (flag === 0) {
+                score += 1;
+                document.getElementById('response').innerHTML = getIncite() + getSmiley() + ' ' + score;
+                attempts[path] = 0;
+            }
+            var p = plenus();
+            if (!p) {
+                document.getElementById('response').innerHTML = '😍<-6ft->😎 CONFECTUS!👏🥵🙌';
+                flag = 1;
+            }
+            try {
+                var nextInput = getNextInput(target);
+                if (nextInput) nextInput.focus();
+            } catch (error) {
+                console.log(error);
+            }
+        } else if (value === "") {
+            document.getElementById("response").innerHTML = "Γράφε τὴν ἀπόκρισιν εἰς τὸ πεδίον ⬉";
+            target.focus(); // Focus back to the same field if it's empty
+        } else {
+            attempts[path] += 1;
+            target.style.backgroundColor = 'red';
+            target.style.textDecoration = "line-through";
+            document.getElementById('response').innerHTML = '🔱 Οὔ· πειρῶ αὖθις';
+            score -= 1;
+            blink(target);
+            if (attempts[path] >= 3 && flag === 0) {
+                target.style.textDecoration = 'none';
+                document.getElementById("response").innerHTML = "Ἀπόκρισις ➵ " + dict[path];
+                setTimeout(() => {
+                    target.value = dict[path];
+                    target.style.backgroundColor = '#7FFF00';
+                    target.style.textAlign = 'center';
+                    attempts[path] = 0;
+                    var nextInput = getNextInput(target);
+                    if (nextInput) nextInput.focus();
+                }, 2000);
+            } else {
+                setTimeout(() => {
+                    clearFields(target);
+                    target.focus(); // Focus back to the same field if the entry is wrong
+                }, 1000);
+            }
+        }
+    }
+
+    function getNextInput(target) {
+        var nextElement = target.parentElement.nextElementSibling;
+        while (nextElement && !nextElement.querySelector("input")) {
+            nextElement = nextElement.nextElementSibling;
+        }
+        return nextElement ? nextElement.querySelector("input") : null;
+    }
+
+    function clearFields(target) {
+        if (attempts[target.parentElement.id] < 3) {
+            target.style.textDecoration = 'none';
+            target.value = '';
+            target.style.backgroundColor = 'white';
+        }
+        document.getElementById('response').innerHTML = 'Κλίσεις! 😤' + ' ' + score;
+    }
+
+    function blink(target) {
+        setTimeout(() => {
+            target.style.display = (target.style.display === 'none' ? '' : 'none');
+        }, 200);
+        setTimeout(() => {
+            target.style.display = (target.style.display === 'none' ? '' : 'none');
+        }, 300);
+    }
+
+    function plenus() {
+        var arr = [];
+        for (let i = 1; i <= 36; i++) {
+            arr.push(document.getElementById(i).style.backgroundColor === 'rgb(127, 255, 0)');
+        }
+        return arr.includes(false);
+    }
+
+    function getIncite() {
+        var incites = ['Ἄγε!', 'Εὖ ἐποίησας!', 'Εὖ!', 'Μάκρηνε!', 'Συνέχισε!', 'Άριστα!', 'Σωστά!'];
+        return incites[Math.floor(Math.random() * incites.length)];
+    }
+
+    function getSmiley() {
+        var smileys = [' 😍', ' 😅', ' 😎', ' 😈', ' 😂', ' 😃', ' 😆', ' 😏'];
+        return smileys[Math.floor(Math.random() * smileys.length)];
+    }
+</script>
+
+    <center>
+        <div id="response" style="color:black;font-size:20px;text-align:center;">
+            Κλίσεις! 😤
+        </div>
+        <div class="back-button">
+            <a href="javascript:history.back()" class="back-link">👈</a>
+        </div>
+
+    </center>
+</body>
+</html>
