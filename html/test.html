@@ -119,16 +119,29 @@ for (var i = 1; i < 31; i++) {
     element.setAttribute("type", "text");
     var tempID = document.getElementById(i);
     tempID.appendChild(element);
-    tempID.querySelector("input").addEventListener("keydown", keydownFunc);
+    element.addEventListener("keydown", keydownFunc);
+    element.addEventListener("input", inputFunc);
 }
 
 function keydownFunc(event) {
-    var x = event.keyCode || event.which;
-    if (x === 13 && flag === 0) { // 13 is the Enter key
+    if (event.key === "Enter") {
         event.preventDefault(); // Prevent default action of "Enter" key
-        var path = event.target.parentElement.id; // id of input
-        var value = event.target.value.toLowerCase();
-        inscipitVocabulum(path, value, event.target);
+        handleInput(event.target);
+    }
+}
+
+function inputFunc(event) {
+    if (event.inputType === "insertCompositionText") {
+        // This event is fired when IME composition is finished (common in mobile devices)
+        handleInput(event.target);
+    }
+}
+
+function handleInput(target) {
+    if (flag === 0) {
+        var path = target.parentElement.id;
+        var value = target.value.toLowerCase();
+        inscipitVocabulum(path, value, target);
     }
 }
 
@@ -154,7 +167,7 @@ function handleCorrectAnswer(target, path) {
         document.getElementById('response').innerHTML = '😍<-6ft->😎 CONFECTUS!👏🥵🙌';
         flag = 1;
     } else {
-        focusNextInput(target);
+        setTimeout(() => focusNextInput(target), 100);
     }
 }
 
@@ -174,7 +187,10 @@ function handleIncorrectAnswer(target, path) {
     if (attempts === 3 && flag === 0) {
         showCorrectAnswer(target, path);
     } else {
-        setTimeout(() => clearFields(target), 1000);
+        setTimeout(() => {
+            clearFields(target);
+            target.focus();
+        }, 1000);
     }
 }
 
@@ -186,7 +202,7 @@ function showCorrectAnswer(target, path) {
         target.value = dict[path];
         target.parentElement.style.backgroundColor = '#7FFF00';
         target.style.textAlign = 'center';
-        focusNextInput(target);
+        setTimeout(() => focusNextInput(target), 100);
     }, 2000);
 }
 
@@ -198,11 +214,10 @@ function clearFields(target) {
 }
 
 function focusNextInput(target) {
-    try {
-        var nextInput = target.parentElement.nextElementSibling.querySelector("input");
-        if (nextInput) nextInput.focus();
-    } catch (error) {
-        console.log(error);
+    var inputs = document.querySelectorAll('input');
+    var index = Array.from(inputs).indexOf(target);
+    if (index > -1 && index < inputs.length - 1) {
+        inputs[index + 1].focus();
     }
 }
 
