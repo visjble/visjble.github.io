@@ -101,138 +101,112 @@
         </tbody>
     </table>
     <script>
- var flag = 0;
-var score = 0;
-var attempts = 0; // Keeps track of attempts then reveals answer if > 3
-var dict = {
-    1: 'hic', 2: 'haec', 3: 'hoc', 4: 'hī', 5: 'hae', 6: 'haec',
-    7: 'hunc', 8: 'hanc', 9: 'hoc', 10: 'hōs', 11: 'hās', 12: 'haec',
-    13: 'huius', 14: 'huius', 15: 'huius', 16: 'hōrum', 17: 'hārum', 18: 'hōrum',
-    19: 'huic', 20: 'huic', 21: 'huic', 22: 'hīs', 23: 'hīs', 24: 'hīs',
-    25: 'hōc', 26: 'hāc', 27: 'hōc', 28: 'hīs', 29: 'hīs', 30: 'hīs'
-};
+        var flag = 0;
+        var score = 0;
+        var attempts = 0; // Keeps track of attempts then reveals answer if > 3
+        var counter = 0;
+        var dict = {
+            1: 'hic', 2: 'haec', 3: 'hoc', 4: 'hī', 5: 'hae', 6: 'haec',
+            7: 'hunc', 8: 'hanc', 9: 'hoc', 10: 'hōs', 11: 'hās', 12: 'haec',
+            13: 'huius', 14: 'huius', 15: 'huius', 16: 'hōrum', 17: 'hārum', 18: 'hōrum',
+            19: 'huic', 20: 'huic', 21: 'huic', 22: 'hīs', 23: 'hīs', 24: 'hīs',
+            25: 'hōc', 26: 'hāc', 27: 'hōc', 28: 'hīs', 29: 'hīs', 30: 'hīs'
+        };
 
-// Initialize input fields
-for (var i = 1; i < 31; i++) {
-    var element = document.createElement("input");
-    element.setAttribute("style", "width:95%;");
-    element.setAttribute("type", "text");
-    var tempID = document.getElementById(i);
-    tempID.appendChild(element);
-    tempID.querySelector("input").addEventListener("keydown", keydownFunc);
-}
+        for (var i = 1; i < 31; i++) {
+            var element = document.createElement("input");
+            element.setAttribute("style", "width:95%;");
+            element.setAttribute("type", "text"); // Ensure input type is text
+            var tempID = document.getElementById(i);
+            tempID.appendChild(element);
+            tempID.querySelector("input").addEventListener("keydown", keydownFunc);
+        }
 
-function keydownFunc(event) {
-    var x = event.keyCode || event.which;
-    if (x === 13 && flag === 0) { // 13 is the Enter key
-        event.preventDefault(); // Prevent default action of "Enter" key
-        var path = event.target.parentElement.id; // id of input
-        var value = event.target.value.toLowerCase();
-        inscipitVocabulum(path, value, event.target);
-    }
-}
+        function keydownFunc(event) {
+            var x = event.keyCode || event.which;
+            if (x === 13 && flag === 0) { // 13 is the Enter key
+                event.preventDefault(); // Prevent default action of "Enter" key
+                var path = event.target.parentElement.id; // id of input
+                var value = event.target.value.toLowerCase();
+                inscipitVocabulum(path, value, event.target);
+            }
+        }
 
-function inscipitVocabulum(path, value, target) {
+        function inscipitVocabulum(path, value, target) {
     if (value === dict[path] && flag === 0) {
-        handleCorrectAnswer(target, path);
-    } else if (value === "") {
-        handleEmptyField(target);
-    } else {
-        handleIncorrectAnswer(target, path);
-    }
-}
-
-function handleCorrectAnswer(target, path) {
-    target.value = dict[path];
-    target.parentElement.style.backgroundColor = '#7FFF00';
-    target.style.textAlign = 'center';
-    score += 1;
-    document.getElementById('response').innerHTML = getIncite() + getSmiley() + ' ' + score;
-    attempts = 0;
-
-    if (plenus()) {
-        document.getElementById('response').innerHTML = '😍<-6ft->😎 CONFECTUS!👏🥵🙌';
-        flag = 1;
-    } else {
-        focusNextInput(target);
-    }
-}
-
-function handleEmptyField(target) {
-    document.getElementById("response").innerHTML = "Scribe responsum in campō ⬉";
-    target.value = "";
-}
-
-function handleIncorrectAnswer(target, path) {
-    attempts += 1;
-    target.style.backgroundColor = 'red';
-    target.style.textDecoration = "line-through";
-    document.getElementById('response').innerHTML = '🔱 Minime..conare iterum';
-    score -= 1;
-    blink(target);
-    
-    if (attempts === 3 && flag === 0) {
-        showCorrectAnswer(target, path);
-    } else {
-        setTimeout(() => clearFields(target), 1000);
-    }
-}
-
-function showCorrectAnswer(target, path) {
-    target.style.textDecoration = 'none';
-    attempts = 0;
-    document.getElementById("response").innerHTML = "Responsio ➵ " + dict[path];
-    setTimeout(() => {
-        target.value = dict[path];
+        target.value = value;
         target.parentElement.style.backgroundColor = '#7FFF00';
         target.style.textAlign = 'center';
-        focusNextInput(target);
-    }, 2000);
-}
-
-function clearFields(target) {
-    target.style.textDecoration = 'none';
-    target.value = '';
-    target.style.backgroundColor = 'white';
-    document.getElementById('response').innerHTML = 'Declinatitō!😤' + ' ' + score;
-}
-
-function focusNextInput(target) {
-    try {
-        var nextInput = target.parentElement.nextElementSibling.querySelector("input");
-        if (nextInput) nextInput.focus();
-    } catch (error) {
-        console.log(error);
-    }
-}
-
-function blink(target) {
-    setTimeout(() => {
-        target.style.display = (target.style.display === 'none' ? '' : 'none');
-    }, 200);
-    setTimeout(() => {
-        target.style.display = (target.style.display === 'none' ? '' : 'none');
-    }, 300);
-}
-
-function plenus() {
-    for (let i = 1; i < 31; i++) {
-        if (document.getElementById(i).style.backgroundColor !== 'rgb(127, 255, 0)') {
-            return false;
+        if (flag === 0) {
+            score += 1;
+            document.getElementById('response').innerHTML = getIncite() + getSmiley() + ' ' + score;
+            attempts = 0;
+        }
+        var p = plenus();
+        if (!p) {
+            document.getElementById('response').innerHTML = '😍<-6ft->😎 CONFECTUS!👏🥵🙌';
+            flag = 1;
+        }
+        try {
+            var nextInput = target.parentElement.nextElementSibling.querySelector("input");
+            if (nextInput) nextInput.focus();
+        } catch (error) {
+            console.log(error);
+        }
+        setTimeout(clearFields, 1500, target);
+    } else if (value === "") {
+        document.getElementById("response").innerHTML = "Scribe responsum in campō ⬉";
+        target.value = "";
+    } else {
+        attempts += 1;
+        target.style.backgroundColor = 'red';
+        target.style.textDecoration = "line-through";
+        document.getElementById('response').innerHTML = '🔱 Minime..conare iterum';
+        score -= 1;
+        blink(target);
+        setTimeout(clearFields, 1000, target);
+        if (attempts === 3 && flag === 0) {
+            target.style.textDecoration = 'none';
+            attempts = 0;
+            document.getElementById("response").innerHTML = "Responsio ➵ " + dict[path];
+            setTimeout(clearFields, 2000, target);
         }
     }
-    return true;
 }
 
-function getIncite() {
-    var incites = ['Age!', 'Bene factum!', 'BENE!', 'Macte virtute!', 'Perge!', 'Optime!', 'Recte!'];
-    return incites[Math.floor(Math.random() * incites.length)];
-}
+        function clearFields(target) {
+            target.style.textDecoration = 'none';
+            target.value = '';
+            target.style.backgroundColor = 'white';
+            document.getElementById('response').innerHTML = 'Declinatitō!😤' + ' ' + score;
+        }
 
-function getSmiley() {
-    var smileys = [' 😍', ' 😅', ' 😎', ' 😈', ' 😂', ' 😃', ' 😆', ' 😏'];
-    return smileys[Math.floor(Math.random() * smileys.length)];
-}
+        function blink(target) {
+            setTimeout(() => {
+                target.style.display = (target.style.display === 'none' ? '' : 'none');
+            }, 200);
+            setTimeout(() => {
+                target.style.display = (target.style.display === 'none' ? '' : 'none');
+            }, 300);
+        }
+
+        function plenus() {
+            var arr = [];
+            for (let i = 1; i < 31; i++) {
+                arr.push(document.getElementById(i).style.backgroundColor === 'rgb(127, 255, 0)');
+            }
+            return arr.includes(false);
+        }
+
+        function getIncite() {
+            var incites = ['Age!', 'Bene factum!', 'BENE!', 'Macte virtute!', 'Perge!', 'Optime!', 'Recte!'];
+            return incites[Math.floor(Math.random() * incites.length)];
+        }
+
+        function getSmiley() {
+            var smileys = [' 😍', ' 😅', ' 😎', ' 😈', ' 😂', ' 😃', ' 😆', ' 😏'];
+            return smileys[Math.floor(Math.random() * smileys.length)];
+        }
     </script>
     <center>
         <div id="response" style="color:black;font-size:20px;text-align:center;">
