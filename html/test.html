@@ -101,7 +101,7 @@
         </tbody>
     </table>
     <script>
-      var flag = 0;
+     var flag = 0;
 var score = 0;
 var attempts = 0; // Keeps track of attempts then reveals answer if > 3
 var dict = {
@@ -112,6 +112,15 @@ var dict = {
     25: 'hōc', 26: 'hāc', 27: 'hōc', 28: 'hīs', 29: 'hīs', 30: 'hīs'
 };
 
+// Debounce function
+function debounce(func, delay) {
+    let timeout;
+    return function(...args) {
+        clearTimeout(timeout);
+        timeout = setTimeout(() => func.apply(this, args), delay);
+    };
+}
+
 // Initialize input fields
 for (var i = 1; i < 31; i++) {
     var element = document.createElement("input");
@@ -119,12 +128,11 @@ for (var i = 1; i < 31; i++) {
     element.setAttribute("type", "text");
     var tempID = document.getElementById(i);
     tempID.appendChild(element);
-    element.addEventListener("input", inputFunc);
+    element.addEventListener("input", debounce(inputFunc, 500)); // Debounced input event
 }
 
 function inputFunc(event) {
-    // Use a short delay before handling the input to allow the user to finish typing
-    setTimeout(() => handleInput(event.target), 300);
+    handleInput(event.target);
 }
 
 function handleInput(target) {
@@ -245,7 +253,7 @@ function getSmiley() {
     </script>
     <center>
         <div id="response" style="color:black;font-size:20px;text-align:center;">
-            Declinatitō! 😤
+            1Declinatitō! 😤
         </div>
     </center>
 </body>
