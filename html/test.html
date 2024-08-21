@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+    <meta content="width=device-width, initial-scale=1" name="viewport">
+    <style>
+        body, html {
+            width: 99.9%;
+            clear: both;
+            border: 1px solid;
+            text-align: center;
+            padding-right: 0px;
+            margin: auto;
+            border-color: #ffffff;
+        }
+
+        table {
+            border-collapse: collapse;
+            table-layout: fixed;
+            width: 100%;
+            white-space: nowrap;
+            font-size: 12px;
+            border: 3px solid;
+            display: inline-block;
+            background: #FF7F50;
+            color: #FFFFFF;
+            padding: 5px 5px;
+            border-radius: 10px;
+        }
+    </style>
+    <title></title>
+</head>
+<body>
+    <table id="table">
+        <tbody>
+            <tr>
+                <th rowspan="3"></th>
+                <th colspan="6">
+                    <b><i>HIC, HAEC, HOC</i><br>
+                    significat apud nos esse</b>
+                    <hr>
+                </th>
+            </tr>
+            <tr>
+                <th colspan="3"><b>Singularis</b></th>
+                <th colspan="2"><b>Pluralis</b></th>
+            </tr>
+            <tr>
+                <th colspan="1"><b>Masc</b></th>
+                <th colspan="1"><b>Fem</b></th>
+                <th colspan="1"><b>Neut</b></th>
+                <th colspan="1"><b>Masc</b></th>
+                <th colspan="1"><b>Fem</b></th>
+                <th colspan="1"><b>Neut</b></th>
+            </tr>
+            <tr>
+                <th><b>Nom</b></th>
+                <td id="1"></td>
+                <td id="2"></td>
+                <td id="3"></td>
+                <td id="4"></td>
+                <td id="5"></td>
+                <td id="6"></td>
+            </tr>
+            <tr>
+                <th><b>Acc</b></th>
+                <td id="7"></td>
+                <td id="8"></td>
+                <td id="9"></td>
+                <td id="10"></td>
+                <td id="11"></td>
+                <td id="12"></td>
+            </tr>
+            <tr>
+                <th><b>Gen</b></th>
+                <td id="13"></td>
+                <td id="14"></td>
+                <td id="15"></td>
+                <td id="16"></td>
+                <td id="17"></td>
+                <td id="18"></td>
+            </tr>
+            <tr>
+                <th><b>Dat</b></th>
+                <td id="19"></td>
+                <td id="20"></td>
+                <td id="21"></td>
+                <td id="22"></td>
+                <td id="23"></td>
+                <td id="24"></td>
+            </tr>
+            <tr>
+                <th><b>Abl</b></th>
+                <td id="25"></td>
+                <td id="26"></td>
+                <td id="27"></td>
+                <td id="28"></td>
+                <td id="29"></td>
+                <td id="30"></td>
+            </tr>
+        </tbody>
+    </table>
+    <script>
+        var flag = 0;
+        var score = 0;
+        var attempts = 0; // Keeps track of attempts then reveals answer if > 3
+        var counter = 0;
+        var dict = {
+            1: 'hic', 2: 'haec', 3: 'hoc', 4: 'hī', 5: 'hae', 6: 'haec',
+            7: 'hunc', 8: 'hanc', 9: 'hoc', 10: 'hōs', 11: 'hās', 12: 'haec',
+            13: 'huius', 14: 'huius', 15: 'huius', 16: 'hōrum', 17: 'hārum', 18: 'hōrum',
+            19: 'huic', 20: 'huic', 21: 'huic', 22: 'hīs', 23: 'hīs', 24: 'hīs',
+            25: 'hōc', 26: 'hāc', 27: 'hōc', 28: 'hīs', 29: 'hīs', 30: 'hīs'
+        };
+
+        for (var i = 1; i < 31; i++) {
+            var element = document.createElement("input");
+            element.setAttribute("style", "width:95%;");
+            element.setAttribute("type", "text"); // Ensure input type is text
+            var tempID = document.getElementById(i);
+            tempID.appendChild(element);
+            tempID.querySelector("input").addEventListener("keydown", keydownFunc);
+        }
+
+        function keydownFunc(event) {
+            var x = event.keyCode || event.which;
+            if (x === 13 && flag === 0) { // 13 is the Enter key
+                event.preventDefault(); // Prevent default action of "Enter" key
+                var path = event.target.parentElement.id; // id of input
+                var value = event.target.value.toLowerCase();
+                inscipitVocabulum(path, value, event.target);
+            }
+        }
+
+        function inscipitVocabulum(path, value, target) {
+    if (value === dict[path] && flag === 0) {
+        target.value = value;
+        target.parentElement.style.backgroundColor = '#7FFF00';
+        target.style.textAlign = 'center';
+        if (flag === 0) {
+            score += 1;
+            document.getElementById('response').innerHTML = getIncite() + getSmiley() + ' ' + score;
+            attempts = 0;
+        }
+        var p = plenus();
+        if (!p) {
+            document.getElementById('response').innerHTML = '😍<-6ft->😎 CONFECTUS!👏🥵🙌';
+            flag = 1;
+        }
+        try {
+            var nextInput = target.parentElement.nextElementSibling.querySelector("input");
+            if (nextInput) nextInput.focus();
+        } catch (error) {
+            console.log(error);
+        }
+        setTimeout(clearFields, 1500, target);
+    } else if (value === "") {
+        document.getElementById("response").innerHTML = "Scribe responsum in campō ⬉";
+        target.value = "";
+    } else {
+        attempts += 1;
+        target.style.backgroundColor = 'red';
+        target.style.textDecoration = "line-through";
+        document.getElementById('response').innerHTML = '🔱 Minime..conare iterum';
+        score -= 1;
+        blink(target);
+        setTimeout(clearFields, 1000, target);
+        if (attempts === 3 && flag === 0) {
+            target.style.textDecoration = 'none';
+            attempts = 0;
+            document.getElementById("response").innerHTML = "Responsio ➵ " + dict[path];
+            setTimeout(clearFields, 2000, target);
+        }
+    }
+}
+
+        function clearFields(target) {
+            target.style.textDecoration = 'none';
+            target.value = '';
+            target.style.backgroundColor = 'white';
+            document.getElementById('response').innerHTML = 'Declinatitō!😤' + ' ' + score;
+        }
+
+        function blink(target) {
+            setTimeout(() => {
+                target.style.display = (target.style.display === 'none' ? '' : 'none');
+            }, 200);
+            setTimeout(() => {
+                target.style.display = (target.style.display === 'none' ? '' : 'none');
+            }, 300);
+        }
+
+        function plenus() {
+            var arr = [];
+            for (let i = 1; i < 31; i++) {
+                arr.push(document.getElementById(i).style.backgroundColor === 'rgb(127, 255, 0)');
+            }
+            return arr.includes(false);
+        }
+
+        function getIncite() {
+            var incites = ['Age!', 'Bene factum!', 'BENE!', 'Macte virtute!', 'Perge!', 'Optime!', 'Recte!'];
+            return incites[Math.floor(Math.random() * incites.length)];
+        }
+
+        function getSmiley() {
+            var smileys = [' 😍', ' 😅', ' 😎', ' 😈', ' 😂', ' 😃', ' 😆', ' 😏'];
+            return smileys[Math.floor(Math.random() * smileys.length)];
+        }
+    </script>
+    <center>
+        <div id="response" style="color:black;font-size:20px;text-align:center;">
+            Declinatitō! 😤
+        </div>
+    </center>
+</body>
+</html>
