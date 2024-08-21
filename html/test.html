@@ -123,7 +123,8 @@ for (var i = 1; i < 31; i++) {
 }
 
 function inputFunc(event) {
-    handleInput(event.target);
+    // Use a short delay before handling the input to allow the user to finish typing
+    setTimeout(() => handleInput(event.target), 300);
 }
 
 function handleInput(target) {
@@ -156,7 +157,7 @@ function handleCorrectAnswer(target, path) {
         document.getElementById('response').innerHTML = '😍<-6ft->😎 CONFECTUS!👏🥵🙌';
         flag = 1;
     } else {
-        setTimeout(() => focusNextInput(target), 300); // Adjusted delay for mobile
+        setTimeout(() => focusNextInput(target), 300); // Increased delay for mobile
     }
 }
 
@@ -191,7 +192,7 @@ function showCorrectAnswer(target, path) {
         target.value = dict[path];
         target.parentElement.style.backgroundColor = '#7FFF00';
         target.style.textAlign = 'center';
-        setTimeout(() => focusNextInput(target), 300); // Adjusted delay for mobile
+        setTimeout(() => focusNextInput(target), 300); // Increased delay for mobile
     }, 2000);
 }
 
@@ -208,7 +209,7 @@ function focusNextInput(target) {
     if (index > -1 && index < inputs.length - 1) {
         setTimeout(() => {
             inputs[index + 1].focus();
-        }, 300); // Adjusted delay for mobile
+        }, 300); // Increased delay for mobile
     }
 }
 
@@ -239,6 +240,7 @@ function getSmiley() {
     var smileys = [' 😍', ' 😅', ' 😎', ' 😈', ' 😂', ' 😃', ' 😆', ' 😏'];
     return smileys[Math.floor(Math.random() * smileys.length)];
 }
+
 
     </script>
     <center>
