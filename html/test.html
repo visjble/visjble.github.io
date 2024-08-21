@@ -165,7 +165,7 @@ function handleCorrectAnswer(target, path) {
         document.getElementById('response').innerHTML = '😍<-6ft->😎 CONFECTUS!👏🥵🙌';
         flag = 1;
     } else {
-        setTimeout(() => focusNextInput(target), 300); // Increased delay for mobile
+        setTimeout(() => focusNextInput(target), 1500); // Increased delay for mobile
     }
 }
 
@@ -201,7 +201,7 @@ function showCorrectAnswer(target, path) {
         target.parentElement.style.backgroundColor = '#7FFF00';
         target.style.textAlign = 'center';
         setTimeout(() => focusNextInput(target), 300); // Increased delay for mobile
-    }, 2000);
+    }, 3000);
 }
 
 function clearFields(target) {
@@ -217,17 +217,17 @@ function focusNextInput(target) {
     if (index > -1 && index < inputs.length - 1) {
         setTimeout(() => {
             inputs[index + 1].focus();
-        }, 300); // Increased delay for mobile
+        }, 1000); // Increased delay for mobile
     }
 }
 
 function blink(target) {
     setTimeout(() => {
         target.style.display = (target.style.display === 'none' ? '' : 'none');
-    }, 200);
+    }, 400);
     setTimeout(() => {
         target.style.display = (target.style.display === 'none' ? '' : 'none');
-    }, 300);
+    }, 800);
 }
 
 function plenus() {
