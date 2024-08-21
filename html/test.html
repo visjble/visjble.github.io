@@ -101,7 +101,7 @@
         </tbody>
     </table>
     <script>
-       var flag = 0;
+      var flag = 0;
 var score = 0;
 var attempts = 0; // Keeps track of attempts then reveals answer if > 3
 var dict = {
@@ -119,22 +119,11 @@ for (var i = 1; i < 31; i++) {
     element.setAttribute("type", "text");
     var tempID = document.getElementById(i);
     tempID.appendChild(element);
-    element.addEventListener("keydown", keydownFunc);
     element.addEventListener("input", inputFunc);
 }
 
-function keydownFunc(event) {
-    if (event.key === "Enter") {
-        event.preventDefault(); // Prevent default action of "Enter" key
-        handleInput(event.target);
-    }
-}
-
 function inputFunc(event) {
-    if (event.inputType === "insertCompositionText") {
-        // This event is fired when IME composition is finished (common in mobile devices)
-        handleInput(event.target);
-    }
+    handleInput(event.target);
 }
 
 function handleInput(target) {
@@ -167,7 +156,7 @@ function handleCorrectAnswer(target, path) {
         document.getElementById('response').innerHTML = '😍<-6ft->😎 CONFECTUS!👏🥵🙌';
         flag = 1;
     } else {
-        setTimeout(() => focusNextInput(target), 100);
+        setTimeout(() => focusNextInput(target), 300); // Adjusted delay for mobile
     }
 }
 
@@ -202,7 +191,7 @@ function showCorrectAnswer(target, path) {
         target.value = dict[path];
         target.parentElement.style.backgroundColor = '#7FFF00';
         target.style.textAlign = 'center';
-        setTimeout(() => focusNextInput(target), 100);
+        setTimeout(() => focusNextInput(target), 300); // Adjusted delay for mobile
     }, 2000);
 }
 
@@ -217,7 +206,9 @@ function focusNextInput(target) {
     var inputs = document.querySelectorAll('input');
     var index = Array.from(inputs).indexOf(target);
     if (index > -1 && index < inputs.length - 1) {
-        inputs[index + 1].focus();
+        setTimeout(() => {
+            inputs[index + 1].focus();
+        }, 300); // Adjusted delay for mobile
     }
 }
 
@@ -248,6 +239,7 @@ function getSmiley() {
     var smileys = [' 😍', ' 😅', ' 😎', ' 😈', ' 😂', ' 😃', ' 😆', ' 😏'];
     return smileys[Math.floor(Math.random() * smileys.length)];
 }
+
     </script>
     <center>
         <div id="response" style="color:black;font-size:20px;text-align:center;">
