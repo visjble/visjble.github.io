@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Attic Greek Declension Guessing Game</title>
+    <style>
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 10px;
+    background-color: #f4f4f4;
+}
+
+#game-container {
+    max-width: 100%;
+    padding: 10px;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+input[type="text"] {
+    width: 100%;
+    padding: 8px;
+    margin-bottom: 8px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+}
+
+#instruction, #result, #score {
+    margin-bottom: 10px;
+    font-size: 14px;
+}
+
+#instruction {
+    font-weight: bold;
+}
+
+#result {
+    color: #333;
+}
+
+#score {
+    font-weight: bold;
+    color: #28a745;
+}
+
+input[type="text"]:disabled {
+    background-color: #f8f9fa;
+    color: #6c757d;
+}
+
+input[type="text"].correct {
+    background-color: #d4edda;
+}
+
+input[type="text"].incorrect {
+    background-color: #f8d7da;
+}
+    .red-text {
+color: red;
+}
+    </style>
+</head>
+<body>
+<div id="game-container">
+    <div id="instruction">Μάντευσον τοὺς τύπους:</div>
+    <div id="result">Εἴσαγε τοὺς Ἑλληνικοὺς τύπους:</div>
+    <input type="text" id="word1" placeholder="αʹ πρόσωπον ἑνικοῦ">
+    <input type="text" id="word2" placeholder="βʹ πρόσωπον ἑνικοῦ" disabled>
+    <input type="text" id="word3" placeholder="γʹ πρόσωπον ἑνικοῦ" disabled>
+    <div id="details"></div>
+    <div id="score">Ὀρθά: 0 | Ἡμαρτημένα: 0</div>
+</div>
+
+    <script>
+const dict = {
+    1: 'ἔχω', 2: 'ἔχεις', 3: 'ἔχει', 4: 'ἔχομεν', 5: 'ἔχετε', 6: 'ἔχουσι(ν)',
+    7: 'εἶχον', 8: 'εἶχες', 9: 'εἶχε(ν)', 10: 'εἴχομεν', 11: 'εἴχετε', 12: 'εἶχον',
+    13: 'ἕξω', 14: 'ἕξεις', 15: 'ἕξει', 16: 'ἕξομεν', 17: 'ἕξετε', 18: 'ἕξουσι(ν)',
+    19: 'ἔσχον', 20: 'ἔσχες', 21: 'ἔσχε(ν)', 22: 'ἔσχομεν', 23: 'ἔσχετε', 24: 'ἔσχον',
+    25: 'ἔσχηκα', 26: 'ἔσχηκας', 27: 'ἔσχηκε(ν)', 28: 'ἐσχήκαμεν', 29: 'ἐσχήκατε', 30: 'ἐσχήκασι(ν)',
+    31: 'ἐσχήκειν', 32: 'ἐσχήκεις', 33: 'ἐσχήκει', 34: 'ἐσχήκεμεν', 35: 'ἐσχήκετε', 36: 'ἐσχήκεσαν'
+};
+
+const tenses = ['Ἐνεστώς', 'Παρατατικός', 'Μέλλων', 'Ἀόριστος', 'Παρακείμενος', 'Ὑπερσυντέλικος'];
+const numbers = ['ἑνικός', 'πληθυντικός'];
+
+let currentCaseIndex = 0;
+let currentNumberIndex = 0;
+let rightCount = 0;
+let wrongCount = 0;
+let tries = [0, 0, 0];
+
+const instructionDiv = document.getElementById("instruction");
+const resultDiv = document.getElementById("result");
+const scoreDiv = document.getElementById("score");
+const detailsDiv = document.getElementById("details");
+
+const wordInputs = [
+    document.getElementById("word1"),
+    document.getElementById("word2"),
+    document.getElementById("word3"),
+];
+
+function updateInstruction() {
+    const currentCase = tenses[currentCaseIndex];
+    const currentNumber = numbers[currentNumberIndex];
+    instructionDiv.innerHTML = `Μάντευσον τοὺς τύπους τῆς <span class="red-text">${currentCase}</span> <span class="red-text">${currentNumber}</span>:`;
+
+    wordInputs.forEach((input, index) => {
+        const greekOrdinals = ['πρῶτον', 'δεύτερον', 'τρίτον'];
+        input.placeholder = `${greekOrdinals[index]} πρόσωπον`;
+    });
+    tries = [0, 0, 0];
+}
+
+function checkIndividualAnswer(inputIndex) {
+    const userGuess = wordInputs[inputIndex].value.trim();
+    const dictIndex = currentCaseIndex * 6 + currentNumberIndex * 3 + inputIndex + 1;
+    const correctWord = dict[dictIndex];
+
+    if (userGuess === correctWord) {
+        wordInputs[inputIndex].style.backgroundColor = '#d4edda';
+        rightCount++;
+        resultDiv.textContent = 'Ὀρθῶς! Πίεσον τὸ "Εἴσοδος" διὰ τὴν ἑπομένην λέξιν.';
+        moveToNextInput(inputIndex);
+    } else {
+        tries[inputIndex]++;
+        if (tries[inputIndex] < 2) {
+            wordInputs[inputIndex].style.backgroundColor = '#f8d7da';
+            resultDiv.textContent = `Οὐκ ὀρθῶς. Πειρῶ αὖθις. Πειράματα λοιπά: ${2 - tries[inputIndex]}.`;
+        } else if (tries[inputIndex] === 2) {
+            wordInputs[inputIndex].style.backgroundColor = '#f8d7da';
+            resultDiv.textContent = `Οὐκ ὀρθῶς. Ὁ ὀρθὸς τύπος ἐστὶ "${correctWord}". Γράψον αὐτὸν ἵνα συνεχίσῃς.`;
+        } else {
+            if (userGuess === correctWord) {
+                wordInputs[inputIndex].style.backgroundColor = '#d4edda';
+                resultDiv.textContent = 'Ὀρθῶς! Πίεσον τὸ "Εἴσοδος" διὰ τὴν ἑπομένην λέξιν.';
+                moveToNextInput(inputIndex);
+            } else {
+                resultDiv.textContent = `Οὐκ ὀρθῶς. Ὁ ὀρθὸς τύπος ἐστὶ "${correctWord}". Γράψον αὐτὸν ἀκριβῶς ἵνα συνεχίσῃς.`;
+            }
+        }
+        wrongCount++;
+    }
+
+    updateScore();
+}
+
+function moveToNextInput(inputIndex) {
+    if (inputIndex < wordInputs.length - 1) {
+        wordInputs[inputIndex].disabled = true;
+        wordInputs[inputIndex + 1].disabled = false;
+        wordInputs[inputIndex + 1].focus();
+    } else {
+        finishSet();
+    }
+}
+
+function finishSet() {
+    currentNumberIndex++;
+    if (currentNumberIndex >= numbers.length) {
+        currentNumberIndex = 0;
+        currentCaseIndex++;
+    }
+    
+    if (currentCaseIndex < tenses.length) {
+        resultDiv.textContent = 'Μεταβαίνομεν εἰς τὴν ἑπομένην ὁμάδα τύπων.';
+        setTimeout(() => {
+            resetInputs();
+            updateInstruction();
+        }, 1500);
+    } else {
+        endGame();
+    }
+}
+
+function resetInputs() {
+    wordInputs.forEach((input, index) => {
+        input.value = '';
+        input.style.backgroundColor = '';
+        input.disabled = index !== 0;
+    });
+    wordInputs[0].focus();
+}
+
+function endGame() {
+    resultDiv.textContent = 'Τέλος τοῦ παιγνίου! Πάσας τὰς πτώσεις ἐτελείωσας.';
+    wordInputs.forEach(input => input.disabled = true);
+}
+
+function updateScore() {
+    scoreDiv.textContent = `Ὀρθά: ${rightCount} | Ἡμαρτημένα: ${wrongCount}`;
+}
+
+wordInputs.forEach((input, index) => {
+    input.addEventListener("keypress", (e) => {
+        if (e.key === "Enter") {
+            e.preventDefault();
+            if (input.value.trim() !== '') {
+                checkIndividualAnswer(index);
+            }
+        }
+    });
+});
+
+// Initialize the game
+updateInstruction();
+resetInputs();
+    </script>
+</body>
+</html>
