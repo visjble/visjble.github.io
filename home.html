@@ -63,10 +63,26 @@
             height: auto;
             object-fit: contain;
         }
-        a {
-            margin-bottom: 10px;
+
+        .emoji-link {
+            font-size: 2em; /* Larger font size for emojis */
+            text-decoration: none; /* Remove underline */
         }
-        
+
+        .text-link {
+            text-decoration: none; /* Remove underline */
+            font-size: 1em; /* Standard font size for text links */
+            margin-bottom: 10px; /* Space between text links */
+        }
+
+        .emoji-container {
+            display: flex; /* Align emojis side by side */
+            align-items: center; /* Center vertically */
+        }
+
+        .emoji-container a {
+            margin-left: 10px; /* Space between emojis */
+        }
     </style>
 </head>
 <body>
@@ -76,13 +92,16 @@
             <div class="columns">
                 <div class="column">
                     <h4>ΓΡΑΜΜΑΤΙΚΗ</h4>
-                    <a href="html/ἔχω_κλίσεις.html">ἔχω κλίσεις</a>
-                  
+                    ἔχω κλίσεις 
+                    <div class="emoji-container">
+                        <a href="html/ἔχω_κλίσεις.html" class="emoji-link">🖥️</a>
+                        <a href="html/εχω_κλισεισ_τ.html" class="emoji-link">📱</a>
+                    </div>
                 </div>
                 <div class="column">
                     <h4>ΠΑΙΔΙΑ</h4>
-                    <a href="games/ΙΣΟΔΥΝΑΜΟΙ.html">ΙΣΟΔΥΝΑΜΟΙ</a>
-                    <a href="games/ΑΝΤΙΘΕΤΑ.html">ΑΝΤΙΘΕΤΑ</a>
+                    <a href="games/ΙΣΟΔΥΝΑΜΟΙ.html" class="text-link">ΙΣΟΔΥΝΑΜΟΙ</a>
+                    <a href="games/ΑΝΤΙΘΕΤΑ.html" class="text-link">ΑΝΤΙΘΕΤΑ</a>
                 </div>
             </div>
         </div>
