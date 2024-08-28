@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="el">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Παιδιὰ κλίσεως· οὐδείς</title>
+    <style>
+        body {
+            font-family: 'Times New Roman', serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            background-color: #f0f0f0;
+        }
+        #game-container {
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+        #instruction, #result, #score {
+            margin-bottom: 20px;
+        }
+        input[type="text"] {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        button {
+            display: block;
+            width: 100%;
+            padding: 10px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+                .back-link {
+            font-size: 32px; /* Adjust size as needed */
+            text-decoration: none; /* Remove underline */
+            color: #000; /* Set color if needed */
+        }
+    </style>
+</head>
+<body>
+    <div id="game-container">
+        <h1>Παιδιὰ κλίσεως· οὐδείς</h1>
+        <div id="instruction"></div>
+        <input type="text" id="answer" placeholder="Εἴσαγε τὸν τύπον ἐνταῦθα">
+        <button onclick="checkAnswer()">Ὑπόβαλε</button>
+        <div id="result"></div>
+        <div id="score"></div>
+    </div>
+
+    <script>
+        const declension = {
+            masculine: {
+                nominative: "οὐδείς",
+                genitive: "οὐδενός",
+                dative: "οὐδενί",
+                accusative: "οὐδένα"
+            },
+            feminine: {
+                nominative: "οὐδεμία",
+                genitive: "οὐδεμιᾶς",
+                dative: "οὐδεμιᾷ",
+                accusative: "οὐδεμίαν"
+            },
+            neuter: {
+                nominative: "οὐδέν",
+                genitive: "οὐδενός",
+                dative: "οὐδενί",
+                accusative: "οὐδέν"
+            }
+        };
+
+        const genders = ["masculine", "feminine", "neuter"];
+        const cases = ["nominative", "genitive", "dative", "accusative"];
+
+        let currentGender, currentCase, correct = 0, incorrect = 0;
+
+        function newQuestion() {
+            currentGender = genders[Math.floor(Math.random() * genders.length)];
+            currentCase = cases[Math.floor(Math.random() * cases.length)];
+            
+            const genderNames = {
+                masculine: "τῷ ἀρσενικῷ",
+                feminine: "τῷ θηλυκῷ",
+                neuter: "τῷ οὐδετέρῳ"
+            };
+            
+            const caseNames = {
+                nominative: "τῇ ὀνομαστικῇ",
+                genitive: "τῇ γενικῇ",
+                dative: "τῇ δοτικῇ",
+                accusative: "τῇ αἰτιατικῇ"
+            };
+
+            document.getElementById('instruction').textContent = 
+                `Δός μοι τὸν τύπον τοῦ 'οὐδεὶς' ἐν ${genderNames[currentGender]} γένει, ${caseNames[currentCase]} πτώσει:`;
+            document.getElementById('answer').value = '';
+            document.getElementById('result').textContent = '';
+        }
+
+        function checkAnswer() {
+            const userAnswer = document.getElementById('answer').value.trim();
+            const correctAnswer = declension[currentGender][currentCase];
+
+            if (userAnswer === correctAnswer) {
+                document.getElementById('result').textContent = "Ὀρθῶς!";
+                correct++;
+            } else {
+                document.getElementById('result').textContent = `Ἡμάρτηκας. Ὁ ὀρθὸς τύπος ἐστί· ${correctAnswer}`;
+                incorrect++;
+            }
+
+            updateScore();
+            setTimeout(newQuestion, 2000);
+        }
+
+        function updateScore() {
+            document.getElementById('score').textContent = `Ὀρθά· ${correct} | Ἡμαρτημένα· ${incorrect}`;
+        }
+
+        newQuestion();
+    </script>
+    <center>
+                <div class="back-button">
+            <a href="javascript:history.back()" class="back-link">👈</a>
+        </div>
+    </center>
+</body>
+</html>
