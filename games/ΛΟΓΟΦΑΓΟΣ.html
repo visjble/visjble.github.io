@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Attic Greek Pac-Man Game</title>
+   <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #000;
+            overflow: hidden;
+        }
+        #game {
+            position: relative;
+            width: 90vmin;
+            height: 90vmin;
+            max-width: 600px;
+            max-height: 600px;
+            background-color: #222;
+            border: 1px solid #fff;
+            overflow: hidden;
+            display: grid;
+            grid-template-columns: repeat(10, 1fr);
+            grid-template-rows: repeat(10, 1fr);
+        }
+        .grid-cell {
+            border: 1px solid #444;
+            box-sizing: border-box;
+        }
+        .pacman-container {
+            width: 10%;
+            height: 10%;
+            background-color: blue;
+            border-color: none;
+            position: absolute;
+            border-radius: 50%;
+            transition: all 0.1s linear;
+        }
+.pacman {
+    width: 100%;
+    height: 100%;
+    background-color: #222;
+    border-radius: 50%;
+    clip-path: polygon(50% 50%, 100% 0%, 100% 100%);
+    position: relative;
+    border: none; /* Remove the border entirely */
+}
+        @keyframes chomp {
+            0%, 100% { clip-path: polygon(50% 50%, 100% 0%, 100% 100%); }
+            50% { clip-path: polygon(50% 50%, 100% 50%, 100% 50%); }
+        }
+        .pacman.moving {
+            animation: chomp 0.3s linear infinite;
+        }
+        #words div {
+            position: absolute;
+            color: #030a25;
+            font-size: 13px;
+            text-align: center;
+            width: 10%;
+            height: 10%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            pointer-events: none;
+        }
+        #timer {
+            position: absolute;
+            top: calc(50% - 10px); /* 40px above the center (assuming Pac-Man is 40px tall) */
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 10;
+            color: white;
+            font-size: 12px;
+            text-align: center;
+            background-color: rgba(0, 0, 0, 0.5);
+            padding: 5px 10px;
+            border-radius: 5px;
+        }
+        #score {
+            position: absolute;
+            top: calc(50% + 43px); /* 40px is the height of Pac-Man */
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 10;
+            color: white;
+            font-size: 20px;
+            text-align: center;
+            background-color: rgba(0, 0, 0, 0.5);
+            padding: 5px 10px;
+            border-radius: 5px;
+        }
+        .controls {
+            position: fixed;
+            bottom: 20px;
+            width: 100%;
+            display: flex;
+            justify-content: center;
+        }
+        .controls button {
+            background: #333;
+            color: #fff;
+            border: none;
+            width: 60px;
+            height: 60px;
+            margin: 5px;
+            border-radius: 30px;
+            font-size: 24px;
+            cursor: pointer;
+        }
+        .controls button:active {
+            background: #555;
+        }
+    </style>
+</head>
+<body>
+<div id="game">
+        <!-- Grid cells will be added here by JavaScript -->
+        <div class="pacman-container">
+            <div class="pacman"></div>
+        </div>
+        <div id="words"></div>
+    <div id="timer">0:00</div>
+        <div id="score">0</div>
+    </div>
+    <div class="controls">
+        <button id="up">↑</button>
+        <button id="left">←</button>
+        <button id="right">→</button>
+        <button id="down">↓</button>
+    </div>
+<script>
+
+    let startTime;
+    let timerInterval;
+    let isTimerStarted = false;
+
+    function updateTimer() {
+        const currentTime = new Date().getTime();
+        const elapsedTime = Math.floor((currentTime - startTime) / 1000); // in seconds
+        const minutes = Math.floor(elapsedTime / 60);
+        const seconds = elapsedTime % 60;
+        document.getElementById('timer').textContent = `${minutes}:${seconds.toString().padStart(2, '0')}`;
+    }
+    function startTimerIfNotStarted() {
+        if (!isTimerStarted) {
+            startTime = new Date().getTime();
+            timerInterval = setInterval(updateTimer, 1000);
+            isTimerStarted = true;
+        }
+    }
+    function handleMovement(dx, dy) {
+        startTimerIfNotStarted();
+        movePacman(dx, dy);
+    }
+    function createGrid() {
+        const game = document.getElementById('game');
+        for (let i = 0; i < 100; i++) {
+            const cell = document.createElement('div');
+            cell.classList.add('grid-cell');
+            game.appendChild(cell);
+        }
+    }
+
+document.addEventListener('DOMContentLoaded', () => {
+    createGrid();
+    
+    const game = document.getElementById('game');
+    const pacmanContainer = document.querySelector('.pacman-container');
+    const pacman = document.querySelector('.pacman');
+    const wordsContainer = document.getElementById('words');
+    const scoreDisplay = document.getElementById('score');
+    const controls = {
+        up: document.getElementById('up'),
+        down: document.getElementById('down'),
+        left: document.getElementById('left'),
+        right: document.getElementById('right')
+    };
+    let score = 0;
+    const atticGreekNumbers = ['Εἷς', 'Δύο', 'Τρεῖς', 'Τέτταρες', 'Πέντε', 'Ἕξ', 'Ἑπτά', 'Ὀκτώ', 'Ἐννέα', 'Δέκα', 'Ἑνδεκά', 'Δωδέκα'];
+
+    let pacmanX = game.offsetWidth / 2 - 30;
+    let pacmanY = game.offsetHeight / 2 - 30;
+    pacmanContainer.style.left = `${pacmanX}px`;
+    pacmanContainer.style.top = `${pacmanY}px`;
+    let currentWordIndex = 0;
+
+ 
+function createWords() {
+    const positions = [
+        { left: '20%', top: '0%' }, { left: '45%', top: '0%' }, { left: '70%', top: '0%' },
+        { left: '88.5%', top: '20%' }, { left: '88.5%', top: '45%' }, { left: '88.5%', top: '70%' },
+        { left: '70%', top: '88.5%' }, { left: '45%', top: '88.5%' }, { left: '20%', top: '88.5%' },
+        { left: '0%', top: '70%' }, { left: '0%', top: '45%' }, { left: '0%', top: '20%' }
+    ];
+
+    // Shuffle only the positions, not the words
+    const shuffledPositions = [...positions].sort(() => Math.random() - 0.5);
+
+    atticGreekNumbers.forEach((word, index) => {
+        const wordDiv = document.createElement('div');
+        wordDiv.textContent = word;
+        wordDiv.dataset.index = index;
+        wordDiv.dataset.wrongCollision = 'false';
+
+        const pos = shuffledPositions[index];
+        wordDiv.style.left = pos.left;
+        wordDiv.style.top = pos.top;
+
+        wordDiv.style.position = 'absolute';
+        
+        wordDiv.style.padding = '5px';
+        wordDiv.style.borderRadius = '5px';
+        wordDiv.style.backgroundColor = 'rgba(255, 255, 255, 0.7)';
+        wordDiv.style.textAlign = 'center';
+
+        wordsContainer.appendChild(wordDiv);
+    });
+}
+function movePacman(dx, dy) {
+    const game = document.getElementById('game');
+    const pacmanContainer = document.querySelector('.pacman-container');
+    
+    // Get the current position
+    let pacmanX = parseFloat(pacmanContainer.style.left) || 0;
+    let pacmanY = parseFloat(pacmanContainer.style.top) || 0;
+
+    // Update the position
+    pacmanX += dx;
+    pacmanY += dy;
+
+    // Get the size of Pac-Man and the game container
+    const pacmanSize = pacmanContainer.offsetWidth;
+    const gameWidth = game.offsetWidth;
+    const gameHeight = game.offsetHeight;
+
+    // Ensure Pac-Man stays within the boundaries
+    pacmanX = Math.max(0, Math.min(gameWidth - pacmanSize, pacmanX));
+    pacmanY = Math.max(0, Math.min(gameHeight - pacmanSize, pacmanY));
+
+    // Update Pac-Man's position
+    pacmanContainer.style.left = `${pacmanX}px`;
+    pacmanContainer.style.top = `${pacmanY}px`;
+
+    // Update Pac-Man's rotation based on direction
+    const pacman = pacmanContainer.querySelector('.pacman');
+    if (dx > 0) pacman.style.transform = 'rotate(0deg)';
+    else if (dx < 0) pacman.style.transform = 'rotate(180deg)';
+    else if (dy > 0) pacman.style.transform = 'rotate(90deg)';
+    else if (dy < 0) pacman.style.transform = 'rotate(-90deg)';
+
+    // Add or remove the 'moving' class for animation
+    if (dx !== 0 || dy !== 0) {
+        pacman.classList.add('moving');
+    } else {
+        pacman.classList.remove('moving');
+    }
+
+    checkCollisions();
+}
+
+    let gameEnded = false; // Add this flag to track if the game has ended
+
+    function checkCollisions() {
+        const words = document.querySelectorAll('#words div');
+        const pacmanRect = pacmanContainer.getBoundingClientRect();
+    
+        words.forEach(word => {
+            if (word.style.display === 'none') return; // Skip already collected words
+    
+            const wordRect = word.getBoundingClientRect();
+    
+            if (
+                pacmanRect.left < wordRect.right &&
+                pacmanRect.right > wordRect.left &&
+                pacmanRect.top < wordRect.bottom &&
+                pacmanRect.bottom > wordRect.top
+            ) {
+                const wordIndex = parseInt(word.dataset.index);
+    
+                if (wordIndex === currentWordIndex) {
+                    // Correct word
+                    word.style.display = 'none';
+                    currentWordIndex++;
+                    score++;
+                    console.log(`Collected word: ${atticGreekNumbers[wordIndex]}, New score: ${score}`);
+                } else if (word.dataset.wrongCollision !== 'true') {
+                    // Wrong word (first collision)
+                    score--;
+                    word.dataset.wrongCollision = 'true';
+                    console.log(`Wrong word collision: ${atticGreekNumbers[wordIndex]}, Expected: ${atticGreekNumbers[currentWordIndex]}, New score: ${score}`);
+                }
+    
+                scoreDisplay.textContent = `Score: ${score}`;
+            }
+        });
+    
+if (currentWordIndex >= atticGreekNumbers.length && !gameEnded) {
+    gameEnded = true;
+    // End timer
+    clearInterval(timerInterval);
+    
+    // Hide Pac-Man
+    const pacmanContainer = document.querySelector('.pacman-container');
+    if (pacmanContainer) {
+        pacmanContainer.style.display = 'none';
+    }
+    
+    // Hide timer
+    const timerElement = document.getElementById('timer');
+    if (timerElement) {
+        timerElement.style.display = 'none';
+    }
+    
+    // Update score display
+    const scoreDisplay = document.getElementById('score');
+    if (scoreDisplay) {
+        // Clear existing content
+        scoreDisplay.innerHTML = '';
+    
+        // Create and append final score text
+        const finalScoreText = document.createElement('div');
+        finalScoreText.textContent = `Final Score: ${score}`;
+        finalScoreText.style.fontSize = '28px';
+        finalScoreText.style.fontWeight = 'bold';
+        finalScoreText.style.marginBottom = '20px';
+        scoreDisplay.appendChild(finalScoreText);
+    
+        // Create and append Play Again button
+        const playAgainButton = document.createElement('button');
+        playAgainButton.textContent = 'Play Again';
+        playAgainButton.style.fontSize = '20px';
+        playAgainButton.style.padding = '10px 20px';
+        playAgainButton.style.cursor = 'pointer';
+        playAgainButton.style.backgroundColor = '#4CAF50';
+        playAgainButton.style.color = 'white';
+        playAgainButton.style.border = 'none';
+        playAgainButton.style.borderRadius = '5px';
+        playAgainButton.onclick = () => location.reload();
+        scoreDisplay.appendChild(playAgainButton);
+    
+        // Adjust score display container styles
+        scoreDisplay.style.display = 'flex';
+        scoreDisplay.style.flexDirection = 'column';
+        scoreDisplay.style.alignItems = 'center';
+        scoreDisplay.style.justifyContent = 'center';
+        scoreDisplay.style.backgroundColor = 'rgba(0, 0, 0, 0.7)';
+        scoreDisplay.style.padding = '20px';
+        scoreDisplay.style.borderRadius = '10px';
+    }
+    
+    console.log("Game completed!");
+    // setTimeout(() => {
+    //     alert(`You Win! Final Score: ${score}`);
+    // }, 100);
+} else if (!gameEnded) {
+    console.log(`Current word index: ${currentWordIndex}, Next word: ${atticGreekNumbers[currentWordIndex]}`);
+}
+    }
+
+    function handleMovement(dx, dy) {
+        startTimerIfNotStarted();
+        movePacman(dx, dy);
+    }
+
+    document.addEventListener('keydown', (e) => {
+        switch (e.key) {
+            case 'ArrowUp': handleMovement(0, -10); break;
+            case 'ArrowDown': handleMovement(0, 10); break;
+            case 'ArrowLeft': handleMovement(-10, 0); break;
+            case 'ArrowRight': handleMovement(10, 0); break;
+        }
+    });
+
+    controls.up.addEventListener('click', () => handleMovement(0, -10));
+    controls.down.addEventListener('click', () => handleMovement(0, 10));
+    controls.left.addEventListener('click', () => handleMovement(-10, 0));
+    controls.right.addEventListener('click', () => handleMovement(10, 0));
+
+    createWords();
+});
+</script>
+
+
+
+</body>
+</html>
