@@ -1,0 +1,323 @@
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ΛΕΧΕΙΣ Α</title>
+    <link rel="stylesheet" href="https://unpkg.com/swiper/swiper-bundle.min.css" />
+<!-- Google Fonts -->
+<style>
+    @import url('https://fonts.googleapis.com/css2?family=GFS+Didot&display=swap');
+    
+    .gfs-didot-regular {
+      font-family: "GFS Didot", serif;
+      font-weight: 400;
+      font-style: normal;
+    }
+    
+    body {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
+      font-family: "GFS Didot", serif;
+    }
+    
+    .navigation {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-wrap: wrap;
+        background-color: #1c3446;
+        padding: 10px 0;
+        width: 100%;
+      }
+
+      .navigation button {
+        margin: 3px;
+        font-family: "GFS Didot", serif;
+        font-size: 16px;
+        background-color: #007aff;
+        border: none;
+        color: white;
+        padding: 6px 10px;
+        border-radius: 5px;
+        cursor: pointer;
+      }
+
+      .swiper-container {
+        width: 100%;
+        max-width: 85vw;
+        height: 65vh;
+        margin-top: 10px;
+        margin-bottom: 10px;
+      }
+
+      .swiper-slide {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        text-align: center;
+        font-size: 60px;
+        color: #fff;
+        background: #007aff;
+        height: 100%;
+        width: 100%;
+        border-radius: 15px;
+        box-sizing: border-box;
+        padding: 15px;
+        font-family: "GFS Didot", serif;
+      }
+
+      .swiper-pagination {
+        margin-top: 10px;
+      }
+
+      @media screen and (max-width: 600px) {
+        .navigation button {
+          font-size: 18px;
+          padding: 5px 8px;
+        }
+
+        .swiper-container {
+          max-width: 90vw;
+          height: 60vh;
+        }
+
+        .swiper-slide {
+          font-size: 24px;
+          padding: 10px;
+        }
+      }
+        .swiper-container {
+          max-width: 95vw;
+          height: auto;
+         height: 95vh; /* Adjust height for medium screens */
+        }
+
+        .swiper-slide {
+          font-size: 32px;
+          padding: 8px;
+        }
+      }
+    </style>
+</head>
+<body>
+    <div class="navigation">
+        <!-- Navigation buttons will be dynamically added here -->
+    </div>
+    <div class="info-container">
+        <span id="timer">Time: 00:00</span>
+        <span id="countdown">Cards Left: 0</span>
+    </div>    
+    <div class="swiper-container">
+        <div class="swiper-wrapper">
+            <!-- Slides will be dynamically added here -->
+        </div>
+    </div>
+
+    <script src="https://unpkg.com/swiper/swiper-bundle.min.js"></script>
+    <script>
+    const flashcards = {
+        "ΛΕΞΕΙΣ Α --Ἀσπασμοὶ": "φρασεις",
+      "χαῖρε": "salve",
+      "χαίρετε": "salvete",
+      "ὦ φίλε !": "o amice!",
+      "ὦ φίλη!": "o amica!",
+      "ὦ Ἄργε!": "o Arge!",
+      "χαῖρε καὶ σύ!": "salve et tu!",
+      "καὶ σύ γε!": "et tu quidem!",
+      "πῶς ἔχεις;": "quomodo te habes?",
+      "καλῶς": "bene",
+      "μετρίως": "mediocriter",
+      "κακῶς": "male",
+      "τί πάσχεις;": "quid pateris?",
+      "κάμνω": "aegroto",
+      "ἀλγῶ τὴν κεφαλήν": "dolet mihi caput",
+      "ἀλγῶ τὴν γαστέρα": "dolet mihi venter",
+      "κατάρρῳ νοσῶ": "catarrho laboro",
+      "οὐδὲν πάσχω, ἀλλ' ὑγιαίνω.": "nihil patior, sed valeo.",
+      "νὴ τὸν Δία!": "per Iovem!",
+      "ναί. μάλιστα. (repeat the verb + ) δή": "ita maxime.",
+      "οὐδαμῶς. οὐ (+ repeat the verb )": "minime.",
+      "εἰ δοκεῖ. ἀντιβολῶ. παρακαλῶ (Koine)": "si videtur. obsecro.",
+      "χάριν σοι ἔχω": "gratias tibi ago",
+      "χάριν ὑμῖν ἔχω": "gratias vobis ago",
+      "συγγνώμην ἔχε / ἔχετε!": "ignosce / ignoscite!",
+      "σύγγνωθι! / σύγγνωτε!": "parce! / parcite!",
+      "χαῖρε! / χαίρετε!": "vale! / valete!",
+      "ἔρρωσο! / ἔρρωσθε": "vale! / valete!",
+      "χαίρειν κελεύειν τινί": "salutem dicere alicui",
+
+        "ΛΕΞΕΙΣ Α --ὄνομα": "φρασεις",
+        
+      "τί ὄνομά σοί ἐστιν;": "quod nomen tibi est?",
+      "ὄνομά μοι Ἑλένη ἐστίν,": "nomen mihi Helena est,",
+      "ἀλλ' oἱ ἐμοὶ φίλοι καλοῦσί με…": "sed amici mei vocant me...",
+      "τί ὄμομά ἐστι...": "quod nomen est...",
+      "τῷ φίλῳ;": "amico?",
+      "τῇ φίλῃ;": "amicae?",
+      "τῇ γυναικί;": "uxori?",
+      "τῷ ἀνδρί;": "viro?",
+      "τῷ παιδί;": "puero?",
+      "τῇ παιδί;": "puellae?",
+      "τῷ κυνί;": "cani?",
+      "τῇ κυνί;": "cani?",
+      "ὄνομα αὐτῷ ἐστίν...": "nomen ei est...",
+      "ὄνομα αὐτῇ ἐστίν...": "nomen ei est...",
+
+          "ΛΕΞΕΙΣ Α --ποῦ οἰκει": "φρασεις",
+        
+      "ποῦ οἰκεῖς;": "ubi habitas?",
+      "οἰκῶ…": "habito...",
+      "ἐν ταῖς Ἀθήναις": "Athenis",
+      "ἐν τῇ Ἑλλάδι": "in Graecia",
+      "ἐν τῇ 'Ρώμῃ": "Romae",
+      "ἐν τῇ Ἰταλίᾳ": "in Italia",
+      "ἐν τῇ Εὐρώπῃ": "in Europa",
+      "ἐν τῇ Ἀσίᾳ": "in Asia",
+      "ἐν τῇ Λιβύῃ": "in Africa",
+      "ἐν τῇ Ἀμερικῇ": "in America",
+      "ἐν τῇ Αὐστραλίᾳ": "in Australia",
+      "ἐν τῇ πόλει": "in urbe",
+      "ἐν κώμηῃ": "in vico",
+      "ἐν τοῖς ἀγροῖς": "ruri",
+      "ἐν νήσῳ": "in insula",
+      "ἆρα ἔχεις οἶκον;": "num domum habes?",
+      "ναί, μέγιστον ἔχω οἶκον.": "ita, maximam habeo domum.",
+      "οὐκ, ἀλλὰ τελῶ ἐνοίκιον.": "non, sed mercedem solvo.",
+
+        "ΛΕΞΕΙΣ Α --γένονας": "φρασεις",
+        
+      "πόσα ἔτη γέγονας;": "quot annos natus es?",
+      "ποσῶν ἐτῶν εἶ;": "quot annorum es?",
+      "γέγονα εἴκοσι ἔτη.": "viginti annos natus sum.",
+      "εἴμι εἴκοσι ἐτῶν.": "viginti annorum sum.",
+      "εἴμι ἐγγὺς πεντήκοντα ἐτῶν.": "prope quinquaginta annos natus sum.",
+      "τοῦτο οὐδέν ἐστι πρὸς σέ.": "hoc nihil ad te pertinet.",
+      "πόσα ἔτη γέγονεν ἡ θυγἀτηρ σου;": "quot annos nata est filia tua?",
+      "γέγονε πέντε ἔτη.": "quinque annos nata est.",
+      "ἔστι πέντε ἐτῶν.": "quinque annorum est.",
+      "τὸ βρέφος": "infans",
+      "τὸ παιδίον": "puerulus/puellula",
+      "ὁ/ἡ παῖς": "puer/puella",
+      "τὸ μειράκιον / τὸ κοράσιον": "adulescentulus/adulescentula",
+      "ὁ νεανίσκος /ἡ νεᾶνις": "iuvenis",
+      "ὁ ἀνήρ/ἡ γυνή": "vir/mulier",
+      "ἡ πρέσβυς/ἡ πρεσβῦτις": "senex/anus",
+      "ὁ γέρων / ἡ γραῦς": "senex/anus",
+
+        "ΛΕΞΕΙΣ Α --τεχνόν": "φρασεις",
+        
+      "τίνα ἔχεις τέχνην;": "quam artem exerces?",
+      "εἰμι": "sum",
+      "διδάσκαλος": "magister",
+      "μαθητής": "discipulus",
+      "μαθήτρια": "discipula",
+      "ἰατρός": "medicus",
+      "μάγειρος": "coquus",
+      "μαγείρισσα": "coqua",
+      "οἰκονόμος": "dispensator",
+      "μουσικός": "musicus",
+      "πολιτικός": "politicus",
+      "φιλόσοφος": "philosophus",
+      "ἀρχιτέκτων": "architectus",
+      "στρατιώτης": "miles",
+      "ἐργάζεσθαι": "laborare",
+      "ζωγράφος": "pictor"
+    };
+
+
+ // keep track of time and count
+        const timerElement = document.getElementById('timer');
+        const countdownElement = document.getElementById('countdown');
+        let startTime;
+        let timerInterval;
+        
+        function startTimer() {
+          startTime = Date.now();
+          timerInterval = setInterval(updateTimer, 1000);
+        }
+        
+        function updateTimer() {
+          const elapsedTime = Date.now() - startTime;
+          const minutes = Math.floor(elapsedTime / 60000);
+          const seconds = Math.floor((elapsedTime % 60000) / 1000);
+          const formattedTime = `${padZero(minutes)}:${padZero(seconds)}`;
+          timerElement.textContent = `Time: ${formattedTime}`;
+        }
+        
+        function padZero(number) {
+          return number.toString().padStart(2, '0');
+        }
+        
+        function updateCountdown() {
+          const remainingCards = Math.floor((entries.length - swiper.activeIndex) / 2);
+          countdownElement.textContent = `Cards Left: ${remainingCards}`;
+        }
+        
+        // Convert flashcards object into an array
+        let entries = Object.entries(flashcards);
+
+        // Create an object to store the sections and their corresponding indices
+        let sections = {};
+        let currentSection = '';
+
+        entries.forEach(([key, value], index) => {
+            if (key.startsWith('ΛΕΞΕΙΣ')) {
+                currentSection = key;
+                sections[currentSection] = index;
+            }
+        });
+
+        const swiperWrapper = document.querySelector('.swiper-wrapper');
+
+        entries.forEach(([key, value], index) => {
+            const slideKey = document.createElement('div');
+            slideKey.className = 'swiper-slide';
+            slideKey.textContent = key;
+            slideKey.style.backgroundColor = '#007aff';
+
+         const slideValue = document.createElement('div');
+            slideValue.className = 'swiper-slide';
+            slideValue.textContent = value;
+            slideValue.style.backgroundColor = '#B19CD9';
+
+            swiperWrapper.appendChild(slideKey);
+            swiperWrapper.appendChild(slideValue);
+        });
+
+        const swiper = new Swiper('.swiper-container', {
+            on: {
+                slideChange: function () {
+                    updateCountdown();
+                },
+            },
+        });
+
+        const navigation = document.querySelector('.navigation');
+        let buttons = '';
+
+        Object.keys(sections).forEach((section) => {
+            const sectionName = section.replace(/^.*--/, '').trim();
+            buttons += `<button data-section="${section}">${sectionName}</button>`;
+        });
+
+        navigation.innerHTML = buttons;
+
+        document.querySelectorAll('.navigation button').forEach((button) => {
+            button.addEventListener('click', (event) => {
+                const section = event.target.getAttribute('data-section');
+                const slideIndex = sections[section] * 2;
+                swiper.slideTo(slideIndex);
+            });
+        });
+
+        startTimer();
+        updateCountdown();
+    </script>
+</body>
+</html>
