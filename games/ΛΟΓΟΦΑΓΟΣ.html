@@ -143,6 +143,7 @@
     let startTime;
     let timerInterval;
     let isTimerStarted = false;
+    let movementInterval;
 
     function updateTimer() {
         const currentTime = new Date().getTime();
@@ -304,68 +305,81 @@ function movePacman(dx, dy) {
             }
         });
     
-if (currentWordIndex >= atticGreekNumbers.length && !gameEnded) {
-    gameEnded = true;
-    // End timer
-    clearInterval(timerInterval);
-    
-    // Hide Pac-Man
-    const pacmanContainer = document.querySelector('.pacman-container');
-    if (pacmanContainer) {
-        pacmanContainer.style.display = 'none';
+        if (currentWordIndex >= atticGreekNumbers.length && !gameEnded) {
+            gameEnded = true;
+            // End timer
+            clearInterval(timerInterval);
+            
+            // Hide Pac-Man
+            const pacmanContainer = document.querySelector('.pacman-container');
+            if (pacmanContainer) {
+                pacmanContainer.style.display = 'none';
+            }
+            
+            // Hide timer
+            const timerElement = document.getElementById('timer');
+            if (timerElement) {
+                timerElement.style.display = 'none';
+            }
+            
+            // Update score display
+            const scoreDisplay = document.getElementById('score');
+            if (scoreDisplay) {
+                // Clear existing content
+                scoreDisplay.innerHTML = '';
+            
+                // Create and append final score text
+                const finalScoreText = document.createElement('div');
+                finalScoreText.textContent = `ἀποτέλεσμα: ${score}`;
+                finalScoreText.style.fontSize = '28px';
+                finalScoreText.style.fontWeight = 'bold';
+                finalScoreText.style.marginBottom = '20px';
+                scoreDisplay.appendChild(finalScoreText);
+            
+                // Create and append Play Again button
+                const playAgainButton = document.createElement('button');
+                playAgainButton.textContent = 'πάλιν παῖζε';
+                playAgainButton.style.fontSize = '20px';
+                playAgainButton.style.padding = '10px 20px';
+                playAgainButton.style.cursor = 'pointer';
+                playAgainButton.style.backgroundColor = '#4CAF50';
+                playAgainButton.style.color = 'white';
+                playAgainButton.style.border = 'none';
+                playAgainButton.style.borderRadius = '5px';
+                playAgainButton.onclick = () => location.reload();
+                scoreDisplay.appendChild(playAgainButton);
+            
+                // Adjust score display container styles
+                scoreDisplay.style.display = 'flex';
+                scoreDisplay.style.flexDirection = 'column';
+                scoreDisplay.style.alignItems = 'center';
+                scoreDisplay.style.justifyContent = 'center';
+                scoreDisplay.style.backgroundColor = 'rgba(0, 0, 0, 0.7)';
+                scoreDisplay.style.padding = '20px';
+                scoreDisplay.style.borderRadius = '10px';
+            }
+            
+            console.log("Game completed!");
+            // setTimeout(() => {
+            //     alert(`You Win! Final Score: ${score}`);
+            // }, 100);
+        } else if (!gameEnded) {
+            console.log(`Current word index: ${currentWordIndex}, Next word: ${atticGreekNumbers[currentWordIndex]}`);
+        }
     }
-    
-    // Hide timer
-    const timerElement = document.getElementById('timer');
-    if (timerElement) {
-        timerElement.style.display = 'none';
-    }
-    
-    // Update score display
-    const scoreDisplay = document.getElementById('score');
-    if (scoreDisplay) {
-        // Clear existing content
-        scoreDisplay.innerHTML = '';
-    
-        // Create and append final score text
-        const finalScoreText = document.createElement('div');
-        finalScoreText.textContent = `ἀποτέλεσμα: ${score}`;
-        finalScoreText.style.fontSize = '28px';
-        finalScoreText.style.fontWeight = 'bold';
-        finalScoreText.style.marginBottom = '20px';
-        scoreDisplay.appendChild(finalScoreText);
-    
-        // Create and append Play Again button
-        const playAgainButton = document.createElement('button');
-        playAgainButton.textContent = 'πάλιν παῖζε';
-        playAgainButton.style.fontSize = '20px';
-        playAgainButton.style.padding = '10px 20px';
-        playAgainButton.style.cursor = 'pointer';
-        playAgainButton.style.backgroundColor = '#4CAF50';
-        playAgainButton.style.color = 'white';
-        playAgainButton.style.border = 'none';
-        playAgainButton.style.borderRadius = '5px';
-        playAgainButton.onclick = () => location.reload();
-        scoreDisplay.appendChild(playAgainButton);
-    
-        // Adjust score display container styles
-        scoreDisplay.style.display = 'flex';
-        scoreDisplay.style.flexDirection = 'column';
-        scoreDisplay.style.alignItems = 'center';
-        scoreDisplay.style.justifyContent = 'center';
-        scoreDisplay.style.backgroundColor = 'rgba(0, 0, 0, 0.7)';
-        scoreDisplay.style.padding = '20px';
-        scoreDisplay.style.borderRadius = '10px';
-    }
-    
-    console.log("Game completed!");
-    // setTimeout(() => {
-    //     alert(`You Win! Final Score: ${score}`);
-    // }, 100);
-} else if (!gameEnded) {
-    console.log(`Current word index: ${currentWordIndex}, Next word: ${atticGreekNumbers[currentWordIndex]}`);
+let movementInterval;
+
+function startMovement(dx, dy) {
+    if (movementInterval) return; // Prevent multiple intervals
+    movementInterval = setInterval(() => {
+        handleMovement(dx, dy);
+    }, 100); // Moves every 100ms
 }
-    }
+
+function stopMovement() {
+    clearInterval(movementInterval);
+    movementInterval = null;
+}
 
     function handleMovement(dx, dy) {
         startTimerIfNotStarted();
@@ -381,10 +395,16 @@ if (currentWordIndex >= atticGreekNumbers.length && !gameEnded) {
         }
     });
 
-    controls.up.addEventListener('click', () => handleMovement(0, -10));
-    controls.down.addEventListener('click', () => handleMovement(0, 10));
-    controls.left.addEventListener('click', () => handleMovement(-10, 0));
-    controls.right.addEventListener('click', () => handleMovement(10, 0));
+controls.up.addEventListener('touchstart', () => startMovement(0, -10));
+controls.down.addEventListener('touchstart', () => startMovement(0, 10));
+controls.left.addEventListener('touchstart', () => startMovement(-10, 0));
+controls.right.addEventListener('touchstart', () => startMovement(10, 0));
+
+controls.up.addEventListener('touchend', stopMovement);
+controls.down.addEventListener('touchend', stopMovement);
+controls.left.addEventListener('touchend', stopMovement);
+controls.right.addEventListener('touchend', stopMovement);
+
 
     createWords();
 });
