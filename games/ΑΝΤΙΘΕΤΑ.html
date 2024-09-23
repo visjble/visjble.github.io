@@ -5,103 +5,104 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Ἀσκήσεις Ἑλληνικαί</title>
 
-       <style>
-			@import url('https://fonts.googleapis.com/css2?family=GFS+Didot&display=swap'); .gfs-didot-regular {
-			font-family: "GFS Didot", serif;
-			font-weight: 400;
-			font-style: normal;
-            }
+<style>
+	@import url('https://fonts.googleapis.com/css2?family=GFS+Didot&display=swap'); 
+	.gfs-didot-regular {
+		font-family: "GFS Didot", serif;
+		font-weight: 400;
+		font-style: normal;
+	}
 
-        body {
-	        font-family: "GFS Didot", serif;
-            background-color: #f4f4f4;
-            color: #333;
-            margin: 0;
-            padding: 0;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            /* justify-content: center; */
-            height: 100vh;
-			
-        }
-        
-        #memory_board {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            grid-gap: 5px;
-            background: #1abc9c;
-            border: 2px solid #16a085;
-            border-radius: 12px;
-            width: 95%;
-            max-width: 400px;
-            padding: 5px;
-        }
+	body {
+		font-family: "GFS Didot", serif;
+		background-color: #ffffff; /* Set background to white for contrast */
+		color: #000000; /* Make the text black */
+		margin: 0;
+		padding: 0;
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		justify-content: center;
+		height: 100vh;
+	}
 
-        #memory_board div {
-            background: #1fae92;
-            border: 2px solid #333;
-            border-radius: 8px;
-            height: 60px;
-            font-size: clamp(44px, 7vw, 44px);
-            text-align: center;
-            line-height: 1.2;
-            cursor: pointer;
-            color: #fff;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            word-wrap: break-word;
-            padding: 2px;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
+	#memory_board {
+		display: grid;
+		grid-template-columns: repeat(2, 1fr);
+		grid-gap: 2px; /* Minimal grid gap */
+		background: #000000; /* Black background */
+		border: 1px solid #000000; /* Black border */
+		border-radius: 12px;
+		width: 95%;
+		max-width: 400px;
+		padding: 2px; /* Minimal padding */
+	}
 
-        @media (max-width: 480px) {
-            #memory_board {
-                grid-gap: 5px;
-                padding: 5px;
-            }
+	#memory_board div {
+		background: #333333; /* Darker background */
+		border: 1px solid #000000; /* Black border */
+		border-radius: 8px;
+		height: 80px;
+		font-size: clamp(20px, 8vw, 50px); /* Maximize font size */
+		text-align: center;
+		line-height: 1.2;
+		cursor: pointer;
+		color: #000000; /* Black text */
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		word-wrap: break-word;
+		padding: 1px; /* Minimal padding */
+		overflow: hidden;
+		text-overflow: ellipsis;
+	}
 
-            #memory_board div {
-                height: 60px;
-                font-size: clamp(10px, 4.5vw, 18px);
-                padding: 3px;
-            }
-        }
+	@media (max-width: 480px) {
+		#memory_board {
+			grid-gap: 2px; /* Minimal grid gap */
+			padding: 2px; /* Minimal padding */
+		}
 
-        @media (min-width: 481px) and (max-width: 767px) {
-            #memory_board div {
-                height: 65px;
-                font-size: clamp(12px, 4.5vw, 22px);
-            }
-        }
+		#memory_board div {
+			height: 60px;
+			font-size: clamp(16px, 6vw, 40px); /* Maximize font size for smaller screens */
+			padding: 1px; /* Minimal padding */
+		}
+	}
 
-        @media (min-width: 768px) {
-            #memory_board div {
-                height: 60px;
-                font-size: clamp(16px, 3.5vw, 26px);
-                padding: 10px;
-            }
-        }
+	@media (min-width: 481px) and (max-width: 767px) {
+		#memory_board div {
+			height: 65px;
+			font-size: clamp(18px, 6vw, 45px); /* Maximize font size for medium screens */
+		}
+	}
 
-        #memory_board div:active {
-            background-color: #1115ff;
-        }
+	@media (min-width: 768px) {
+		#memory_board div {
+			height: 100px;
+			font-size: clamp(22px, 6vw, 55px); /* Maximize font size for larger screens */
+			padding: 2px; /* Minimal padding */
+		}
+	}
 
-        #response {
-            color: #333;
-            font-size: 20px;
-            margin-top: 10px;
-            text-align: center;
-        }
+	#memory_board div:active {
+		background-color: #f0f0f0; /* Lighter color on active */
+	}
 
-        #score {
-            color: #007bff;
-            font-size: 40px;
-            margin-top: 10px;
-        }
-    </style>
+	#response {
+		color: #000000; /* Black text */
+		font-size: clamp(18px, 3vw, 30px); /* Larger response text */
+		margin-top: 10px;
+		text-align: center;
+	}
+
+	#score {
+		color: #000000; /* Black text */
+		font-size: clamp(20px, 3vw, 35px); /* Larger score text */
+		margin-top: 10px;
+	}
+</style>
+
 </head>
 <body>
 	<h3>λέξεις ἀντίθετα </h3>
