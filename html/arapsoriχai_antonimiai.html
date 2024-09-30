@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ἀναφορικαὶ ἀντωνυμίαι</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=GFS+Didot&display=swap'); 
+        .gfs-didot-regular {
+			font-family: "GFS Didot", serif;
+			font-weight: 400;
+			font-style: normal;
+            }
+
+        body {
+	        font-family: "GFS Didot", serif;
+            margin: 0;
+            padding: 10px;
+            background-color: #f4f4f4;
+        }
+
+        #game-container {
+            max-width: 100%;
+            padding: 10px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        input[type="text"] {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 8px;
+            font-size: 16px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+
+        #instruction, #result, #score {
+            margin-bottom: 10px;
+            font-size: 14px;
+        }
+
+        #instruction {
+            font-weight: bold;
+        }
+
+        #result {
+            color: #333;
+        }
+
+        #score {
+            font-weight: bold;
+            color: #28a745;
+        }
+
+        input[type="text"]:disabled {
+            background-color: #f8f9fa;
+            color: #6c757d;
+        }
+
+        input[type="text"].correct {
+            background-color: #d4edda;
+        }
+
+        input[type="text"].incorrect {
+            background-color: #f8d7da;
+        }
+    </style>
+</head>
+<body>
+<div id="game-container">
+    <b><i style="font-size: 30px; margin: 0;">Ἀναφορικαὶ ἀντωνυμίαι</i><br>
+    <hr>
+    <div id="result">Εἴσαγε τοὺς Ἑλληνικοὺς τύπους:</div>
+
+    <div id="input-container"></div>
+
+    <div id="score">Ὀρθά: 0 | Ἡμαρτημένα: 0</div>
+</div>
+
+<script>
+const dict = {
+    singular: {
+        masculine: {
+            nom: 'ὅς',
+            gen: 'οὗ',
+            dat: 'ᾧ',
+            acc: 'ὅν'  
+        },
+        feminine: {
+            nom: 'ἥ',
+            gen: 'ἧς',
+            dat: 'ᾗ',
+            acc: 'ἥν'  
+        },
+        neuter: {
+            nom: 'ὅ',
+            gen: 'οὗ',
+            dat: 'ᾧ',
+            acc: 'ὅ'
+        }
+    },
+    plural: {
+        masculine: {
+            nom: 'οἵ',
+            gen: 'ὧν',
+            dat: 'οἷς',
+            acc: 'οὕς'
+        },
+        feminine: {
+            nom: 'αἵ',
+            gen: 'ὧν',
+            dat: 'αἷς',
+            acc: 'ἅς'
+        },
+        neuter: {
+            nom: 'ἅ',
+            gen: 'ὧν',
+            dat: 'οἷς',
+            acc: 'ἅ'
+        }
+    },
+    dual: {
+        masculine: {
+            nom: 'ὧ',
+            acc: 'ὧ',
+            gen: 'οἷν',
+            dat: 'οἷν'
+        },
+        feminine: {
+            nom: 'ὧ',
+            acc: 'ὧ',
+            gen: 'οἷν',
+            dat: 'οἷν'
+        },
+        neuter: {
+            nom: 'ὧ',
+            acc: 'ὧ',
+            gen: 'οἷν',
+            dat: 'οἷν'
+        }
+    }
+};
+
+let rightCount = 0;
+let wrongCount = 0;
+let currentGenderIndex = 0;
+let currentNumberIndex = 0;
+const attempts = [0, 0, 0, 0]; // Track attempts for each input
+const genders = ['masculine', 'feminine', 'neuter'];
+const numbers = ['singular', 'plural', 'dual']; // Adding dual to the game progression
+
+const resultDiv = document.getElementById("result");
+const scoreDiv = document.getElementById("score");
+const inputContainer = document.getElementById("input-container");
+
+function createInputFields() {
+    inputContainer.innerHTML = ''; // Clear previous inputs
+
+    const gender = genders[currentGenderIndex];
+    const number = numbers[currentNumberIndex];
+
+    // Dynamically set the header based on number and gender
+    inputContainer.innerHTML = `
+        <h3>${number === 'singular' ? 'Ἐνικός' : number === 'plural' ? 'Πληθυντικός' : 'Δυικός'} ${gender === 'masculine' ? 'Ἀρσενικός' : gender === 'feminine' ? 'Θηλυκός' : 'Οὐδέτερος'}</h3>
+        <input type="text" id="${gender}_${number}_nom" placeholder="Ονομαστική">
+        <input type="text" id="${gender}_${number}_gen" placeholder="Γενική" ${number === 'dual' ? '' : 'disabled'}>
+        <input type="text" id="${gender}_${number}_dat" placeholder="Δοτική" ${number === 'dual' ? '' : 'disabled'}>
+        <input type="text" id="${gender}_${number}_acc" placeholder="Αιτιατική" ${number === 'dual' ? '' : 'disabled'}>
+    `;
+
+    enableFirstInput();
+}
+
+function enableFirstInput() {
+    const inputs = inputContainer.querySelectorAll('input[type="text"]');
+    inputs[0].disabled = false;
+    inputs[0].focus();
+}
+
+function checkIndividualAnswer(inputIndex) {
+    const inputs = inputContainer.querySelectorAll('input[type="text"]');
+    const userGuess = inputs[inputIndex].value.trim();
+
+    // Map the inputIndex to grammatical case
+    const cases = ['nom', 'gen', 'dat', 'acc'];
+    const gender = genders[currentGenderIndex];
+    const number = numbers[currentNumberIndex]; // Get the current number (singular, plural, dual)
+    const grammaticalCase = cases[inputIndex];
+
+    // Retrieve the correct word from the dictionary
+    const correctWord = dict[number][gender][grammaticalCase];
+
+    console.log("User Input: ", userGuess);
+    console.log("Correct Word: ", correctWord);
+
+    if (userGuess.normalize("NFC") === correctWord.normalize("NFC")) {
+        inputs[inputIndex].classList.add('correct');
+        rightCount++;
+        resultDiv.textContent = 'Ὀρθῶς!';
+        moveToNextInput(inputIndex);
+    } else {
+        attempts[inputIndex]++;
+        inputs[inputIndex].classList.add('incorrect');
+        wrongCount++;
+
+        if (attempts[inputIndex] >= 3) {
+            inputs[inputIndex].value = ''; // Clear the input field
+            resultDiv.textContent = `Οὐκ ὀρθῶς. Τὸ σωστὸν ἐστι: "${correctWord}". Παρακαλῶ, πληκτρολόγησον τὸ ὀρθὸν τύπον.`;
+            inputs[inputIndex].focus();
+            attempts[inputIndex] = 0; // Reset attempts after showing the correct word
+        } else {
+            resultDiv.textContent = `Οὐκ ὀρθῶς. Προσπαθήστε ξανά.`;
+        }
+    }
+
+    updateScore();
+}
+
+function moveToNextInput(inputIndex) {
+    const inputs = inputContainer.querySelectorAll('input[type="text"]');
+
+    if (inputIndex < 3) {
+        // Move to the next input field
+        inputs[inputIndex].disabled = true;
+        inputs[inputIndex + 1].disabled = false;
+        inputs[inputIndex + 1].focus();
+    } else {
+        // Move to the next gender or number after completing all inputs for the current set
+        currentGenderIndex++;
+        if (currentGenderIndex >= genders.length) {
+            currentGenderIndex = 0; // Reset gender index and move to the next number
+
+            // Move to the next number
+            currentNumberIndex++;
+            if (currentNumberIndex >= numbers.length) {
+                resultDiv.textContent = 'Ἐπιτυχία! Τέλος τοῦ παιχνιδιοῦ.';
+                return; // End the game if all numbers are completed
+            }
+        }
+        createInputFields(); // Create new input fields for the next set
+    }
+}
+
+function updateScore() {
+    scoreDiv.textContent = `Ὀρθά: ${rightCount} | Ἡμαρτημένα: ${wrongCount}`;
+}
+
+// Handle input submission with Enter key
+inputContainer.addEventListener("keypress", (e) => {
+    if (e.key === "Enter") {
+        e.preventDefault();
+        const activeInput = document.querySelector(`#input-container input[type="text"]:not(:disabled)`);
+        if (activeInput && activeInput.value.trim() !== '') {
+            checkIndividualAnswer(Array.from(inputContainer.querySelectorAll('input')).indexOf(activeInput));
+        }
+    }
+});
+
+// Start the game
+createInputFields();
+</script>
+
+
+
+</body>
+</html>
