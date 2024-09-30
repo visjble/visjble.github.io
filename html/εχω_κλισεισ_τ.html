@@ -5,8 +5,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Attic Greek Declension Guessing Game</title>
     <style>
-body {
-    font-family: Arial, sans-serif;
+			@import url('https://fonts.googleapis.com/css2?family=GFS+Didot&display=swap'); 
+        .gfs-didot-regular {
+			font-family: "GFS Didot", serif;
+			font-weight: 400;
+			font-style: normal;
+            }
+
+        body {
+	        font-family: "GFS Didot", serif;
     margin: 0;
     padding: 10px;
     background-color: #f4f4f4;
@@ -67,6 +74,8 @@ color: red;
 </head>
 <body>
 <div id="game-container">
+                        <b><i style="font-size: 30px; margin: 0;">ἔχω κλίσεις</i><br>
+                    <hr>
     <div id="instruction">Μάντευσον τοὺς τύπους:</div>
     <div id="result">Εἴσαγε τοὺς Ἑλληνικοὺς τύπους:</div>
     <input type="text" id="word1" placeholder="αʹ πρόσωπον ἑνικοῦ">

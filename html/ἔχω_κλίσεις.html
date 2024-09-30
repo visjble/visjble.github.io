@@ -4,7 +4,15 @@
     <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
     <meta content="width=device-width, initial-scale=1" name="viewport">
     <style>
-        body, html {
+			@import url('https://fonts.googleapis.com/css2?family=GFS+Didot&display=swap'); 
+        .gfs-didot-regular {
+			font-family: "GFS Didot", serif;
+			font-weight: 400;
+			font-style: normal;
+            }
+
+        body {
+	        font-family: "GFS Didot", serif;
             width: 99.9%;
             clear: both;
             border: 1px solid;
@@ -131,10 +139,9 @@
         </tbody>
     </table>
 <script>
-    var flag = 0;
-    var score = 0;
-    var attempts = {}; // Keeps track of attempts per field
-    var counter = 0;
+    var flag = 0; // Indicates whether the game is finished
+    var score = 0; // Keeps track of the score
+    var attempts = {}; // Tracks attempts per field
     var dict = {
         1: 'ἔχω', 2: 'ἔχεις', 3: 'ἔχει', 4: 'ἔχομεν', 5: 'ἔχετε', 6: 'ἔχουσι(ν)',
         7: 'εἶχον', 8: 'εἶχες', 9: 'εἶχε(ν)', 10: 'εἴχομεν', 11: 'εἴχετε', 12: 'εἶχον',
@@ -144,6 +151,7 @@
         31: 'ἐσχήκειν', 32: 'ἐσχήκεις', 33: 'ἐσχήκει', 34: 'ἐσχήκεμεν', 35: 'ἐσχήκετε', 36: 'ἐσχήκεσαν'
     };
 
+    // Initialize input fields
     for (var i = 1; i < 37; i++) {
         var element = document.createElement("input");
         element.setAttribute("style", "width:95%;");
@@ -165,51 +173,45 @@
     }
 
     function inscipitVocabulum(path, value, target) {
-        if (value === dict[path] && flag === 0) {
-            target.value = value;
+        // Normalize both user input and dictionary value
+        var normalizedValue = value.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+        var normalizedDictValue = dict[path].toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+
+        if (normalizedValue === normalizedDictValue && flag === 0) {
+            target.value = dict[path]; // Keep the original value with accents
             target.parentElement.style.backgroundColor = '#7FFF00';
             target.style.textAlign = 'center';
-            if (flag === 0) {
-                score += 1;
-                document.getElementById('response').innerHTML = getIncite() + getSmiley() + ' ' + score;
-                attempts[path] = 0;
-            }
-            var p = plenus();
-            if (!p) {
+            score += 1;
+            document.getElementById('response').innerHTML = getIncite() + getSmiley() + ' ' + score;
+            attempts[path] = 0; // Reset attempts after correct answer
+
+            if (!plenus()) {
                 document.getElementById('response').innerHTML = '😍<-6ft->😎 CONFECTUS!👏🥵🙌';
                 flag = 1;
-            }
-            try {
+            } else {
                 var nextInput = getNextInput(target);
                 if (nextInput) nextInput.focus();
-            } catch (error) {
-                console.log(error);
             }
-        } else if (value === "") {
-            document.getElementById("response").innerHTML = "Γράφε τὴν ἀπόκρισιν εἰς τὸ πεδίον ⬉";
-            target.focus(); // Focus back to the same field if it's empty
         } else {
             attempts[path] += 1;
-            target.style.backgroundColor = 'red';
-            target.style.textDecoration = "line-through";
-            document.getElementById('response').innerHTML = '🔱 Οὔ· πειρῶ αὖθις';
-            score -= 1;
-            blink(target);
-            if (attempts[path] >= 3 && flag === 0) {
-                target.style.textDecoration = 'none';
-                document.getElementById("response").innerHTML = "Ἀπόκρισις ➵ " + dict[path];
-                setTimeout(() => {
-                    target.value = dict[path];
-                    target.style.backgroundColor = '#7FFF00';
-                    target.style.textAlign = 'center';
-                    attempts[path] = 0;
-                    var nextInput = getNextInput(target);
-                    if (nextInput) nextInput.focus();
-                }, 2000);
-            } else {
+            if (attempts[path] < 3) {
+                target.style.backgroundColor = 'red';
+                target.style.textDecoration = "line-through";
+                document.getElementById('response').innerHTML = '🔱 Οὔ· πειρῶ αὖθις';
+                score -= 1;
+                blink(target);
                 setTimeout(() => {
                     clearFields(target);
-                    target.focus(); // Focus back to the same field if the entry is wrong
+                    target.focus(); // Stay on the same field
+                }, 1000);
+            } else {
+                // On the third attempt, reveal the correct answer and let the user type it
+                target.value = '';
+                document.getElementById("response").innerHTML = "Ἀπόκρισις ➵ " + dict[path];
+                setTimeout(() => {
+                    target.focus(); // Stay on the same field
+                    target.style.backgroundColor = 'white';
+                    document.getElementById('response').innerHTML = "Τώρα γράφε τὴν ἀπάντησιν!";
                 }, 1000);
             }
         }
