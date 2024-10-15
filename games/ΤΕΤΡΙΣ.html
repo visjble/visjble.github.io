@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Attic Greek Conjugation Game</title>
+  <style>
+    body {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+      background-color: #f0f0f0;
+      font-family: Arial, sans-serif;
+    }
+
+    #game-container {
+      position: relative;
+      width: 80vw;
+      height: 80vh;
+      background-color: #333;
+      overflow: hidden;
+      border-radius: 10px;
+      background-image:
+        linear-gradient(to right, rgba(255, 255, 255, 0.1) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(255, 255, 255, 0.1) 1px, transparent 1px);
+      background-size: 20px 20px;
+    }
+    .falling-word {
+      position: absolute;
+      font-size: 24px;
+      color: white;
+      text-align: center;
+      padding: 10px;
+      background-color: rgba(255, 255, 255, 0.2);
+      border-radius: 5px;
+    }
+
+    .sections {
+      display: flex;
+      justify-content: space-around;
+      position: absolute;
+      bottom: 0;
+      width: 100%;
+    }
+
+    .section {
+      width: 18%;
+      text-align: center;
+      color: white;
+      border-radius: 5px 5px 0 0;
+      cursor: pointer;
+      height: 50px;
+      line-height: 50px;
+    }
+
+    .first { background-color: #e74c3c; }
+    .second { background-color: #3498db; }
+    .third { background-color: #2ecc71; }
+
+    #score {
+      position: absolute;
+      top: 10px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 24px;
+      color: white;
+    }
+
+    @keyframes flash-correct {
+      0% { background-color: #2ecc71; }
+      100% { background-color: #333; }
+    }
+
+    @keyframes flash-wrong {
+      0% { background-color: #e74c3c; }
+      100% { background-color: #333; }
+    }
+
+    .flash-correct { animation: flash-correct 0.3s ease-in-out; }
+    .flash-wrong { animation: flash-wrong 0.3s ease-in-out; }
+  </style>
+</head>
+<body>
+
+<div id="game-container">
+  <div id="score">Score: 0</div>
+
+  <div class="sections">
+    <div class="section first">α´</div>
+    <div class="section second">β´</div>
+    <div class="section third">γ´</div>
+  </div>
+</div>
+
+<script>
+const gameContainer = document.getElementById('game-container');
+const sections = document.querySelectorAll('.section');
+const scoreDisplay = document.getElementById('score');
+
+let score = 0;
+let fallingWord;
+  // Add this at the beginning of your script
+let remainingWords = {};
+  let endGameMessage = null;
+
+  function removeEndGameMessage() {
+  if (endGameMessage && endGameMessage.parentNode) {
+    endGameMessage.parentNode.removeChild(endGameMessage);
+  }
+  endGameMessage = null;
+}
+function initializeGame() {
+  remainingWords = JSON.parse(JSON.stringify(atticGreekDictionary));
+  score = 0;
+  updateScore(0);
+  removeEndGameMessage();
+  spawnWord();
+}
+
+
+const atticGreekDictionary = {
+  firstDeclension: { 
+    feminine: ['χώρα', 'νίκη', 'θάλαττα', 'γλῶττα'], 
+    masculine: ['νεανίας', 'ποιητής', 'κριτής']
+  },
+  secondDeclension: { 
+    masculine: ['λόγος', 'ἵππος', 'ἄνθρωπος'], 
+    feminine: ['ὁδός', 'νῆσος'],
+    neuter: ['δῶρον', 'ἔργον', 'τέκνον']
+  },
+  thirdDeclension: { 
+    masculine: ['γέρων', 'ῥήτωρ', 'ἡγεμών', 'πατήρ', 'Σωκράτης', 'κόραξ'], 
+    feminine: ['πόλις', 'ἐλπίς', 'χάρις', 'μήτηρ', 'γαστήρ'], 
+    neuter: ['σῶμα', 'ἧπαρ', 'γένος', 'κέρας', 'δέος']
+  }
+};
+
+function updateScore(points) {
+  score += points;
+  scoreDisplay.textContent = `εἰκοσάς: ${score}`;
+}
+
+function getRandomWord() {
+  const availableDeclensions = Object.keys(remainingWords).filter(declension => 
+    Object.values(remainingWords[declension]).some(words => words.length > 0)
+  );
+
+  if (availableDeclensions.length === 0) {
+    endGame();
+    return null;
+  }
+
+  const randomDeclension = availableDeclensions[Math.floor(Math.random() * availableDeclensions.length)];
+  const categories = Object.keys(remainingWords[randomDeclension]).filter(category => 
+    remainingWords[randomDeclension][category].length > 0
+  );
+  const randomCategory = categories[Math.floor(Math.random() * categories.length)];
+  const wordIndex = Math.floor(Math.random() * remainingWords[randomDeclension][randomCategory].length);
+  const word = remainingWords[randomDeclension][randomCategory][wordIndex];
+  
+  // Remove the used word
+  remainingWords[randomDeclension][randomCategory].splice(wordIndex, 1);
+  
+  return { word, declension: randomDeclension };
+}
+
+function randomFromArray(arr) {
+  return arr[Math.floor(Math.random() * arr.length)];
+}
+
+function spawnWord() {
+  const wordData = getRandomWord();
+  if (!wordData) return; // Game has ended
+
+  fallingWord = document.createElement('div');
+  fallingWord.classList.add('falling-word');
+  fallingWord.textContent = wordData.word;
+  fallingWord.dataset.declension = wordData.declension;
+
+  gameContainer.appendChild(fallingWord);
+
+  const wordWidth = fallingWord.offsetWidth;
+  const maxLeft = gameContainer.clientWidth - wordWidth;
+  fallingWord.style.left = `${Math.random() * maxLeft}px`;
+  fallingWord.style.top = '0px';
+
+  moveWord(fallingWord);
+}
+function moveWord(wordElement) {
+      let position = 0;
+      const fallSpeed = 50;
+      const containerHeight = gameContainer.clientHeight;
+      const wordHeight = wordElement.offsetHeight;
+
+      const interval = setInterval(() => {
+        position += 2;
+        wordElement.style.top = `${position}px`;
+
+        if (position >= containerHeight - wordHeight) {
+          clearInterval(interval);
+          checkIfCorrect(wordElement);
+        }
+      }, fallSpeed);
+
+      // Store the interval ID on the word element
+      wordElement.fallInterval = interval;
+    }
+
+function quickDrop() {
+      if (!fallingWord) return;
+      
+      // Clear the existing fall interval
+      clearInterval(fallingWord.fallInterval);
+
+      const containerHeight = gameContainer.clientHeight;
+      const wordHeight = fallingWord.offsetHeight;
+      
+      // Set the word's position to the bottom
+      fallingWord.style.top = `${containerHeight - wordHeight}px`;
+      
+      // Check if correct after a short delay to allow for animation
+      setTimeout(() => checkIfCorrect(fallingWord), 50);
+    }
+function checkIfCorrect(wordElement) {
+  const wordDeclension = wordElement.dataset.declension;
+  const wordRect = wordElement.getBoundingClientRect();
+  const wordCenterX = wordRect.left + wordRect.width / 2;
+  let isCorrect = false;
+
+  const declensionMap = {
+    'firstDeclension': 'α´Declension',
+    'secondDeclension': 'β´Declension',
+    'thirdDeclension': 'γ´Declension'
+  };
+
+  const greekDeclension = declensionMap[wordDeclension] || wordDeclension;
+
+  sections.forEach((section, index) => {
+    const sectionRect = section.getBoundingClientRect();
+    const sectionDeclension = `${['α´', 'β´', 'γ´'][index]}Declension`;
+    if (wordCenterX >= sectionRect.left && wordCenterX <= sectionRect.right) {
+      if (sectionDeclension === greekDeclension) {
+        updateScore(10);
+        isCorrect = true;
+      } else {
+        updateScore(-5);
+        flashDeclension(greekDeclension.replace('Declension', '')); // Flash the Greek numeral
+      }
+    }
+  });
+
+  flashScreen(isCorrect ? 'correct' : 'wrong');
+  gameContainer.removeChild(wordElement);
+  spawnWord();
+}
+function flashDeclension(correctDeclension) {
+  const flashMessage = document.createElement('div');
+  flashMessage.textContent = correctDeclension.replace('Declension', '');
+  flashMessage.style.position = 'absolute';
+  flashMessage.style.top = '50%';
+  flashMessage.style.left = '50%';
+  flashMessage.style.transform = 'translate(-50%, -50%)';
+  flashMessage.style.fontSize = '100px';
+  flashMessage.style.color = 'white';
+  flashMessage.style.textShadow = '2px 2px 4px rgba(0,0,0,0.5)';
+  flashMessage.style.zIndex = '1000';
+  flashMessage.style.opacity = '0';
+  flashMessage.style.transition = 'opacity 0.3s ease-in-out';
+
+  gameContainer.appendChild(flashMessage);
+
+  // Fade in
+  setTimeout(() => {
+    flashMessage.style.opacity = '1';
+  }, 0);
+
+  // Fade out and remove
+  setTimeout(() => {
+    flashMessage.style.opacity = '0';
+    setTimeout(() => {
+      gameContainer.removeChild(flashMessage);
+    }, 300);
+  }, 1000);
+}
+function flashScreen(result) {
+  gameContainer.classList.add(`flash-${result}`);
+  setTimeout(() => {
+    gameContainer.classList.remove(`flash-${result}`);
+  }, 300);
+}
+
+function moveLeft() {
+  if (!fallingWord) return;
+  const left = parseFloat(fallingWord.style.left) || 0;
+  const newLeft = Math.max(0, left - 5);
+  fallingWord.style.left = `${newLeft}px`;
+}
+
+function moveRight() {
+  if (!fallingWord) return;
+  const left = parseFloat(fallingWord.style.left) || 0;
+  const maxLeft = gameContainer.clientWidth - fallingWord.offsetWidth;
+  const newLeft = Math.min(maxLeft, left + 5);
+  fallingWord.style.left = `${newLeft}px`;
+}
+
+window.addEventListener('keydown', event => {
+  switch(event.key) {
+    case 'ArrowLeft':
+      moveLeft();
+      break;
+    case 'ArrowRight':
+      moveRight();
+      break;
+    case 'ArrowDown':
+      quickDrop();
+      break;
+  }
+});
+ function endGame() {
+  // Stop any ongoing animations
+  if (fallingWord && fallingWord.fallInterval) {
+    clearInterval(fallingWord.fallInterval);
+  }
+
+  // Remove the falling word if it exists
+  if (fallingWord && fallingWord.parentNode === gameContainer) {
+    gameContainer.removeChild(fallingWord);
+}
+
+  // Remove any existing end game message
+  removeEndGameMessage();
+
+  // Create and display the final score and offer to restart
+  endGameMessage = document.createElement('div');
+  endGameMessage.style.position = 'absolute';
+  endGameMessage.style.top = '50%';
+  endGameMessage.style.left = '50%';
+  endGameMessage.style.transform = 'translate(-50%, -50%)';
+  endGameMessage.style.textAlign = 'center';
+  endGameMessage.style.color = 'white';
+  endGameMessage.style.fontSize = '24px';
+  endGameMessage.innerHTML = `
+    Game Over!<br>
+    τελική εἰκοσάς: ${score}<br><br>
+    <button id="restartButton">ὑπερώει</button>
+  `;
+  gameContainer.appendChild(endGameMessage);
+
+  document.getElementById('restartButton').addEventListener('click', initializeGame);
+}
+
+// Modify the existing event listener to include the game initialization
+window.addEventListener('DOMContentLoaded', () => {
+  initializeGame();
+});
+</script>
+
+</body>
+</html>
