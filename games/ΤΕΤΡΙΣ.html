@@ -10,14 +10,14 @@
       padding: 0;
       height: 100%;
       font-family: Arial, sans-serif;
+      overflow: hidden;
     }
 
     #game-container {
-      position: relative;
+      position: absolute;
       width: 100%;
       height: 100%;
       background-color: #333;
-      overflow: hidden;
       display: flex;
       flex-direction: column;
     }
@@ -29,6 +29,7 @@
         linear-gradient(to right, rgba(255, 255, 255, 0.1) 1px, transparent 1px),
         linear-gradient(to bottom, rgba(255, 255, 255, 0.1) 1px, transparent 1px);
       background-size: 20px 20px;
+      overflow: hidden;
     }
 
     .falling-word {
@@ -46,6 +47,7 @@
       justify-content: space-around;
       width: 100%;
       height: 50px;
+      min-height: 50px;
     }
 
     .section {
@@ -143,6 +145,7 @@
 
 <script>
 const gameContainer = document.getElementById('game-container');
+const gameArea = document.getElementById('game-area');
 const sections = document.querySelectorAll('.section');
 const scoreDisplay = document.getElementById('score');
 const moveLeftArea = document.getElementById('move-left');
@@ -152,7 +155,6 @@ const quickDropArea = document.getElementById('quick-drop');
 let score = 0;
 let fallingWord;
 let remainingWords = {};
-let endGameMessage = null;
 
 const atticGreekDictionary = {
   firstDeclension: { 
@@ -170,13 +172,6 @@ const atticGreekDictionary = {
     neuter: ['σῶμα', 'ἧπαρ', 'γένος', 'κέρας', 'δέος']
   }
 };
-
-function removeEndGameMessage() {
-  if (endGameMessage && endGameMessage.parentNode) {
-    endGameMessage.parentNode.removeChild(endGameMessage);
-  }
-  endGameMessage = null;
-}
 
 function initializeGame() {
   remainingWords = JSON.parse(JSON.stringify(atticGreekDictionary));
@@ -223,10 +218,10 @@ function spawnWord() {
   fallingWord.textContent = wordData.word;
   fallingWord.dataset.declension = wordData.declension;
 
-  gameContainer.appendChild(fallingWord);
+  gameArea.appendChild(fallingWord);
 
   const wordWidth = fallingWord.offsetWidth;
-  const maxLeft = gameContainer.clientWidth - wordWidth;
+  const maxLeft = gameArea.clientWidth - wordWidth;
   fallingWord.style.left = `${Math.random() * maxLeft}px`;
   fallingWord.style.top = '0px';
 
@@ -236,14 +231,14 @@ function spawnWord() {
 function moveWord(wordElement) {
   let position = 0;
   const fallSpeed = 50;
-  const containerHeight = gameContainer.clientHeight;
+  const containerHeight = gameArea.clientHeight;
   const wordHeight = wordElement.offsetHeight;
 
   const interval = setInterval(() => {
     position += 2;
     wordElement.style.top = `${position}px`;
 
-    if (position >= containerHeight - wordHeight - 50) {
+    if (position >= containerHeight - wordHeight) {
       clearInterval(interval);
       checkIfCorrect(wordElement);
     }
@@ -257,10 +252,10 @@ function quickDrop() {
   
   clearInterval(fallingWord.fallInterval);
 
-  const containerHeight = gameContainer.clientHeight;
+  const containerHeight = gameArea.clientHeight;
   const wordHeight = fallingWord.offsetHeight;
   
-  fallingWord.style.top = `${containerHeight - wordHeight - 50}px`;
+  fallingWord.style.top = `${containerHeight - wordHeight}px`;
   
   setTimeout(() => checkIfCorrect(fallingWord), 50);
 }
@@ -294,7 +289,7 @@ function checkIfCorrect(wordElement) {
   });
 
   flashScreen(isCorrect ? 'correct' : 'wrong');
-  gameContainer.removeChild(wordElement);
+  gameArea.removeChild(wordElement);
   spawnWord();
 }
 
@@ -312,7 +307,7 @@ function flashDeclension(correctDeclension) {
   flashMessage.style.opacity = '0';
   flashMessage.style.transition = 'opacity 0.3s ease-in-out';
 
-  gameContainer.appendChild(flashMessage);
+  gameArea.appendChild(flashMessage);
 
   setTimeout(() => {
     flashMessage.style.opacity = '1';
@@ -321,7 +316,7 @@ function flashDeclension(correctDeclension) {
   setTimeout(() => {
     flashMessage.style.opacity = '0';
     setTimeout(() => {
-      gameContainer.removeChild(flashMessage);
+      gameArea.removeChild(flashMessage);
     }, 300);
   }, 1000);
 }
@@ -343,7 +338,7 @@ function moveLeft() {
 function moveRight() {
   if (!fallingWord) return;
   const left = parseFloat(fallingWord.style.left) || 0;
-  const maxLeft = gameContainer.clientWidth - fallingWord.offsetWidth;
+  const maxLeft = gameArea.clientWidth - fallingWord.offsetWidth;
   const newLeft = Math.min(maxLeft, left + 10);
   fallingWord.style.left = `${newLeft}px`;
 }
@@ -353,28 +348,27 @@ function endGame() {
     clearInterval(fallingWord.fallInterval);
   }
 
-  if (fallingWord && fallingWord.parentNode === gameContainer) {
-    gameContainer.removeChild(fallingWord);
+  if (fallingWord && fallingWord.parentNode === gameArea) {
+    gameArea.removeChild(fallingWord);
   }
 
-  removeEndGameMessage();
-
-  endGameMessage = document.createElement('div');
-  endGameMessage.style.position = 'absolute';
-  endGameMessage.style.top = '50%';
-  endGameMessage.style.left = '50%';
-  endGameMessage.style.transform = 'translate(-50%, -50%)';
-  endGameMessage.style.textAlign = 'center';
-  endGameMessage.style.color = 'white';
-  endGameMessage.style.fontSize = '24px';
+  const endGameMessage = document.createElement('div');
+  endGameMessage.id = 'end-game-message';
   endGameMessage.innerHTML = `
     τέλος τοῦ ἀγῶνος<br>
     τελική εἰκοσάς: ${score}<br><br>
-    <button id="restartButton">ὑπερώει</button>
+    <button id="restart-button">ὑπερώει</button>
   `;
   gameContainer.appendChild(endGameMessage);
 
-  document.getElementById('restartButton').addEventListener('click', initializeGame);
+  document.getElementById('restart-button').addEventListener('click', initializeGame);
+}
+
+function removeEndGameMessage() {
+  const endGameMessage = document.getElementById('end-game-message');
+  if (endGameMessage) {
+    endGameMessage.remove();
+  }
 }
 
 // Touch controls
@@ -410,6 +404,16 @@ window.addEventListener('keydown', event => {
   }
 });
 
+// Resize handler
+function resizeGame() {
+  const gameHeight = window.innerHeight;
+  gameContainer.style.height = `${gameHeight}px`;
+}
+
+window.addEventListener('resize', resizeGame);
+window.addEventListener('load', resizeGame);
+
+// Initialize the game
 window.addEventListener('DOMContentLoaded', initializeGame);
 </script>
 
