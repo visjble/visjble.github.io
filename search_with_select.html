@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Hardcoded File Search</title>
+</head>
+<body>
+  <h1>Search in Hardcoded Text File</h1>
+  
+  <input type="text" id="searchInput" placeholder="Enter search text (e.g., A1)">
+  <button onclick="searchFile()">Search</button>
+  
+  <h3>Results:</h3>
+  <div id="resultDisplay" style="white-space: pre-wrap; border: 1px solid #ddd; padding: 10px;"></div>
+
+  <script>
+    async function searchFile() {
+      const searchText = document.getElementById('searchInput').value;
+      const resultDisplay = document.getElementById('resultDisplay');
+      
+      // Clear previous results
+      resultDisplay.innerHTML = "";
+
+      try {
+        // Fetch the hardcoded file (sample.txt)
+        const response = await fetch('vygus.txt');
+        
+        if (!response.ok) throw new Error('File not found or unable to read.');
+        
+        const fileContent = await response.text();
+        const lines = fileContent.split('\n');
+        
+        // Filter lines containing the search text
+        const matchingLines = lines.filter(line => line.includes(searchText));
+        
+        if (matchingLines.length > 0) {
+          resultDisplay.innerText = matchingLines.join('\n');
+        } else {
+          resultDisplay.innerText = 'No matching lines found.';
+        }
+      } catch (error) {
+        resultDisplay.innerText = error.message;
+      }
+    }
+  </script>
+</body>
+</html>
