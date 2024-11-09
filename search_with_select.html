@@ -3,27 +3,31 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Hardcoded File Search</title>
+  <title>Flexible Text Search</title>
 </head>
 <body>
-  <h1>Search in Hardcoded Text File</h1>
+  <h1>Search in Text File</h1>
   
-  <input type="text" id="searchInput" placeholder="Enter search text (e.g., A1)">
+  <input type="text" id="searchInput" placeholder="Enter search terms (e.g., A1 Z2)">
   <button onclick="searchFile()">Search</button>
   
   <h3>Results:</h3>
   <div id="resultDisplay" style="white-space: pre-wrap; border: 1px solid #ddd; padding: 10px;"></div>
-
   <script>
     async function searchFile() {
-      const searchText = document.getElementById('searchInput').value;
+      const searchInput = document.getElementById('searchInput').value.trim();
       const resultDisplay = document.getElementById('resultDisplay');
       
       // Clear previous results
       resultDisplay.innerHTML = "";
 
+      if (!searchInput) {
+        resultDisplay.innerText = 'Please enter search terms';
+        return;
+      }
+
       try {
-        // Fetch the hardcoded file (sample.txt)
+        // Fetch the hardcoded file
         const response = await fetch('vygus.txt');
         
         if (!response.ok) throw new Error('File not found or unable to read.');
@@ -31,11 +35,17 @@
         const fileContent = await response.text();
         const lines = fileContent.split('\n');
         
-        // Filter lines containing the search text
-        const matchingLines = lines.filter(line => line.includes(searchText));
+        // Split search input into individual terms
+        const searchTerms = searchInput.split(/\s+/);
+        
+        // Filter lines that contain all search terms, regardless of order
+        const matchingLines = lines.filter(line => 
+          searchTerms.every(term => line.includes(term))
+        );
         
         if (matchingLines.length > 0) {
-          resultDisplay.innerText = matchingLines.join('\n');
+          resultDisplay.innerText = `Found ${matchingLines.length} matches:\n\n` + 
+            matchingLines.join('\n');
         } else {
           resultDisplay.innerText = 'No matching lines found.';
         }
@@ -43,6 +53,13 @@
         resultDisplay.innerText = error.message;
       }
     }
+
+    // Add Enter key support
+    document.getElementById('searchInput').addEventListener('keypress', function(e) {
+      if (e.key === 'Enter') {
+        searchFile();
+      }
+    });
   </script>
 </body>
 </html>
