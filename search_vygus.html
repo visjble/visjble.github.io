@@ -3,7 +3,20 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Case-Insensitive Text Search</title>
+  <title>Text Search with Highlights</title>
+  <style>
+    .highlight {
+      color: red;
+      font-weight: bold;
+    }
+    #resultDisplay {
+      white-space: pre-wrap;
+      border: 1px solid #ddd;
+      padding: 10px;
+      font-family: monospace;
+      line-height: 1.5;
+    }
+  </style>
 </head>
 <body>
   <h1>Search in Text File</h1>
@@ -12,7 +25,7 @@
   <button onclick="searchFile()">Search</button>
   
   <h3>Results:</h3>
-  <div id="resultDisplay" style="white-space: pre-wrap; border: 1px solid #ddd; padding: 10px;"></div>
+  <div id="resultDisplay"></div>
   <script>
     async function searchFile() {
       const searchInput = document.getElementById('searchInput').value.trim();
@@ -35,17 +48,30 @@
         const fileContent = await response.text();
         const lines = fileContent.split('\n');
         
-        // Split search input into individual terms and convert to lowercase
+        // Split search input into individual terms
         const searchTerms = searchInput.toLowerCase().split(/\s+/);
         
-        // Filter lines that contain all search terms, regardless of order and case
-        const matchingLines = lines.filter(line => {
-          const lowerLine = line.toLowerCase();
-          return searchTerms.every(term => lowerLine.includes(term));
+        // Filter and highlight matching lines
+        const matchingLines = lines.filter(line => 
+          searchTerms.every(term => line.toLowerCase().includes(term))
+        ).map(line => {
+          let highlightedLine = line;
+          
+          // Create regex pattern for each search term
+          searchTerms.forEach(term => {
+            // Escape special regex characters in the search term
+            const escapedTerm = term.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+            // Create case-insensitive regex
+            const regex = new RegExp(`(${escapedTerm})`, 'gi');
+            // Replace matches with highlighted spans
+            highlightedLine = highlightedLine.replace(regex, '<span class="highlight">$1</span>');
+          });
+          
+          return highlightedLine;
         });
         
         if (matchingLines.length > 0) {
-          resultDisplay.innerText = `Found ${matchingLines.length} matches:\n\n` + 
+          resultDisplay.innerHTML = `Found ${matchingLines.length} matches:\n\n` + 
             matchingLines.join('\n');
         } else {
           resultDisplay.innerText = 'No matching lines found.';
