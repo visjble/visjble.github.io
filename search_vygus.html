@@ -3,12 +3,12 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Flexible Text Search</title>
+  <title>Case-Insensitive Text Search</title>
 </head>
 <body>
   <h1>Search in Text File</h1>
   
-  <input type="text" id="searchInput" placeholder="Enter search terms (e.g., A1 Z2)">
+  <input type="text" id="searchInput" placeholder="Enter search terms (e.g., A1 z2)">
   <button onclick="searchFile()">Search</button>
   
   <h3>Results:</h3>
@@ -35,13 +35,14 @@
         const fileContent = await response.text();
         const lines = fileContent.split('\n');
         
-        // Split search input into individual terms
-        const searchTerms = searchInput.split(/\s+/);
+        // Split search input into individual terms and convert to lowercase
+        const searchTerms = searchInput.toLowerCase().split(/\s+/);
         
-        // Filter lines that contain all search terms, regardless of order
-        const matchingLines = lines.filter(line => 
-          searchTerms.every(term => line.includes(term))
-        );
+        // Filter lines that contain all search terms, regardless of order and case
+        const matchingLines = lines.filter(line => {
+          const lowerLine = line.toLowerCase();
+          return searchTerms.every(term => lowerLine.includes(term));
+        });
         
         if (matchingLines.length > 0) {
           resultDisplay.innerText = `Found ${matchingLines.length} matches:\n\n` + 
