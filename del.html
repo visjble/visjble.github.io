@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        .popup {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            border: 1px solid #ccc;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            z-index: 1000;
+            width: 300px;
+        }
+        .overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.5);
+            z-index: 999;
+        }
+        .input-group {
+            margin-bottom: 15px;
+        }
+        .input-group input {
+            width: 100%;
+            padding: 8px;
+            margin-top: 5px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 15px;
+        }
+        .button-group {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+        }
+        button {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .primary-button {
+            background: #007bff;
+            color: white;
+        }
+        .secondary-button {
+            background: #6c757d;
+            color: white;
+        }
+        #chat-container {
+            margin-top: 20px;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            display: none;
+        }
+        #chat-input {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+    <button onclick="initializeChat()" class="primary-button">Open Chat</button>
+    <button onclick="forgetApiKey()" class="secondary-button">Forget API Key</button>
+    
+    <div id="chat-container">
+        <input type="text" id="chat-input" placeholder="Type your message...">
+        <button onclick="sendMessage()" class="primary-button">Send</button>
+    </div>
+
+    <div id="overlay" class="overlay"></div>
+    <div id="popup" class="popup">
+        <div class="input-group">
+            <label for="api-key">Enter Claude API Key:</label>
+            <input type="password" id="api-key">
+        </div>
+        <div class="checkbox-group">
+            <input type="checkbox" id="remember">
+            <label for="remember">Remember API key</label>
+        </div>
+        <div class="button-group">
+            <button onclick="closePopup()" class="secondary-button">Cancel</button>
+            <button onclick="saveApiKey()" class="primary-button">OK</button>
+        </div>
+    </div>
+
+    <script>
+        let apiKey = '';
+
+        function initializeChat() {
+            // Check for saved API key
+            const savedKey = localStorage.getItem('claudeApiKey');
+            if (savedKey) {
+                apiKey = savedKey;
+                showChatInterface();
+            } else {
+                showApiKeyPopup();
+            }
+        }
+
+        function showApiKeyPopup() {
+            document.getElementById('overlay').style.display = 'block';
+            document.getElementById('popup').style.display = 'block';
+        }
+
+        function closePopup() {
+            document.getElementById('overlay').style.display = 'none';
+            document.getElementById('popup').style.display = 'none';
+        }
+
+        function showChatInterface() {
+            document.getElementById('chat-container').style.display = 'block';
+        }
+
+        function saveApiKey() {
+            const keyInput = document.getElementById('api-key');
+            const remember = document.getElementById('remember').checked;
+            
+            if (keyInput.value) {
+                apiKey = keyInput.value;
+                if (remember) {
+                    localStorage.setItem('claudeApiKey', apiKey);
+                }
+                closePopup();
+                showChatInterface();
+            }
+        }
+
+        async function sendMessage() {
+            const input = document.getElementById('chat-input');
+            const message = input.value;
+            
+            if (!message) return;
+
+            try {
+                const response = await fetch('http://localhost:3000/chat', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        message,
+                        apiKey
+                    })
+                });
+
+                const data = await response.json();
+                console.log('Claude response:', data);
+                
+                input.value = '';
+            } catch (error) {
+                console.error('Error calling Claude API:', error);
+            }
+        }
+
+        function forgetApiKey() {
+            localStorage.removeItem('claudeApiKey');
+            apiKey = '';
+            document.getElementById('chat-container').style.display = 'none';
+            document.getElementById('api-key').value = '';
+            alert('API key has been removed');
+        }
+    </script>
+</body>
+</html>
