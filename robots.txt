@@ -39,4 +39,4 @@ Disallow: /search
 Disallow: /search/
 
 # Specify path to sitemap (if you have one)
-Sitemap: https://yourdomain.com/sitemap.xml
+Sitemap: https://locutorium.com/sitemap.xml
