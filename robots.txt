@@ -17,7 +17,7 @@ Disallow: /
 # Allow trusted bots to access everything
 User-agent: Googlebot
 User-agent: bingbot
-Allow: /
+Disallow: /
 
 # Prevent bots from accessing specific file types
 User-agent: *
