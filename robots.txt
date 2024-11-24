@@ -1,0 +1,42 @@
+# robots.txt for GitHub repository
+
+# Block all robots from accessing specific paths
+User-agent: *
+Disallow: /private/
+Disallow: /.github/
+Disallow: /docs/_drafts/
+Disallow: /assets/downloads/
+Disallow: /internal/
+
+# Block specific bots completely
+User-agent: BadBot
+User-agent: ScraperBot
+User-agent: DataHarvester
+Disallow: /
+
+# Allow trusted bots to access everything
+User-agent: Googlebot
+User-agent: bingbot
+Allow: /
+
+# Prevent bots from accessing specific file types
+User-agent: *
+Disallow: /*.json$
+Disallow: /*.xml$
+Disallow: /*.sql$
+Disallow: /*.env$
+Disallow: /*.config$
+Disallow: /*.md$
+
+# Set crawl delay (in seconds) to prevent server overload
+User-agent: *
+Crawl-delay: 10
+
+# Block access to search-related paths
+Disallow: /*?
+Disallow: /*?*
+Disallow: /search
+Disallow: /search/
+
+# Specify path to sitemap (if you have one)
+Sitemap: https://yourdomain.com/sitemap.xml
