@@ -65,29 +65,36 @@
         }
 
         .emoji-link {
-            font-size: 2em; /* Larger font size for emojis */
-            text-decoration: none; /* Remove underline */
+            font-size: 2em;
+            text-decoration: none;
         }
 
         .text-link {
-            text-decoration: none; /* Remove underline */
-            font-size: 1em; /* Standard font size for text links */
-            margin-bottom: 10px; /* Space between text links */
+            text-decoration: none;
+            font-size: 1em;
+            margin-bottom: 10px;
         }
 
         .emoji-container {
-            display: flex; /* Align emojis side by side */
-            align-items: center; /* Center vertically */
+            display: flex;
+            align-items: center;
         }
 
         .emoji-container a {
-            margin-left: 10px; /* Space between emojis */
+            margin-left: 10px;
+        }
+
+        .alt-link {
+            opacity: 0;
+            position: fixed;
+            cursor: default;
         }
     </style>
 </head>
 <body>
 <div class="content-container">
     <h2>ΧΑΙΡΕΤΕ ΠΑΝΘΕΣ</h2>
+    <a href="html/zup.xhtml" class="alt-link">.</a>
     <div id="dynamic-content">
         <div class="columns">
             <div class="column">
@@ -125,12 +132,10 @@
                 <a href="games/ΑΝΤΙΘΕΤΑ.html" class="text-link">ΑΝΤΙΘΕΤΑ</a>
                 <a href="games/ΛΟΓΟΦΑΓΟΣ.html" class="text-link">ΛΟΓΟΦΑΓΟΣ</a>
                 <a href="games/ΤΕΤΡΙΣ.html" class="text-link">ΤΕΤΡΙΣ</a>
-                
             </div>
         </div>
     </div>
 </div>
-
 
 </body>
 </html>
