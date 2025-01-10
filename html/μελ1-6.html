@@ -20,7 +20,7 @@
         <table
                <td>
                         ὦ<input type="radio" id="5" onclick="macronRadial(id);">
-                        ω<input type="radio" id="6" onclick="macronRadial(id);" checked=true>
+                        ω<input type="radio" id="6" onclick="macronRadial(id);" checked>
                         </td>
           <tr>
             <th>I</th>
@@ -44,8 +44,13 @@
       <table>
             <tbody>
                   <tr>                       
-                        <td><input type="text" autocomplete="off" id="guess_field" placeholder="Ἀπόκρισις" onkeydown="matchFunc(event)" style="font-size:18px" font-family: Times New Roman , serif; display: inline-block;>
-                        </td>
+                        <input type="text" 
+       autocomplete="off" 
+       id="guess_field" 
+       placeholder="Ἀπόκρισις" 
+       onkeydown="matchFunc(event)"
+       oninput="removeDiacritics(event)"
+       style="font-size:18px; font-family: 'Times New Roman', serif; display: inline-block;">                        </td>
                         <td><div id='score'>0</div></td>
                   </tr>
             </tbody>
@@ -60,6 +65,14 @@
 
       <!--===========SCRIPT STARTS=========================-->
       <script>
+        function removeDiacritics(event) {
+    if (document.getElementById('6').checked) {
+        let input = event.target;
+        let cursorPosition = input.selectionStart;
+        input.value = abstrahoMacron(input.value);
+        input.setSelectionRange(cursorPosition, cursorPosition);
+    }
+}
          function setRandomPastelColor() {
       // Generate random pastel color
       const hue = Math.floor(Math.random() * 360);
@@ -202,7 +215,9 @@ function abstrahoMacron(word) {
     'Ὑ': 'Υ', 'Ὓ': 'Υ', 'Ὕ': 'Υ', 'Ὗ': 'Υ',
     // Omega combinations
     'ὠ': 'ω', 'ὡ': 'ω', 'ὢ': 'ω', 'ὣ': 'ω', 'ὤ': 'ω', 'ὥ': 'ω', 'ὦ': 'ω', 'ὧ': 'ω',
-    'Ὠ': 'Ω', 'Ὡ': 'Ω', 'Ὢ': 'Ω', 'Ὣ': 'Ω', 'Ὤ': 'Ω', 'Ὥ': 'Ω', 'Ὦ': 'Ω', 'Ὧ': 'Ω'
+    'Ὠ': 'Ω', 'Ὡ': 'Ω', 'Ὢ': 'Ω', 'Ὣ': 'Ω', 'Ὤ': 'Ω', 'Ὥ': 'Ω', 'Ὦ': 'Ω', 'Ὧ': 'Ω',
+    //random
+    'ᾶ': 'α', 'ῆ': 'η', 'ῖ': 'ι', 'ῦ': 'υ', 'ῶ': 'ω'
   };
 
   // Convert the word character by character
@@ -279,42 +294,39 @@ function abstrahoMacron(word) {
       }
 
       
-      function blankWord(sentence) {
-          //check each word starting with # and blank it out
-          let x = sentence.split(" ");
-          for (i = 0; i < x.length; i++) {
-          if (x[i].includes("#")) {
-              if (x[i].startsWith("#")){      
-                word2guess = x[i].slice(1 , x[i].length);
-                words2guess.push(word2guess); //fill the array
-                x[i] = "_".repeat(x[i].length - 1); //word xed out
-              }
-              else{
-                //find location of x and x-out til the end of string
-                word2guess = x[i].slice(x[i].indexOf('#') + 1 , x[i].length);
-                words2guess.push(word2guess); //fill the array
-                inx = x[i].indexOf('#'); //finds position of substring to replace
-                foo1 = x[i].substr(0 , inx); //extract first substr
-                foo2 = x[i].substr(inx , 9);  //extract second substring
-                fooX = "_".repeat(foo2.length -1) //ex-out chars after the # sign
-
-                x[i] = foo1 + fooX; //word xed out
-              }
-          }
+function blankWord(sentence) {
+    let x = sentence.split(" ");
+    words2guess = []; // Reset before populating
+    for (i = 0; i < x.length; i++) {
+        if (x[i].includes("#")) {
+            if (x[i].startsWith("#")) {      
+                word2guess = x[i].slice(1);
+                words2guess.push(word2guess);
+                x[i] = "_".repeat(x[i].length - 1);
+            } else {
+                let inx = x[i].indexOf('#');
+                word2guess = x[i].slice(inx + 1);
+                words2guess.push(word2guess);
+                let foo1 = x[i].substr(0, inx);
+                let foo2 = x[i].substr(inx);
+                let fooX = "_".repeat(foo2.length - 1);
+                x[i] = foo1 + fooX;
+            }
         }
-        return x.join(" "); //sententia cum multa x         
-      }
+    }
+    console.log("Words to guess:", words2guess); // Debug
+    return x.join(" ");
+}
 
-      function replaceWord(word_entered){
-        // replaces correct word with color green
-          inner = document.getElementById("locutio").innerHTML;
-          xsx = /(_)\1*/;
-          arr = inner.match(xsx)[0]; //match first occurence of x-es 
-          inner = inner.replace(arr , word_entered.fontcolor("green").toLowerCase());          
-          document.getElementById("locutio").innerHTML = inner;
+function replaceWord(word_entered) {
+    let inner = document.getElementById("locutio").innerHTML;
+    let xsx = /(_)\1*/;
+    let arr = inner.match(xsx)[0];
+    console.log("Replacing:", arr, "with:", word_entered); // Debug
+    inner = inner.replace(arr, word_entered.fontcolor("green").toLowerCase());
+    document.getElementById("locutio").innerHTML = inner;
+}
 
-
-      }
 
       function getIncite(){
             //returns random incouraging sentence
@@ -365,83 +377,78 @@ incites = [
 
 function matchFunc(event) {
     var x = event.keyCode;
+if (document.getElementById('6').checked) {
+    console.log('Original target:', words2guess[0]);
+    console.log('Demacronized target:', abstrahoMacron(words2guess[0]));
+    console.log('User input:', word_entered);
+}
+    if (x == 13) { // Enter key
+      console.log("Before shift - words2guess:", words2guess); // Debug
+        var word_entered = document.getElementById("guess_field").value.trim();
+      console.log("Raw input value:", document.getElementById("guess_field").value);
+        let targetWord = words2guess[0]; // Current word to guess
 
-    if (x == 13) {
-        var word_entered = document.getElementById("guess_field").value;
-        let demacronized = '';
-
-        // Check if "No breathing marks" is selected (id=6)
-        if (document.getElementById('6').checked) {
-            // Remove breathing marks from both the target word and user input
-            demacronized = abstrahoMacron(words2guess[0]);
+        // Check if "No breathing marks" is selected
+        const removeBreathingMarks = document.getElementById('6').checked;
+        if (removeBreathingMarks) {
+            // Normalize both the user input and the target word
             word_entered = abstrahoMacron(word_entered);
-            console.log('Target word without marks:', demacronized);
-            console.log('Input word without marks:', word_entered);
-        } else {
-            // Keep breathing marks
-            demacronized = words2guess[0];
+            targetWord = abstrahoMacron(targetWord);
         }
 
-        // Log the comparison for debugging
-        // console.log('Final comparison:', {
-        //     entered: word_entered.toLowerCase(),
-        //     target: demacronized.toLowerCase(),
-        //     match: word_entered.toLowerCase() === demacronized.toLowerCase()
-        // });
-        
-        if (word_entered.toLowerCase() === demacronized.toLowerCase() && words2guess.length > 0) {
-            // Rest of your matching logic...
+        // Compare normalized inputs
+        if (word_entered.toLowerCase() === targetWord.toLowerCase() && words2guess.length > 0) {
             replaceWord(word_entered);
-            document.getElementById("response").innerHTML = getIncite() + getSmiley();           
-            document.getElementById("score").innerHTML = score+=1;
-            document.getElementById("guess_field").value = "";
+            document.getElementById("response").innerHTML = getIncite() + getSmiley();
+            document.getElementById("score").innerHTML = score += 1;
+            document.getElementById("guess_field").value = ""; // Clear input field
             attempts = 0;
-    
+
             setTimeout(clearFields, 1500);
+
             if (words2guess.length > 1) {
-                words2guess.shift();              
-                setTimeout(clearFields, 1000);
+                words2guess.shift(); // Move to next word
+              console.log("After shift - words2guess:", words2guess); // Debug
                 return;
             } else {
-                // Rest of your code...
+                // Handle end of game logic
                 words2guess = [];
                 try {
-                    if(locu_set == 0){
-                        throw new Exception();
-                    }                                  
+                    if (locu_set == 0) throw new Exception();
                     counter--;
                     document.getElementById("more_to_go").innerHTML = "Λόγοι: " + romanize(counter);
-                    setTimeout(doo, 1000);
-                    function doo(){
-                        document.getElementById("locutio").innerHTML = blankWord(locu_set.shift())
-                    }                               
-                } catch (err) { 
+                    setTimeout(() => {
+                        document.getElementById("locutio").innerHTML = blankWord(locu_set.shift());
+                    }, 1000);
+                } catch (err) {
                     document.getElementById("locutio").innerHTML = "Πέπρακται! Ἄλλην ἄσκησιν πειρῶ";
                     document.getElementById("more_to_go").innerHTML = "";
                     document.getElementById("response").innerHTML = "";
                     document.getElementById("guess_field").style.visibility = "hidden";
                     document.getElementById("score").style.visibility = "hidden";
                     document.getElementById("final_score").innerHTML = score;
-                    document.getElementById("final_score").style.visibility = "visible"; 
+                    document.getElementById("final_score").style.visibility = "visible";
                 }
             }
-        } else if (word_entered == "" && counter > 0) {
+        } else if (word_entered === "" && counter > 0) {
             document.getElementById("response").innerHTML = "Γράφε τὴν ἀπόκρισιν ἐνταῦθα ⬉";
             document.getElementById("guess_field").value = "";
-        } else if (word_entered.toLowerCase() !== demacronized.toLowerCase() && counter > 0) {
+        } else if (word_entered.toLowerCase() !== targetWord.toLowerCase() && counter > 0) {
             attempts += 1;
-            document.getElementById("response").innerHTML = "😱 Οὐδαμῶς! Αὖθις πειρῶ";           
+            document.getElementById("response").innerHTML = "😱 Οὐδαμῶς! Αὖθις πειρῶ";
             blink();
-            document.getElementById("score").innerHTML = score-=1;
+            document.getElementById("score").innerHTML = score -= 1;
             setTimeout(clearFields, 1000);
-           
+
             if (attempts == 3) {
-                document.getElementById("correct_answer").innerHTML = "Ἀπόκρισις: " + demacronized;
+                document.getElementById("correct_answer").innerHTML = "Ἀπόκρισις: " + targetWord;
                 attempts = 0;
-            } 
+            }
         }
     }
 }
+
+
 
       function clearFields() {
         // delay function to trigger at the end of exercise
