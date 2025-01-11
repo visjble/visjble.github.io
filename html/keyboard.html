@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">   
+        <meta name="viewport" content="width=device-width" , initial-scale="3.0">
+        <title>ΑἹ ΛΈΞΕΙΣ</title>
+    <!--================STYLE=========================-->
+    <style>
+       html , body { background: #480A62; font-family: Times New Roman , serif; font-size: 20px;}
+    </style>
+    <!--================/STYLE=========================-->
+    </head>
+      <body>
+      <center>
+        <table>
+          <tr>
+        </br></br></br></br></br></br></br></br></br>
+            <input type="button" value="Α" onclick="ago(value)"> 
+            <input type="button" value="Α" onclick="ago(value)"> 
+            <input type="button" value="Α" onclick="ago(value)"> 
+            <input type="button" value="Α" onclick="ago(value)"> 
+            <input type="button" value="Α" onclick="ago(value)"> 
+            <input type="button" value="Α" onclick="ago(value)"> 
+        </tr>
+                     <tr>
+        </br>
+            <input type="button" value="à" onclick="ago(value)"> 
+            <input type="button" value="Α" onclick="ago(value)"> 
+            <input type="button" value="Α" onclick="ago(value)"> 
+            <input type="button" value="Α" onclick="ago(value)"> 
+            <input type="button" value="Α" onclick="ago(value)"> 
+            <input type="button" value="clear" id=button onclick="clear()"> 
+            
+        </tr>
+        </table>
+      <table>
+            <tbody>
+                  <tr>
+                        <td>
+                            <input type="text" autocomplete="off" id="guess_field" placeholder="χρησμός" style="font-size:18px" font-family: Times New Roman , serif; display: inline-block;>
+                        </td>
+                      <td>
+                          
+                      </td>
+                  </tr>
+            </tbody>
+      </table>
+
+      </center>
+
+      <!--===========SCRIPT STARTS=====ΑἹ ΛΈΞΕΙΣ====================-->
+        <script>
+            
+            let αβγ= 'àãèẽìĩòùũṑõáéēḗíïḯóúüǘō';
+            function ago(value){
+            value_add = document.getElementById('guess_field');
+            value_add.value += value;
+            
+            // console.log(value)
+            
+        }
+        // function clear(){
+        //     value_add = document.getElementById('guess_field');
+        //     value_add.value += value;
+            
+        //     console.log(value)
+            
+        // }
+            document.getElementById("button").onclick = function() {clear()};
+         function clear(){
+             document.getElementById('guess_field').value = '';
+             console.log('asdas')
+         }
+            
+    </script>
+    <!--===========SCRIPT ENDS=========================-->
+
+
+    </body>
+
+</html>

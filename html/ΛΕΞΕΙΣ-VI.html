@@ -1,0 +1,341 @@
+
+<!-- 
+===============================================================================
+    Copyright © 2023 RegioXvenetia. All rights reserved.
+
+    The code of this site is protected under the copyright laws. Reproduction, 
+    redistribution or modification of the code or any part thereof is strictly 
+    prohibited without the prior written consent of regioXvenetia.com.
+===============================================================================
+-->
+
+
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>ΛΕΧΕΙΣ VI</title>
+    <link rel="stylesheet" href="https://unpkg.com/swiper/swiper-bundle.min.css" />
+<style>
+    @import url('https://fonts.googleapis.com/css2?family=GFS+Didot&display=swap');
+    
+    .gfs-didot-regular {
+      font-family: "GFS Didot", serif;
+      font-weight: 400;
+      font-style: normal;
+    }
+    
+    body {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
+      font-family: "GFS Didot", serif;
+    }
+    
+    .navigation {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-wrap: wrap;
+        background-color: #1c3446;
+        padding: 10px 0;
+        width: 100%;
+      }
+
+      .navigation button {
+        margin: 3px;
+        font-family: "GFS Didot", serif;
+        font-size: 16px;
+        background-color: #007aff;
+        border: none;
+        color: white;
+        padding: 6px 10px;
+        border-radius: 5px;
+        cursor: pointer;
+      }
+
+      .swiper-container {
+        width: 100%;
+        max-width: 85vw;
+        height: 65vh;
+        margin-top: 10px;
+        margin-bottom: 10px;
+      }
+
+      .swiper-slide {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        text-align: center;
+        font-size: 60px;
+        color: #fff;
+        background: #007aff;
+        height: 100%;
+        width: 100%;
+        border-radius: 15px;
+        box-sizing: border-box;
+        padding: 15px;
+        font-family: "GFS Didot", serif;
+      }
+
+      .swiper-pagination {
+        margin-top: 10px;
+      }
+
+      @media screen and (max-width: 600px) {
+        .navigation button {
+          font-size: 18px;
+          padding: 5px 8px;
+        }
+
+        .swiper-container {
+          max-width: 90vw;
+          height: 60vh;
+        }
+
+        .swiper-slide {
+          font-size: 24px;
+          padding: 10px;
+        }
+      }
+        .swiper-container {
+          max-width: 95vw;
+          height: auto;
+         height: 95vh; /* Adjust height for medium screens */
+        }
+
+        .swiper-slide {
+          font-size: 32px;
+          padding: 8px;
+        }
+      }
+    </style>
+</head>
+<body>
+    <div class="navigation">
+        <!-- Navigation buttons will be dynamically added here -->
+    </div>
+    <div class="info-container">
+        <span id="timer">Time: 00:00</span>
+        <span id="countdown">Cards Left: 0</span>
+    </div>    
+    <div class="swiper-container">
+        <div class="swiper-wrapper">
+            <!-- Slides will be dynamically added here -->
+        </div>
+    </div>
+
+
+    <script src="https://unpkg.com/swiper/swiper-bundle.min.js"></script>
+    <script>
+        const flashcards = {
+              "ΛΕΞΕΙΣ --Ρέματα": "verba",
+            
+              "ἀναγκάζω": "cogo, Μίνως ἀναγκάζει τοὺς ᾿Αθηναίους ἑπτά τε νεᾶνίᾶς πέμπειν",
+              "ἀνοίγω": "aperio, οἱ δοῦλοι ἀνοίγουσι τὰς πύλᾶς ",
+              "ἀποκτείνω": "occido, ὁ Θησεὺς τόν τε Μινώταυρον ἀποκτείνει",
+              "ἀφικνέομαι": "advenio,Ἐπεὶ δὲ εἰς τὴν νῆσον ἀφικνοῦνται",
+              "βασιλεύω": "regno",
+              "βοηθέω (+ δοτ.)": "auxilior (+ dat.) βούλεται βοηθεῖν αὐτοῖς",
+              "βούλομαι": "volo",
+              "βρυχάομαι": "rugio,καὶ μάλα δεινῶς (terribiliter) βρυχᾶται",
+              "γίγνομαι": "fio",
+              "δέχομαι": "accipio, ᾿Αριάδνη, δέχονται αὐτοὺς καὶ ἄγουσι πρὸς τὴν Κνωσσόν",
+              "διακόπτω": "intercido, Ἐπεὶ δ᾽ ἀφικνοῦνται, τὸν μοχλὸν διακόπτουσι καὶ μένουσιν ἐκεῖe",
+              "ἐάω (+ ἀιτ. καὶ ἀπε.)": "sino (+ acc. cum inf.), Ἔα οὖν αὐτὸν ἡσυχάζειν ὀλίγον",
+              "ἐγείρω, ἐγείρομαι": "excito, surgo. καθεύδει οὖν καὶ οὗ βούλεται ἐγείρεσθαι",
+              "εἰπέ!": "dic! Εἰπέ οὖν τί γίγνεται ἐπεὶ ἀνατέλλει ὁ ἥλιος;",
+              "εἰσελαύνω": "invehor. οἱ δοῦλοι ἀνοίγουσι τὰς πύλᾶς καὶ τοὺς ᾿Αθηναίους εἰσελαύνοῦσιν",
+              "ἔκφεύγω": "effugio, Ἔπειτα δὲ ἔκφευγε μετὰ τῶν ἑταίρων καὶ σπεῦδε πρὸς τὴν ναῦν",
+              "ἕπομαι (+ δοτ.)": "sequor (+ dat.) Οἱ δὲ ἑταῖροι μάλιστα φοβοῦνται ἀλλ᾽ ὅμως ἕπονται",
+              "ἐράω ( γεν.)": "amo (+ gen.)",
+              "ἐργάζομαι": "laboro. οὐ δυνατόν ἐστιν ἐν μεσημβρίᾳ ἐργάζεσθαι",
+              "ἔρχομαι": "venio",
+              "ἀπ-έρχομαι": "abeo. Ἔπειτα δὲ τὰς πύλας κλείουσι καὶ ἀπέρχονται",
+              "ἐξ-έρχομαι": "exeo. ἐξέρχομαι ἐκ τοῦ λαβυρίνθου",
+              "ἐσθίω": "edo. Ὁ δὲ Μινώταυρος ἐσθίει ἀνθρώπους.",
+              "ἡβάω": "pubesco. Ὁ δὲ ἐπεὶ πρῶτον ἡβᾷ, τοὺς ἑταίρους οἰκτίρει καὶ βούλεται βοηθεῖν αὐτοῖς.",
+              "ἡγέομαι (+ δοτ.)": "duco (+ dat.).  Οὕτω λέγει καὶ ἡγεῖται αὐτοῖς εἰς τὸν λαβύρινθον",
+              "κλάζω": "clango. Ὁ δὲ Μινώταυρος δεινῶς κλάζει καὶ καταπΐπτει πρὸς τὴν γῆν.",
+              "κλείω": "claudo. Ἔπειτα δὲ τὰς πύλας κλείουσι καὶ ἀπέρχονται",
+              "λαμβάνομαι (+ γεν.)": "prehendo (+ gen.).τῇ μὲν γὰρ ἀριστερᾷ λαμβάνεται τῆς κεφαλῆς τοῦ θηρίου",
+              "μάχομαι": "pugno. Ὁ δὲ Θησεὺς οὐ φοβεῖται ἀλλὰ μάλα ἀνδρείως μάχεται",
+              "οἰκτίρω": "misereor. τοὺς ἑταίρους οἰκτίρω καὶ βούλομαι σῴζειν",
+              "ὀνομάζω": "nomino. οὕτω γὰρ τὴν τοῦ Μίνωος πόλιν ὀνομάζουσιν",
+              "ὁρμάομαι": "proficiscor. Δεινῶς δὴ βρῦχᾶται καὶ ἐπὶ τὸν Θησέα ὁρμᾶται",
+              "ὀσφραίνομαι": "olfacio. ..τὸ τοῦ θηρίου πνεῦμα ὀσφραίνονται..",
+              "πείθομαι": "oboedio. Ὁ δ᾽ Αἰγεὺς μάλιστα φοβεῖται ἀλλ᾽ ὅμως πείθεται αὐτῷ",
+              "πέμπω": "mitto. ..ἑπτά τε νεᾶνίᾶς πέμπειν..",
+              "περαίνω": "finio, finem facio. Οὕτω περαίνει τὸν μῦθον ἡ Μυρρίνη",
+              "πλέω": "navigo",
+              "ἀπο-πλέω": "enavigo. Πλέω πρὸς τὴν Κρήτην",
+              "πορεύομαι": "proficiscor. Μακρὰν οὖν ὁδὸν πορεύονται καὶ πολλάκις μὲν τρέπονται",
+              "προχωρέω": "progredior. ἐν δὲ τῇ δεξιᾷ τὸ ξίφος, καὶ προχωρεῖ εἰς τὸν σκότον",
+              "σῴζω": "servo, τοὺς ἑταίρους σῴζει εἰς τὰς ᾿Αθήνᾶς",
+              "τἱμάω": "honoro.  ὡς θαυμάζομέν σε καὶ τῑμῶμεν",
+              "τρέπομαι": "vertor. Μακρὰν οὖν ὁδὸν πορεύονται καὶ πολλάκις μὲν τρέπονται",
+              "φοβέομαι": "timeo. Ὁ δὲ Θησεὺς οὐ φοβεῖται..`μὴ φοβεῖσθε!`",
+
+              "ΛΕΞΕΙΣ --Οὐσιαστικά": "substantiva",
+
+              "ἡ ἀνάγκη, τῆς ἀνάγκης": "necessitas, necessitatis. ἣ γὰρ ἀνάγκη αὐτοὺς ἔχει",
+              "ἡ ἀριστερά, τῆς ἀριστερᾶς": "sinistra, sinistrae",
+              "ἡ βασίλεια, τῆς βασιλείας": "regina, reginae",
+              "ὁ βασιλεύς": "rex, regis",
+              "ἡ δεξιά, τῆς δεξιᾶς": "dextra, dextrae",
+              "τὸ δεσμωτήριον, τοῦ δεσμωτηρίου": "carcer, carceris",
+              "ὁ ἑταῖρος, τοῦ ἑταίρου": "sodalis, sodalis",
+              "ἡ ἡμέρα, τῆς ἡμέρας": "dies, diei",
+              "ἡ κεφαλή, τῆς κεφαλῆς": "caput, capitis",
+              "ὁ λαβύρινθος, τοῦ λαβυρίνθου": "labyrinthus, labyrinthi",
+              "τὸ λίνον, τοῦ λίνου": "linum, lini",
+              "ἡ μεσημβρία, τῆς μεσημβρίας": "meridies, meridiei",
+              "ὁ μοχλός, τοῦ μοχλοῦ": "vectis, vectis. ..τὸν μοχλὸν διακόπτουσι",
+              "ἡ ναῦς (τὴν ναῦν, τῆς νεώς, τῇ νηῦ": "navis, navis (accusative: navem, genitive: navis, dative: navi)",
+              "ἡ νῆσος, τῆς νήσου": "insula, insulae",
+              "ἡ νῦξ": "nox, noctis",
+              "τὸ ξίφος": "gladius, gladii",
+              "ὁ παππίᾶς, τοῦ παππίου": "avus, avi",
+              "ἡ παρθένος, τῆς παρθένου": "virgo, virginis",
+              "τὸ πνεῦμα": "spiritus, spiritus",
+              "ἡ πόλις (τὴν πόλιν)": "urbs, urbis (accusative: urbem)",
+              "ὁ πούς (τῶν ποδῶν)": "pes, pedis (genitive plural: pedum)",
+              "αἱ πύλαι, τῶν πυλῶν": "ianua, ianuae",
+              "ὁ σκότος, τοῦ σκότου": "tenebrae, tenebrarum",
+            
+              "ΛΕΞΕΙΣ --Κύρια Ὀνόματα": "nomina propria",
+
+              "ὃ Αἰγεύς": "Aegeus",
+              "ἡ ᾿Αριάδνη, τῆς ᾿ ᾿Αριάδνης": "Ariadna, Ariadnae",
+              "ὁ Θησεύς": "Theseus",
+              "ἣ Κνωσσός, τῆς Κνωσσοῦ": "Cnossus, Cnossi",
+              "ἡ Κρήτη, τῆς Κρήτης": "Creta, Cretae",
+              "ὁ Μινώταυνρος, τοῦ Μινωταύρου": "Minotaurus, Minotauri",
+
+              "ΛΕΞΕΙΣ --Δεικτικά": "demonstrativa",
+
+              "ἐκεῖνος,ἐκείνη, ἐκεῖνο": "ille, illa, illud",
+
+              "ΛΕΞΕΙΣ --Αριθμητικά": "numeri",
+
+              "ἑπτα": "septem",
+
+              "ΛΕΞΕΙΣ --Προθέσεις": "praepositiones",
+
+              "κάτα (+ ἀιτ.)": "per (per viam)",
+
+            "ΛΕΞΕΙΣ --Ἐπιρρήματα": "adverbia",
+
+              "γε": "quidem. ..λέγειν νῦν γε",
+              "οἴκοι": "domi",
+              "οὐδαμῶς": "nequaquam",
+
+            
+            "ΛΕΞΕΙΣ --Σύνδεσμοι": "coniunctiones",
+
+              "ἐπεὶ πρῶτον": "cum primum",
+              "μηδὲ": "neve. Μὴ οὖν οὕτω βόα μηδὲ χαλεπὸς ἴσθι",
+
+
+            "ΛΕΞΕΙΣ --φράσεις": "locutiones",
+              "κατἔτος": "quotannis",
+              "τὸ ἥμισυ": "dimidium",
+              "ὦ πάππα": "o papa"
+
+        };
+
+
+ // keep track of time and count
+        const timerElement = document.getElementById('timer');
+        const countdownElement = document.getElementById('countdown');
+        let startTime;
+        let timerInterval;
+        
+        function startTimer() {
+          startTime = Date.now();
+          timerInterval = setInterval(updateTimer, 1000);
+        }
+        
+        function updateTimer() {
+          const elapsedTime = Date.now() - startTime;
+          const minutes = Math.floor(elapsedTime / 60000);
+          const seconds = Math.floor((elapsedTime % 60000) / 1000);
+          const formattedTime = `${padZero(minutes)}:${padZero(seconds)}`;
+          timerElement.textContent = `Time: ${formattedTime}`;
+        }
+        
+        function padZero(number) {
+          return number.toString().padStart(2, '0');
+        }
+        
+        function updateCountdown() {
+          const remainingCards = Math.floor((entries.length - swiper.activeIndex) / 2);
+          countdownElement.textContent = `Cards Left: ${remainingCards}`;
+        }
+        
+        // Convert flashcards object into an array
+        let entries = Object.entries(flashcards);
+
+        // Create an object to store the sections and their corresponding indices
+        let sections = {};
+        let currentSection = '';
+
+        entries.forEach(([key, value], index) => {
+            if (key.startsWith('ΛΕΞΕΙΣ')) {
+                currentSection = key;
+                sections[currentSection] = index;
+            }
+        });
+
+        const swiperWrapper = document.querySelector('.swiper-wrapper');
+
+        entries.forEach(([key, value], index) => {
+            const slideKey = document.createElement('div');
+            slideKey.className = 'swiper-slide';
+            slideKey.textContent = key;
+            slideKey.style.backgroundColor = '#007aff';
+
+         const slideValue = document.createElement('div');
+            slideValue.className = 'swiper-slide';
+            slideValue.textContent = value;
+            slideValue.style.backgroundColor = '#B19CD9';
+
+            swiperWrapper.appendChild(slideKey);
+            swiperWrapper.appendChild(slideValue);
+        });
+
+        const swiper = new Swiper('.swiper-container', {
+            on: {
+                slideChange: function () {
+                    updateCountdown();
+                },
+            },
+        });
+
+        const navigation = document.querySelector('.navigation');
+        let buttons = '';
+
+        Object.keys(sections).forEach((section) => {
+            const sectionName = section.replace(/^.*--/, '').trim();
+            buttons += `<button data-section="${section}">${sectionName}</button>`;
+        });
+
+        navigation.innerHTML = buttons;
+
+        document.querySelectorAll('.navigation button').forEach((button) => {
+            button.addEventListener('click', (event) => {
+                const section = event.target.getAttribute('data-section');
+                const slideIndex = sections[section] * 2;
+                swiper.slideTo(slideIndex);
+            });
+        });
+
+        startTimer();
+        updateCountdown();
+    </script>
+</body>
+</html>

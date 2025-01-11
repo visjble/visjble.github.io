@@ -1,9 +1,17 @@
 <html lang="en">
+        <!-- 
+===============================================================================
+    Copyright © 2024 RegioXvenetia. All rights reserved.
 
+    The code of this site is protected under the copyright laws. Reproduction, 
+    redistribution or modification of the code or any part thereof is strictly 
+    prohibited without the prior written consent of regioXvenetia.com.
+===============================================================================
+-->
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ΛΕΧΕΙΣ Α</title>
+    <title>ΛΕΧΕΙΣ V</title>
     <link rel="stylesheet" href="https://unpkg.com/swiper/swiper-bundle.min.css" />
 <!-- Google Fonts -->
 <style>
@@ -121,115 +129,91 @@
 
     <script src="https://unpkg.com/swiper/swiper-bundle.min.js"></script>
     <script>
-    const flashcards = {
-      "φρασεις": "ΛΕΞΕΙΣ Α --Ἀσπασμοὶ",
-      "salve": "χαῖρε",
-      "salvete": "χαίρετε",
-      "o amice!": "ὦ φίλε !",
-      "o amica!": "ὦ φίλη!",
-      "o Arge!": "ὦ Ἄργε!",
-      "salve et tu!": "χαῖρε καὶ σύ!",
-      "et tu quidem!": "καὶ σύ γε!",
-      "quomodo te habes?": "πῶς ἔχεις;",
-      "bene": "καλῶς",
-      "mediocriter": "μετρίως",
-      "male": "κακῶς",
-      "quid pateris?": "τί πάσχεις;",
-      "aegroto": "κάμνω",
-      "dolet mihi caput": "ἀλγῶ τὴν κεφαλήν",
-      "dolet mihi venter": "ἀλγῶ τὴν γαστέρα",
-      "catarrho laboro": "κατάρρῳ νοσῶ",
-      "nihil patior, sed valeo.": "οὐδὲν πάσχω, ἀλλ' ὑγιαίνω.",
-      "per Iovem!": "νὴ τὸν Δία!",
-      "ita maxime.": "ναί. μάλιστα. (repeat the verb + ) δή",
-      "minime.": "οὐδαμῶς. οὐ (+ repeat the verb )",
-      "si videtur. obsecro.": "εἰ δοκεῖ. ἀντιβολῶ. παρακαλῶ (Koine)",
-      "gratias tibi ago": "χάριν σοι ἔχω",
-      "gratias vobis ago": "χάριν ὑμῖν ἔχω",
-      "ignosce / ignoscite!": "συγγνώμην ἔχε / ἔχετε!",
-      "parce! / parcite!": "σύγγνωθι! / σύγγνωτε!",
-      "vale! / valete!": "χαῖρε! / χαίρετε!",
-      "vale! / valete!": "ἔρρωσο! / ἔρρωσθε",
-      "salutem dicere alicui": "χαίρειν κελεύειν τινί",
-    
-      "φρασεις": "ΛΕΞΕΙΣ Α --ὄνομα",
-      
-      "quod nomen tibi est?": "τί ὄνομά σοί ἐστιν;",
-      "nomen mihi Helena est,": "ὄνομά μοι Ἑλένη ἐστίν,",
-      "sed amici mei vocant me...": "ἀλλ' oἱ ἐμοὶ φίλοι καλοῦσί με…",
-      "quod nomen est...": "τί ὄμομά ἐστι...",
-      "amico?": "τῷ φίλῳ;",
-      "amicae?": "τῇ φίλῃ;",
-      "uxori?": "τῇ γυναικί;",
-      "viro?": "τῷ ἀνδρί;",
-      "puero?": "τῷ παιδί;",
-      "puellae?": "τῇ παιδί;",
-      "cani?": "τῷ κυνί;",
-      "cani?": "τῇ κυνί;",
-      "nomen ei est...": "ὄνομα αὐτῷ ἐστίν...",
-      "nomen ei est...": "ὄνομα αὐτῇ ἐστίν...",
-    
-      "φρασεις": "ΛΕΞΕΙΣ Α --ποῦ οἰκει",
-      
-      "ubi habitas?": "ποῦ οἰκεῖς;",
-      "habito...": "οἰκῶ…",
-      "Athenis": "ἐν ταῖς Ἀθήναις",
-      "in Graecia": "ἐν τῇ Ἑλλάδι",
-      "Romae": "ἐν τῇ 'Ρώμῃ",
-      "in Italia": "ἐν τῇ Ἰταλίᾳ",
-      "in Europa": "ἐν τῇ Εὐρώπῃ",
-      "in Asia": "ἐν τῇ Ἀσίᾳ",
-      "in Africa": "ἐν τῇ Λιβύῃ",
-      "in America": "ἐν τῇ Ἀμερικῇ",
-      "in Australia": "ἐν τῇ Αὐστραλίᾳ",
-      "in urbe": "ἐν τῇ πόλει",
-      "in vico": "ἐν κώμηῃ",
-      "ruri": "ἐν τοῖς ἀγροῖς",
-      "in insula": "ἐν νήσῳ",
-      "num domum habes?": "ἆρα ἔχεις οἶκον;",
-      "ita, maximam habeo domum.": "ναί, μέγιστον ἔχω οἶκον.",
-      "non, sed mercedem solvo.": "οὐκ, ἀλλὰ τελῶ ἐνοίκιον.",
-    
-      "φρασεις": "ΛΕΞΕΙΣ Α --γένονας",
-      
-      "quot annos natus es?": "πόσα ἔτη γέγονας;",
-      "quot annorum es?": "ποσῶν ἐτῶν εἶ;",
-      "viginti annos natus sum.": "γέγονα εἴκοσι ἔτη.",
-      "viginti annorum sum.": "εἴμι εἴκοσι ἐτῶν.",
-      "prope quinquaginta annos natus sum.": "εἴμι ἐγγὺς πεντήκοντα ἐτῶν.",
-      "hoc nihil ad te pertinet.": "τοῦτο οὐδέν ἐστι πρὸς σέ.",
-      "quot annos nata est filia tua?": "πόσα ἔτη γέγονεν ἡ θυγἀτηρ σου;",
-      "quinque annos nata est.": "γέγονε πέντε ἔτη.",
-      "quinque annorum est.": "ἔστι πέντε ἐτῶν.",
-      "infans": "τὸ βρέφος",
-      "puerulus/puellula": "τὸ παιδίον",
-      "puer/puella": "ὁ/ἡ παῖς",
-      "adulescentulus/adulescentula": "τὸ μειράκιον / τὸ κοράσιον",
-      "iuvenis": "ὁ νεανίσκος /ἡ νεᾶνις",
-      "vir/mulier": "ὁ ἀνήρ/ἡ γυνή",
-      "senex/anus": "ἡ πρέσβυς/ἡ πρεσβῦτις",
-      "senex/anus": "ὁ γέρων / ἡ γραῦς",
-    
-      "φρασεις": "ΛΕΞΕΙΣ Α --τεχνόν",
-      
-      "quam artem exerces?": "τίνα ἔχεις τέχνην;",
-      "sum": "εἰμι",
-      "magister": "διδάσκαλος",
-      "discipulus": "μαθητής",
-      "discipula": "μαθήτρια",
-      "medicus": "ἰατρός",
-      "coquus": "μάγειρος",
-      "coqua": "μαγείρισσα",
-      "dispensator": "οἰκονόμος",
-      "musicus": "μουσικός",
-      "politicus": "πολιτικός",
-      "philosophus": "φιλόσοφος",
-      "architectus": "ἀρχιτέκτων",
-      "miles": "στρατιώτης",
-      "laborare": "ἐργάζεσθαι",
-      "pictor": "ζωγράφος"
-    };
+        const flashcards = {
+              "ΛΕΞΕΙΣ V --Ρέματα": "verba",
+           
+              "ἀθυμέω": "despero. Τέλος δὲ ἀθῡμει ὁ παῖς καὶ καταβαίνει άπὸ τοῦ ὄρους",
+              "ἀναστρέφω": "revertor. ..ὰναστρέφει ὁ λὺκος καὶ κάποφεύγει",
+              "ἄπειμι": "absum",
+              "ἀπελαύνω": "abigo",
+              "ἀποφεύγω": "aufugio",
+              "ἀσπαίρω": "palpito",
+              "βάλλω": "iacio",
+              "βοάω": "clamo",
+              "γιγνώσκω": "cognosco",
+              "δάκνω": "mordeo",
+              "ἐμπίπτω": "incido",
+              "ἔνειμι": "insum",
+              "ἐπ-άν-ελθε!": "redi!",
+              "ἐπιθυμέω": "cupio",
+              "θαυμάζω": "miror",
+              "θορυβέω": "tumultuor",
+              "-βαίνω": "vado",
+              "κατα-πίπτω": "decido",
+              "κατέχω": "detineo",
+              "ὁράω": "video",
+              "ὁρμάω (ἐπί et acc.)": "ruo (in)",
+              "παύω": "cesso",
+              "σϊγάω": "taceo",
+              "ὑλακτέω": "latro",
+              "φεύγω": "fugio",
+              "φυλάττω": "custodio",
+            
+            "ΛΕΞΕΙΣ --Οὐσιαστικά": "substantiva",
+                "ἡ βακτηρία, τῆς βακτηρίᾶς": "baculum, baculi",
+                "τὸ θηρίον, τοῦ θηρίου": "bestia, bestiae",
+                "ὁ κῆπος, τοῦ κήπου": "hortus, horti",
+                "ὁ κύων (ὦ κύον, τὸν κύνα)": "canis, canis (vocative: canis, accusative: canem)",
+                "ὁ λαγώς (τὸν λαγών)": "lepus, leporis (accusative: leporem)",
+                "ὁ λύκος, τοῦ λύκου": "lupus, lupi",
+                "ἡ μαμμία, τῆς μαμμίᾶς": "avia, aviae",
+                "ἡ μάχαιρα, τῆς μαχαίρᾶς": "gladius, gladii",
+                "τὸ μειράκιον, τοῦ μειρακίου": "adulescentulus, adulescentuli",
+                "ὁ μῦθος, τοῦ μύθου": "fabula, fabulae",
+                "ὃ νεᾶνίᾶς, τοῦ νεᾶνίου": "iuvenis, iuvenis",
+                "τὸ ὄρος (τοῦ ὄρους, τοῖς ὄρεσιν)": "mons, montis (genitive: montis, dative plural: montibus)",
+                "ὃ πάππος, τοῦ πάππου": "avus, avi",
+                "ὁ ψόφος, τοῦ ψόφου": "sonus, soni",
+              
+            "ΛΕΞΕΙΣ V --Κύρια Ὀνόματα ": "nomina propria",
+            
+              "ἀγαθός, ἀγαθή, ἀγαθόν": "bonus, bona, bonum",
+                "ἄγριος, ἀγρία, ἄγριον": "ferus, fera, ferum",
+                "δεινός, δεινή, δεινόν": "gravis, gravis, grave",
+                "ποῖος;, ποίᾶ;, ποῖον;": "qualis?, qualis?, quale?",
+                "πρῶτος, πρώτη, πρῶτον": "primus, prima, primum",
+                "ῥᾷθῦμος, ῥάθῦμον": "segnis, segne",
+                "τις": "aliquis, aliquid",
+                "Κτητικά": "κεφάλαιον V",
+                "σός, σή, σόν": "tuus, tua, tuum",
+                "ὑμέτερος, ὑμετέρα,ὑμέτερον": "vester, vestra, vestrum",
+              
+            "ΛΕΞΕΙΣ V --Προθέσεις": "praepositiones",
+                "ἅμα (+ dat.)": "una cum (+ ablative)",
+                "ἀνά ( + acc.)": "sursum (+ accusative)",
+                "Ἐπιρρήματα": "κεφάλαιον V",
+                "δήπου": "sane, profecto",
+                "ἐνταῦθα": "hic, ibi",
+                "μέγα": "magnopere",
+                "ὀδάξ": "mordicus",
+                "ποῦ;": "ubi?",
+                "που": "alicubi",
 
+              "ΛΕΞΕΙΣ V --Σύνδεσμοι": "coniunctiones",
+                "οὕτε... οὕτε...": "neque... neque...",
+                "εὗ γε": "euge!",
+            
+              "ΛΕΞΕΙΣ V --Ἐπιφωνήματα": "interiectiones",
+                "ἄκρον τὸ ὄρος": "summus mons",
+                "ἐνταῦθα δή": "hic iam",
+                "ἴθι δή": "agedum!",
+                "μάλιστά γε": "maxime quidem",
+              
+            "ΛΕΞΕΙΣ V --Ἀντωνυμίαι": "pronomina",
+              "ἐγώ": "ego",
+              "ὑμεῖς": "vos"
+
+        };
 
  // keep track of time and count
         const timerElement = document.getElementById('timer');

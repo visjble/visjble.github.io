@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">   
+        <meta name="viewport" content="width=device-width" , initial-scale="3.0">
+        <title>ΛΥΟΜΕΝΟΣ</title>
+    <!--================STYLE=========================-->
+ <style>
+        html, body {
+            font-family: 'Times New Roman', serif;
+            font-size: 18px;
+        }
+
+        table {
+            /* width: 100%; */
+        }
+
+        td {
+            vertical-align: middle; /* Aligns the content vertically in the middle */
+            padding: 0px;
+            font-size: 20px;
+        }
+
+        #score {
+            margin-bottom: 0; /* Removes any default margin */
+            text-align: center; /* Centers the text */
+            font-size: 20px;
+        }
+
+        #more_to_go {
+            font-size: 18px; /* Set the text size for the "more_to_go" div */
+        }
+
+        #locutio {
+            font-size: 28px; /* Set the text size for the "locutio" div */
+        }
+
+        #response {
+            font-size: 28px; /* Set the text size for the response */
+        }
+
+        #guess_field {
+            font-size: 24px; /* Set the text size for the input field */
+            width: 60px;
+            font-family: 'Times New Roman', serif;
+            display: inline-block;
+            /* margin-top: 10px; */
+            box-sizing: border-box;
+        }
+    </style>
+    <!--================/STYLE=========================-->
+    </head>
+      <body onload="setRandomPastelColor()">
+      <center>
+        <h3>ΛΥΟΜΕΝΟΣ</h3>
+
+        <div id="more_to_go"></div>
+        <b><div id="locutio">Done , try a different exercise></div>        
+        </b>
+      <table>
+            <tbody>
+                  <tr>
+                        <td><input type="text" autocomplete="off" id="guess_field" onkeydown="matchFunc(event)">
+                        </td>
+                        <td><div id='score'>0</div></td>
+                  </tr>
+            </tbody>
+      </table>
+
+        <div id="response"></div>
+        <div id="correct_answer"></div>
+        <div id='final_score' style="color:blue;font-size:50px;"></div>
+      </center>
+
+      <!--===========SCRIPT STARTS=========================-->
+    <script>
+            function setRandomPastelColor() {
+        // Generate random pastel color
+        const hue = Math.floor(Math.random() * 360);
+        const saturation = Math.floor(Math.random() * 25) + 75; // 75-100%
+        const lightness = Math.floor(Math.random() * 25) + 75; // 75-100%
+        const color = `hsl(${hue}, ${saturation}%, ${lightness}%)`;
+  
+        // Set body background color to random pastel color
+        document.body.style.backgroundColor = color;
+           }
+        document.getElementById("guess_field").focus(); //poni sagitta intra campus
+        
+      var locutionis = [
+        "Ὀνομαστικὴ ἑνικὸς ἀρσενικὸν: λυόμεν#ος",
+        "Ὀνομαστικὴ ἑνικὸς θηλυκὸν: λυομέν#η",
+        "Ὀνομαστικὴ ἑνικὸς οὐδέτερον: λυόμεν#ον",
+        
+        "Γενικὴ ἑνικὸς ἀρσενικὸν: λυομέν#ου",
+        "Γενικὴ ἑνικὸς θηλυκὸν: λυομέν#ης",
+        "Γενικὴ ἑνικὸς οὐδέτερον: λυομέν#ου",
+        
+        "Δοτικὴ ἑνικὸς ἀρσενικὸν: λυομέν#ῳ",
+        "Δοτικὴ ἑνικὸς θηλυκὸν: λυομέν#ῃ",
+        "Δοτικὴ ἑνικὸς οὐδέτερον: λυομέν#ῳ",
+        
+        "Αἰτιατικὴ ἑνικὸς ἀρσενικὸν: λυόμεν#ον",
+        "Αἰτιατικὴ ἑνικὸς θηλυκὸν: λυομέν#ην",
+        "Αἰτιατικὴ ἑνικὸς οὐδέτερον: λυόμεν#ον",
+        
+        "Κλητικὴ ἑνικὸς ἀρσενικὸν: λυόμεν#ε",
+        "Κλητικὴ ἑνικὸς θηλυκὸν: λυομέν#η",
+        "Κλητικὴ ἑνικὸς οὐδέτερον: λυόμεν#ον",
+        
+        "Ὀνομαστικὴ πληθυντικὸς ἀρσενικὸν: λυόμεν#οι",
+        "Ὀνομαστικὴ πληθυντικὸς θηλυκὸν: λυόμεν#αι",
+        "Ὀνομαστικὴ πληθυντικὸς οὐδέτερον: λυόμεν#α",
+        
+        "Γενικὴ πληθυντικὸς ἀρσενικὸν: λυομέν#ων",
+        "Γενικὴ πληθυντικὸς θηλυκὸν: λυομέν#ων",
+        "Γενικὴ πληθυντικὸς οὐδέτερον: λυομέν#ων",
+        
+        "Δοτικὴ πληθυντικὸς ἀρσενικὸν: λυομέν#οις",
+        "Δοτικὴ πληθυντικὸς θηλυκὸν: λυομέν#αις",
+        "Δοτικὴ πληθυντικὸς οὐδέτερον: λυομέν#οις",
+        
+        "Αἰτιατικὴ πληθυντικὸς ἀρσενικὸν: λυομέν#ους",
+        "Αἰτιατικὴ πληθυντικὸς θηλυκὸν: λυομέν#ας",
+        "Αἰτιατικὴ πληθυντικὸς οὐδέτερον: λυόμεν#α",
+        
+        "Κλητικὴ πληθυντικὸς ἀρσενικὸν: λυόμεν#οι",
+        "Κλητικὴ πληθυντικὸς θηλυκὸν: λυόμεν#αι",
+        "Κλητικὴ πληθυντικὸς οὐδέτερον: λυόμεν#α"
+                
+                  ];
+var locu_set = locutionis.slice(); // Use slice to copy the original array
+var flag = 1; // Turn this off after the first round of sentences draw
+var words2guess = []; // Keep track of words in a sentence with #pound sign
+var attempts = 0; // Keeps track of attempts then reveals answer if > 3
+var score = 0; // Keeps track of good/bad guesses
+var counter = locu_set.length; // Length of array
+
+document.getElementById("more_to_go").innerHTML = "Λεξεις: " + romanize(counter);
+
+function romanize(num) {
+  // Romanize numbers for the countdown
+  var lookup = { X: 10, IX: 9, V: 5, IV: 4, I: 1 },
+    roman = '',
+    i;
+  for (i in lookup) {
+    while (num >= lookup[i]) {
+      roman += i;
+      num -= lookup[i];
+    }
+  }
+  return roman;
+}
+
+// Pop sentence for the first time
+if (flag == 1) {
+  counter = locu_set.length;
+  document.getElementById("more_to_go").innerHTML = "Λεξεις: " + romanize(counter);
+  firstPop(locu_set); // Do it once to get the first question
+  flag = 0;
+}
+
+function firstPop(locu_set) {
+  // Pop sentence for the first time
+  if (locu_set.length > 0) {
+    var first_sentence = blankWord(locu_set.shift()); // Call function that x's words starting with # sign
+    document.getElementById("locutio").innerHTML = first_sentence;
+  } else {
+    console.log("Out of words");
+  }
+  return first_sentence;
+}
+
+function blankWord(sentence) {
+  // Check each word starting with # and blank it out
+  let x = sentence.split(" ");
+  for (i = 0; i < x.length; i++) {
+    if (x[i].includes("#")) {
+      if (x[i].startsWith("#")) {
+        var word2guess = x[i].slice(1, x[i].length);
+        words2guess.push(word2guess); // Fill the array
+        x[i] = "_".repeat(x[i].length - 1); // Word xed out
+      } else {
+        // Find location of x and x-out till the end of string
+        var word2guess = x[i].slice(x[i].indexOf('#') + 1, x[i].length);
+        words2guess.push(word2guess); // Fill the array
+        var inx = x[i].indexOf('#'); // Finds position of substring to replace
+        var foo1 = x[i].substr(0, inx); // Extract first substring
+        var foo2 = x[i].substr(inx, 9); // Extract second substring
+        var fooX = "_".repeat(foo2.length - 1); // Ex-out chars after the # sign
+
+        x[i] = foo1 + fooX; // Word xed out
+      }
+    }
+  }
+  return x.join(" "); // Sententia cum multa x
+}
+
+function replaceWord(word_entered) {
+  // Replaces correct word with color green
+  var inner = document.getElementById("locutio").innerHTML;
+  var xsx = /(_)\1*/;
+  var arr = inner.match(xsx)[0]; // Match first occurrence of x-es
+  inner = inner.replace(arr, word_entered.fontcolor("green").toLowerCase());
+  document.getElementById("locutio").innerHTML = inner;
+}
+
+function getIncite() {
+  // Returns random encouraging sentence
+  var incites = ['Εὖ γε!','Εὖ ποιῶν!','Ἴθι!','Ἄριστα!','Ὀρθῶς!'];
+  return incites[Math.floor(Math.random() * incites.length)];
+}
+
+function getSmiley() {
+  var smileys = [' 😍', ' 😅', ' 😎', ' 😈', ' 😂', ' 😃', ' 😆', ' 😏'];
+  return smileys[Math.floor(Math.random() * smileys.length)];
+}
+
+function blink() {
+  var f = document.getElementById('response');
+  setTimeout(function () {
+    f.style.display = (f.style.display == 'none' ? '' : 'none');
+  }, 200);
+  setTimeout(function () {
+    f.style.display = (f.style.display == 'none' ? '' : 'none');
+  }, 300);
+  document.getElementById("guess_field").style.color = "red";
+  document.getElementById("guess_field").style.textDecoration = "line-through";
+}
+
+// =======================KEYDOWN FUNCTION========================================
+// ======================|            |========================================
+
+function matchFunc() {
+  var x = event.keyCode; // Also try event.which || event.keyCode
+  if (x == 13) {
+    var word_entered = document.getElementById("guess_field").value;
+    if (word_entered.toLowerCase() == words2guess[0].toLowerCase() && words2guess.length > 0) {
+      replaceWord(word_entered);
+      document.getElementById("response").innerHTML = getIncite() + getSmiley();
+      document.getElementById("score").innerHTML = score += 1;
+      document.getElementById("guess_field").value = "";
+      attempts = 0;
+
+      setTimeout(clearFields, 1500);
+      if (words2guess.length > 1) {
+        words2guess.shift();
+        setTimeout(clearFields, 1000); // Erases the response text after 1 sec
+        return;
+      } else {
+        words2guess = []; // Empty array
+        if (locu_set.length === 0) {
+          document.getElementById("locutio").innerHTML = "Τετέλεσται!";
+          document.getElementById("more_to_go").innerHTML = "";
+          document.getElementById("response").innerHTML = "";
+          document.getElementById("guess_field").style.visibility = "hidden";
+          document.getElementById("score").style.visibility = "hidden";
+          document.getElementById("final_score").innerHTML = score;
+          document.getElementById("final_score").style.visibility = "visible";
+        } else {
+          counter--;
+          document.getElementById("more_to_go").innerHTML = "Λέξεις: " + romanize(counter);
+          setTimeout(doo, 1000);
+          function doo() {
+            document.getElementById("locutio").innerHTML = blankWord(locu_set.shift());
+          }
+        }
+      }
+    } else if (word_entered == "" && counter > 0) {
+      document.getElementById("response").innerHTML = "Γράφε ἀπόκρισιν ⬉";
+      document.getElementById("guess_field").value = "";
+    } else if (word_entered.toLowerCase() !== words2guess[0].toLowerCase() && counter > 0) {
+      attempts += 1;
+      document.getElementById("response").innerHTML = "😱 Οὐδαμῶς! Πειρῶ αὖθις!";
+      blink();
+      document.getElementById("score").innerHTML = score -= 1;
+      setTimeout(clearFields, 1000);
+
+      // Check to see if wrong answer has been entered three times
+      if (attempts == 3) {
+        document.getElementById("correct_answer").innerHTML = "ὀρθή ἀπόκρισις: " + words2guess[0];
+        attempts = 0;
+      }
+    }
+  }
+}
+
+function clearFields() {
+  // Delay function to trigger at the end of exercise
+  document.getElementById("response").innerHTML = "";
+  document.getElementById("guess_field").value = "";
+  document.getElementById("correct_answer").innerHTML = "";
+  document.getElementById("guess_field").style.textDecoration = "none";
+  document.getElementById("guess_field").style.color = "black";
+}
+         
+    </script>
+    <!--===========SCRIPT ENDS=========================-->
+
+
+    </body>
+
+</html>

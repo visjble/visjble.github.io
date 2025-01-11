@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+
+<!-- 
+===============================================================================
+    Copyright © 2023 RegioXvenetia. All rights reserved.
+
+    The code of this site is protected under the copyright laws. Reproduction, 
+    redistribution or modification of the code or any part thereof is strictly 
+    prohibited without the prior written consent of regioXvenetia.com.
+===============================================================================
+-->
+
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VIΙ</title>
+    <link rel="stylesheet" href="https://unpkg.com/swiper/swiper-bundle.min.css" />
+<style>
+    @import url('https://fonts.googleapis.com/css2?family=GFS+Didot&display=swap');
+    
+    .gfs-didot-regular {
+      font-family: "GFS Didot", serif;
+      font-weight: 400;
+      font-style: normal;
+    }
+    
+    body {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
+      font-family: "GFS Didot", serif;
+    }
+    
+    .navigation {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-wrap: wrap;
+        background-color: #1c3446;
+        padding: 10px 0;
+        width: 100%;
+      }
+
+      .navigation button {
+        margin: 3px;
+        font-family: "GFS Didot", serif;
+        font-size: 16px;
+        background-color: #007aff;
+        border: none;
+        color: white;
+        padding: 6px 10px;
+        border-radius: 5px;
+        cursor: pointer;
+      }
+
+      .swiper-container {
+        width: 100%;
+        max-width: 85vw;
+        height: 65vh;
+        margin-top: 10px;
+        margin-bottom: 10px;
+      }
+
+      .swiper-slide {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        text-align: center;
+        font-size: 60px;
+        color: #fff;
+        background: #007aff;
+        height: 100%;
+        width: 100%;
+        border-radius: 15px;
+        box-sizing: border-box;
+        padding: 15px;
+        font-family: "GFS Didot", serif;
+      }
+
+      .swiper-pagination {
+        margin-top: 10px;
+      }
+
+      @media screen and (max-width: 600px) {
+        .navigation button {
+          font-size: 18px;
+          padding: 5px 8px;
+        }
+
+        .swiper-container {
+          max-width: 90vw;
+          height: 60vh;
+        }
+
+        .swiper-slide {
+          font-size: 24px;
+          padding: 10px;
+        }
+      }
+        .swiper-container {
+          max-width: 95vw;
+          height: auto;
+         height: 95vh; /* Adjust height for medium screens */
+        }
+
+        .swiper-slide {
+          font-size: 32px;
+          padding: 8px;
+        }
+      }
+    </style>
+</head>
+<body>
+    <div class="navigation">
+        <label><input type="radio" name="section" value="0" checked> I</label>
+        <label><input type="radio" name="section" value="1"> II</label>
+        <label><input type="radio" name="section" value="2"> III</label>
+        <label><input type="radio" name="section" value="3"> IV</label>
+    </div>
+        <div class="info-container">
+        <span id="timer">Time: 00:00</span>
+        <span id="countdown">Cards Left: 0</span>
+    </div>    
+    <div class="swiper-container">
+        <div class="swiper-wrapper">
+            <!-- Slides will be dynamically added here -->
+        </div>
+    </div>
+
+    <script src="https://unpkg.com/swiper/swiper-bundle.min.js"></script>
+    <script>
+        const flashcards = {
+              "ΛΕΞΕΙΣ --Ρέματα": "verba",
+            
+              'αἱρέω': 'capio. τέλος δὲ τὴν πόλιν αἱροῦσιν',
+              'ἀναπηδάω': 'exsilio. Ὁ δὲ ἀναπηδᾷ καὶ δεινῶς κλάζει.',
+              'ἀποθνήσκω': 'morior. οἱ δὲ ἐν τῇ θαλάττῃ ἀποθνήσκουσιν',
+              'ἀποκρίνομαι': 'respondeo. Ὁ δὲ Κύκλωψ οὐδὲν ἀποκρίνεται ',
+              'ἀποφέρω': 'aufero. θαλάττῃ καὶ τὴν ναῦν ἀπὸ τῆς πατρίδος ἀποφέρει',
+              'ἁρπάζω': 'rapio. τοὺς ᾿Αχαιούς" τῶν ἑταίρων δὲ δύο ἁρπάζει',
+              'βληχάομαι': 'balo. Μάλα φοβεῖται καὶ βληχᾶται- «Βῆ, βῆ.»',
+              'δεύω': 'madefacio. ὁ δὲ ἐγκέφαλος ἐκρεῖ καὶ δεύει τὴν γῆν',
+              'ἐκπέμπω': 'emitto. τά τε πρόβατα καὶ τὰς αἶγας ἐκπέμπει',
+              'ἐκ-ρέω': 'effluo. ὁ δὲ ἐγκέφαλος ἐκρεῖ(stacca) καὶ δεύει(bagna) τὴν γῆν',
+              'ἐξαίρω': 'extollo. ὁ Κύκλωψ τὸν λίθον ἐξαίρει ἐκ τῆς τοῦ ἄντρου εἰσόδου',
+              'εὑρίσκω': 'invenio. Ἀλλ᾽ οὐ ῥάδιόν ἐστι τὸ πρόβατον εὑρίσκειν',
+              'θερμαίνω': 'calefacio. Ὀδυσσεὺς τοὺς ἑταίρους κελεύει θερμαίνειν τὸ ῥόπαλον ἐν τῷ πυρί',
+              'καίω': 'uro. Ὁ μὲν οὖν παῖς ἐπὶ τῇ λαμπάδι πῦρ καίει.',
+              'κατα-φεύγω': 'confugio. τὸ δὲ πρόβατον εἰς τὸν πύργον καταφεύγει',
+              'κατ-εσθίω': 'devoro. ἐπεὶ τὰς τοῦ Ἡλίου βοῦς σφάττουσι καὶ κατεσθίουσιν',
+              'κόπτω': 'percutio, caedo. . δύο ἁρπάζει καὶ κόπτει πρὸς τὴν γῆν',
+              'κρύπτω': 'occulto. Ὀδυσσεὺς τοὺς ἑταίρους κρύπτει ὑπὸ τὰ πρόβατα',
+              'μεθύω': 'ebrius sum. πολὺν οἶνον τῷ Κύκλωπι παρέχει, ὥστε διὀλίγου μάλα μεθύει',
+              'σφάττω, σφάζο': 'macto, sacrifico. ἐπεὶ τὰς τοῦ Ἡλίου βοῦς σφάττουσι καὶ κατεσθίουσιν',
+              'σωφρονέω': 'prudens. Διὰ τοῦτο ἀεὶ ἡ μήτηρ φησὶν ὅτι ἐμὸν ἔργον ἐστὶ σωφρονεῖν',
+              'ὑπέχω': 'sustineo. πολλάκις χειμῶνας ὑπέχουσιν',
+
+              "ΛΕΧΕΙΣ --ἀντωνυμίαι": "pronomina",
+              'ἑαυτόν, ἑαυτήν, ἑαυτό': 'se',
+              'ἐμαυτόν': 'me ipsum',
+              'ἐμαυτήν': 'me ipsam',
+              'ἡμᾶς αὐτούς': 'nos ipsos',
+              'αὐτάς': 'ipsas',
+              'σεαυτόν': 'te ipsum',
+              'σεαυτήν': 'te ipsam',
+              'ἡ': 'ea',
+              'ὁμᾶς αὐτοὺς': 'vos ipsos',
+              'αὐτάς': 'ipsas',
+              'οὐδείς': 'nemo',
+              'οὐδεμία': 'nulla',
+              'οὐδέν': 'nihil',
+            
+        
+              "ΛΕΞΕΙΣ --Οὐσιαστικά": "substantiva",
+
+              'ὃ αἰγιαλός, τοῦ αἰγιαλοῦ': 'litus, litoris',
+              'ἡ αἴξ, τῆς αἰγός': 'capra, caprae',
+              'ὁ ἄνεμος, τοῦ ἀνέμου': 'ventus, venti',
+              'τὸ ἄντρον, τοῦ ἄντρου': 'antrum, antri',
+              'ὁ ἀσκός, τοῦ ἀσκοῦ': 'uter, utris',
+              'ὁ γίγας, τοῦ γίγαντος': 'gigas, gigantis',
+              'τὸ δέρμα, τοῦ δέρματος': 'pellis, pellis',
+              'ἡ ἐγκέφαλος, τοῦ ἐγκεφάλου': 'cerebrum, cerebri',
+              'ἡ εἴσοδος, τῆς εἰσόδου': 'introitus, introitus',
+              'ἡ εὐδίᾳ, τῆς εὐδίας': 'serenitas, serenitatis',
+              'ὁ ἡγεμών, τοῦ ἡγεμόνος': 'dux, ducis',
+              'ὁ θεός, τοῦ θεοῦ': 'deus, dei',
+              'ὁ θησαυρός, τοῦ θησαυροῦ': 'thesaurus, thesauri',
+              'ὁ καπνός, τοῦ καπνοῦ': 'fumus, fumi',
+              'ὁ κίνδῦνος, τοῦ κινδύνου': 'periculum, periculi',
+              'ἣ λαμπάς, τῆς λαμπάδος': 'fax, facis',
+              'ὃ λιμήν, τοῦ λιμένος': 'portus, portus',
+              'τὸ μέτωπον, τοῦ μετώπου': 'frons, frontis',
+              'ὁ μυχός, τοῦ μυχοῦ': 'recessus, recessus',
+              'ὁ ξένος, τοῦ ξένου': 'hospes, hospitis',
+              'τὸ ὄνομα, τοῦ ὀνόματος': 'nomen, nominis',
+              'ὁ ὀφθαλμός, τοῦ ὀφθαλμοῦ': 'oculus, oculi',
+              'ἣ πατρίς, τῆς πατρίδος': 'patria, patriae',
+              'τὰ ποίμνια, τῶν ποιμνίων': 'greges, gregum',
+              'τὸ πῦρ, τοῦ πυρός': 'ignis, ignis',
+              'ὃ πύργος, τοῦ πύργου': 'turris, turris',
+              'τὸ ῥόπαλον, τοῦ ῥοπάλου': 'clava, clavae',
+              'ὁ φθόγγος, τοῦ φθόγγου': 'sonus, soni',
+              'τὸ φῶς, τοῦ φωτός': 'lux, lucis',
+              'ὃ χειμών, τοῦ χειμῶνος': 'hiems, hiemis',
+            
+              "ΛΕΞΕΙΣ --Κύρια Ὀνόματα": "nomina propria",
+
+              'ὁ ᾿Αγαμέμνων, τοῦ ᾿Αγαμέμνονος': 'Agamemnon, Agamemnonis',
+              'ὁ Αἴολος, τοῦ Αἰόλου': 'Aeolus, Aeoli',
+              'οἱ ᾿Αχαιοί, τῶν ᾿Αχαιῶν': 'Achaei, Achaeorum',
+              'ὁ Ἥλιος, τοῦ Ἡλίου': 'Sol, Solis',
+              'ἡ Ἰθάκη, τῆς Ἰθάκης': 'Ithaca, Ithacae',
+              'ὁ Κύκλωψ, τοῦ Κύκλωπος': 'Cyclops, Cyclopis',
+              'ὁ Λαέρτης, τοῦ Λαέρτου': 'Laertes, Laertis',
+              'ὁ Ὀδυσσεύς, τοῦ Ὀδυσσέως': 'Ulixes, Ulixis', // Corrected: added genitive form
+              'ὁ Ποσειδῶν, τοῦ Ποσειδῶνος': 'Neptunus, Neptuni',
+              'ἡ Τροία, τῆς Τροίας': 'Troia, Troiae',
+
+              "ΛΕΞΕΙΣ --Αριθμητικά": "numerales",
+
+              'δύο': 'duo',
+              'δώδεκα': 'duodecim',
+              'εἷς': 'unus',
+              'μία': 'una',
+              'ἕν': 'unum',
+
+              "ΛΕΞΕΙΣ --Προθέσεις": "praepositiones",
+
+              'ἐγγύς': 'prope',
+              'ἔνδον': 'intus',
+              'ἐνθάδε': 'hic',
+              'ποτε': 'aliquando',
+              'πρῶτον': 'primum',
+              'πῶς': 'quomodo',
+
+            "ΛΕΞΕΙΣ --Ἐπιρρήματα": "adverbia",
+
+              "γε": "quidem. ..λέγειν νῦν γε",
+              "οἴκοι": "domi",
+              "οὐδαμῶς": "nequaquam",
+
+            
+            "ΛΕΞΕΙΣ --ἐπίθετα": "adiectivi",
+
+              'δυνατός, δυνατή, δυνατόν': 'potens, potens, potens',
+              'ἐχθρός, ἐχθρά, ἐχθρόν': 'inimicus, inimica, inimicum',
+              'μέγιστος, μεγίστη, μέγιστον': 'maximus, maxima, maximum',
+              'μέσος, μέση, μέσον': 'medius, media, medium',
+              'μόνος, μόνη, μόνον': 'solus, sola, solum',
+              'πᾶς, πᾶσα, πᾶν': 'omnis, omnis, omne',
+              'πάντες, πάσας, πάντα': 'omnes, omnes, omnia',
+              'πολύτροπος, πολύτροπον': 'versutus, versutum',
+              'σοφός, σοφή, σοφόν': 'sapiens, sapiens, sapiens',
+              'σῶος, σώα, σῶον': 'salvus, salva, salvum',
+              'σώφρων, σῶφρον': 'prudens, prudens',
+              'σώφρονος': 'prudentis',
+              'τυφλός, τυφλή, τυφλόν': 'caecus, caeca, caecum',
+              'φοβερός, φοβερά, φοβερόν': 'terribilis, terribilis, terribile',
+              'πολύμητις': 'prudens',
+
+
+            "ΛΕΞΕΙΣ --φράσεις": "locutiones",
+              'κατὰ θάλατταν': 'per mare',
+              'ὡς τάχιστα': 'quam celerrime',
+
+        };
+
+
+        // keep track of time and count
+        const timerElement = document.getElementById('timer');
+        const countdownElement = document.getElementById('countdown');
+        let startTime;
+        let timerInterval;
+        
+        function startTimer() {
+          startTime = Date.now();
+          timerInterval = setInterval(updateTimer, 1000);
+        }
+        
+        function updateTimer() {
+          const elapsedTime = Date.now() - startTime;
+          const minutes = Math.floor(elapsedTime / 60000);
+          const seconds = Math.floor((elapsedTime % 60000) / 1000);
+          const formattedTime = `${padZero(minutes)}:${padZero(seconds)}`;
+          timerElement.textContent = `Time: ${formattedTime}`;
+        }
+        
+        function padZero(number) {
+          return number.toString().padStart(2, '0');
+        }
+        
+        function updateCountdown() {
+          const remainingCards = Math.floor(entries.length - swiper.activeIndex / 2);
+          countdownElement.textContent = `Cards Left: ${remainingCards}`;
+        }
+  // Convert flashcards object into an array
+    let entries = Object.entries(flashcards);
+
+    // Create an object to store the sections and their corresponding indices
+    let sections = {};
+    let currentSection = '';
+
+    entries.forEach(([key, value], index) => {
+        if (key.startsWith('ΛΕΞΕΙΣ')) {
+            currentSection = key;
+            sections[currentSection] = index;
+        }
+    });
+
+    const swiperWrapper = document.querySelector('.swiper-wrapper');
+
+        entries.forEach(([key, value], index) => {
+        const slideKey = document.createElement('div');
+        slideKey.className = 'swiper-slide';
+        slideKey.textContent = key;
+        slideKey.style.backgroundColor = '#007aff';
+
+        const slideValue = document.createElement('div');
+        slideValue.className = 'swiper-slide';
+        slideValue.textContent = value;
+        slideValue.style.backgroundColor = '#B19CD9';
+
+        swiperWrapper.appendChild(slideKey);
+        swiperWrapper.appendChild(slideValue);
+    });
+
+    const swiper = new Swiper('.swiper-container', {
+        on: {
+            slideChange: function () {
+              updateCountdown();
+            },
+          },
+    });
+
+    const navigation = document.querySelector('.navigation');
+    let buttons = '';
+
+    Object.keys(sections).forEach((section) => {
+        const sectionName = section.replace(/^.*--/, '').trim();
+        buttons += `<button data-section="${section}">${sectionName}</button>`;
+    });
+
+    navigation.innerHTML = buttons;
+
+    document.querySelectorAll('.navigation button').forEach((button) => {
+        button.addEventListener('click', (event) => {
+            const section = event.target.getAttribute('data-section');
+            const slideIndex = sections[section] * 2;
+            swiper.slideTo(slideIndex);
+        });
+    });
+    startTimer();
+updateCountdown();
+</script>
+</body>
+</html>

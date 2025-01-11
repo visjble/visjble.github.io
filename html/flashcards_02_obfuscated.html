@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+    <!-- 
+===============================================================================
+    Copyright © 2024 RegioXvenetia. All rights reserved.
+
+    The code of this site is protected under the copyright laws. Reproduction, 
+    redistribution or modification of the code or any part thereof is strictly 
+    prohibited without the prior written consent of regioXvenetia.com.
+===============================================================================
+-->
+<html lang="en">
+    
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ΑΓΟΝΑΣ</title>
+    <style>
+        body {
+            background-color: #1a1a2e;
+            color: #ffffff;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            font-family: Arial, sans-serif;
+        }
+
+        #flashcard-container {
+            perspective: 1000px;
+        }
+        #flashcard {
+            width: 300px;
+            height: 400px;
+            background-color: #16213e;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            cursor: pointer;
+            transition: transform 0.6s;
+            transform-style: preserve-3d;
+            position: relative;
+            flex-direction: column;
+        }
+
+        #flashcard img {
+            width: 150px;
+            height: 160px;
+            border-radius: 15px;
+            margin-bottom: 20px;
+        }
+
+        #flashcard .front,
+        #flashcard .back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            text-align: center;
+        }
+
+        #flashcard .back {
+            transform: rotateY(180deg);
+            text-align: center;
+        }
+
+        #flashcard.flipped {
+            transform: rotateY(180deg);
+        }
+
+        #controls {
+            margin-top: 20px;
+        }
+
+        #controls button {
+            border: none;
+            padding: 10px 20px;
+            margin: 0 10px;
+            color: #ffffff;
+            font-size: 18px;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+
+        #incorrect {
+            background-color: red;
+            color: white;
+        }
+        #incorrect:hover {
+            background-color: #ff5959;
+        }
+
+        #correct {
+            background-color: #0f6057;
+        }
+
+        #correct:hover {
+            background-color: #1b9d8f;
+        }
+
+        #score {
+            margin-top: 20px;
+            font-size: 18px;
+        }
+
+        #result-container {
+            display: none;
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        #restart-button {
+            background-color: #0f3460;
+            border: none;
+            padding: 10px 20px;
+            margin-top: 20px;
+            color: #ffffff;
+            font-size: 18px;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+
+        #restart-button:hover {
+            background-color: #264f7b;
+        }
+
+        #chart-container {
+            width: 100%;
+            height: 100%;
+            display: none;
+            align-items: center;
+            justify-content: center;
+        }
+
+        #result-chart {
+            width: 100%;
+            height: 100%;
+        }
+
+        #score span {
+            padding-right: 20px;
+            padding-left: 20px;
+        }
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
+</head>
+<body>
+    <div id="flashcard-container">
+        <div id="flashcard">
+            <div class="front">
+                <img id="flashcard-image" src="" alt="Flashcard Image">
+                <div id="flashcard-text"></div>
+            </div>
+            <div class="back" id="flashcard-back-text"></div>
+            <div id="chart-container">
+                <canvas id="result-chart"></canvas>
+            </div>
+        </div>
+    </div>
+    <div id="controls">
+        <button id="incorrect" onclick="markIncorrect()">✘</button>
+        <button id="correct" onclick="markCorrect()">✔</button>
+    </div>
+    <div id="score">
+        <span id="correct-score">ὀρθαί: 0</span>
+        <span id="incorrect-score">οὐκ ὀρθαί: 0</span>
+    </div>
+    <div id="result-container">
+        <button id="restart-button" onclick="restartGame()">ἀναθέω τὸ παίγνιον</button>
+    </div>
+ 
+
+    <script>
+           console.log('ἀνὰ πόλιν\nper urbem')
+        const flashcards = [
+            
+            { front: 'ἀνά + acc.<br>---<br>Puella sursum per urbem it', back: 'Ἡ κόρη πορεύεται ἀνὰ τὴν πόλιν', image: 'https://i.imgur.com/bLgsGxs.jpg' },
+            { front: 'πρός + acc.<br>---<br>Ad fontem festinat', back: 'Πρὸς τὴν κρήνην σπεύδει', image: 'https://i.imgur.com/IBse3AL.jpeg' },
+            { front: 'ἀμφί + gen.<br>---<br>Circa fontem ambulat', back: 'Ἀμφὶ τῆς κρήνης περιπατεῖ', image: 'https://i.imgur.com/bLgsGxs.jpg' },
+            { front: 'παρά + dat.<br>---<br>Apud fontem stat puer', back: 'Παρὰ τῇ κρήνῃ ἵσταται παῖς', image: 'https://i.imgur.com/JAFFbJM.jpg' },
+            { front: 'μετά + gen.<br>---<br>Cum puero loquitur', back: 'Μετὰ τοῦ παιδὸς διαλέγεται', image: 'https://i.imgur.com/JAFFbJM.jpg' },
+            { front: 'ἐπί + gen.<br>---<br>Super margine sedent', back: 'Ἐπὶ τοῦ χείλους κάθηνται', image: 'https://i.imgur.com/JAFFbJM.jpg' },
+            { front: 'ἐκ + gen.<br>---<br>Ex fonte aquam haurit', back: 'Ἐκ τῆς κρήνης ὕδωρ ἀρύεται', image: 'https://i.imgur.com/IBse3AL.jpeg' },
+            { front: 'ἀπό + gen.<br>---<br>A fonte abeunt', back: 'Ἀπὸ τῆς κρήνης ἀπέρχονται', image: 'https://i.imgur.com/IBse3AL.jpeg' },
+            { front: 'κατά + acc.<br>---<br>Secundum viam ambulant', back: 'Κατὰ τὴν ὁδὸν βαδίζουσιν', image: 'https://i.imgur.com/bLgsGxs.jpg' },
+            { front: 'ἀντί + gen.<br>---<br>Pro amore sacrificat', back: 'Ἀντὶ τοῦ ἔρωτος θύει', image: 'https://i.imgur.com/IBse3AL.jpeg' },
+            { front: 'πρό + gen.<br>---<br>Ante templum stant', back: 'Πρὸ τοῦ ναοῦ ἑστᾶσιν', image: 'https://i.imgur.com/JAFFbJM.jpg' },
+            { front: 'περί + gen.<br>---<br>De amore loquuntur', back: 'Περὶ τοῦ ἔρωτος λέγουσιν', image: 'https://i.imgur.com/JAFFbJM.jpg' },
+            { front: 'διά + gen.<br>---<br>Per amorem coniuncti', back: 'Διὰ τοῦ ἔρωτος συνδεδεμένοι', image: 'https://i.imgur.com/IBse3AL.jpeg' },
+            { front: 'ὑπέρ + gen.<br>---<br>Pro amore suo pugnat', back: 'Ὑπὲρ τοῦ ἔρωτος αὐτοῦ μάχεται', image: 'https://i.imgur.com/IBse3AL.jpeg' },
+            { front: 'μετά + acc.<br>---<br>Post sacrificium ambulant', back: 'Μετὰ τὴν θυσίαν περιπατοῦσιν', image: 'https://i.imgur.com/bLgsGxs.jpg' },
+            { front: 'ἀμφί + dat.<br>---<br>Circa hortos vagantur', back: 'Ἀμφὶ τοῖς κήποις πλανῶνται', image: 'https://i.imgur.com/JAFFbJM.jpg' },
+            { front: 'πρός + dat.<br>---<br>Apud amicum manent', back: 'Πρὸς τῷ φίλῳ μένουσιν', image: 'https://i.imgur.com/IBse3AL.jpeg' },
+            { front: 'ὑπό + gen.<br>---<br>Sub amore tenentur', back: 'Ὑπὸ τοῦ ἔρωτος κατέχονται', image: 'https://i.imgur.com/JAFFbJM.jpg' },
+            { front: 'ἐν + dat.<br>---<br>In amore vivunt', back: 'Ἐν τῷ ἔρωτι ζῶσιν', image: 'https://i.imgur.com/IBse3AL.jpeg' },
+            { front: 'σύν + dat.<br>---<br>Cum amore vitam degunt', back: 'Σὺν τῷ ἔρωτι τὸν βίον διάγουσιν', image: 'https://i.imgur.com/JAFFbJM.jpg' },
+            { front: 'εἰς + acc.<br>---<br>In matrimonium ducit', back: 'Εἰς γάμον ἄγει', image: 'https://i.imgur.com/IBse3AL.jpeg' },
+            { front: 'ὑπό + dat.<br>---<br>Sub dio dormit', back: 'Ὑπὸ τῷ Διί καθεύδει', image: 'https://i.imgur.com/JAFFbJM.jpg' },
+            { front: 'ὑπό + acc.<br>---<br>Sub arborem currunt', back: 'Ὑπὸ τὸ δένδρον τρέχουσιν', image: 'https://i.imgur.com/bLgsGxs.jpg' }        
+        ];
+
+
+        let currentIndex = 0;
+        let correctCount = 0;
+        let incorrectCount = 0;
+        let incorrectCards = [];
+
+        const flashcard = document.getElementById('flashcard');
+        const flashcardImage = document.getElementById('flashcard-image');
+        const flashcardText = document.getElementById('flashcard-text');
+        const flashcardBackText = document.getElementById('flashcard-back-text');
+        const correctScore = document.getElementById('correct-score');
+        const incorrectScore = document.getElementById('incorrect-score');
+        const controls = document.getElementById('controls');
+        const chartContainer = document.getElementById('chart-container');
+        const resultChart = document.getElementById('result-chart').getContext('2d');
+        const resultContainer = document.getElementById('result-container');
+        let chart;
+
+        flashcard.addEventListener('click', () => {
+            flashcard.classList.toggle('flipped');
+        });
+
+        function updateCard() {
+            if (currentIndex < flashcards.length) {
+                const card = flashcards[currentIndex];
+                flashcardImage.src = card.image;
+                flashcardText.innerHTML = card.front;
+                flashcardBackText.innerHTML = card.back;
+                flashcard.classList.remove('flipped');
+                chartContainer.style.display = 'none';
+                flashcard.style.display = 'flex';
+            }
+        }
+
+        function markCorrect() {
+            correctCount++;
+            correctScore.textContent = `ὀρθαί: ${correctCount}`;
+            nextCard();
+        }
+
+        function markIncorrect() {
+            incorrectCount++;
+            incorrectScore.textContent = `οὐκ ὀρθαί: ${incorrectCount}`;
+            incorrectCards.push(flashcards[currentIndex]);
+            nextCard();
+        }
+
+        function showResults() {
+            flashcard.style.display = 'none';
+            controls.style.display = 'none';
+            chartContainer.style.display = 'flex';
+            resultContainer.style.display = 'block';
+            chart = new Chart(resultChart, {
+                type: 'pie',
+                data: {
+                    labels: ['Correct', 'Incorrect'],
+                    datasets: [{
+                        data: [correctCount, incorrectCount],
+                        backgroundColor: ['#0f3460', '#e94560']
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    title: {
+                        display: true,
+                        text: 'Results'
+                    }
+                }
+            });
+        }
+
+        function restartGame() {
+            chartContainer.style.display = 'none';
+            resultContainer.style.display = 'none';
+            controls.style.display = 'flex';
+            if (chart) chart.destroy();
+            currentIndex = 0;
+            correctCount = 0;
+            incorrectCount = 0;
+            incorrectCards = [];
+            correctScore.textContent = 'ὀρθός: 0';
+            incorrectScore.textContent = 'οὐκ ὀρθαί : 0';
+            updateCard();
+        }
+
+        function nextCard() {
+            currentIndex++;
+            if (currentIndex >= flashcards.length) {
+                if (incorrectCards.length > 0) {
+                    flashcards.push(...incorrectCards);
+                    incorrectCards = [];
+                    currentIndex = flashcards.length - incorrectCards.length;
+                } else {
+                    confetti({
+                        particleCount: 100,
+                        spread: 70,
+                        origin: { y: 0.6 }
+                    });
+                    showResults();
+                    return;
+                }
+            }
+            updateCard();
+        }
+
+        updateCard();
+    </script>
+</body>
+</html>

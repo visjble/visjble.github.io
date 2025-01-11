@@ -1,260 +1,184 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
-    <meta content="width=device-width, initial-scale=1" name="viewport">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Attic Greek Word Guessing Game</title>
     <style>
-        body, html {
-            width: 99.9%;
-            clear: both;
-            border: 1px solid;
-            text-align: center;
-            padding-right: 0px;
-            margin: auto;
-            border-color: #ffffff;
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f4f4f4;
         }
 
-        table {
-            border-collapse: collapse;
-            table-layout: fixed;
+        #game-container {
             width: 100%;
-            white-space: nowrap;
-            font-size: 12px;
-            border: 3px solid;
-            display: inline-block;
-            background: #FF7F50;
-            color: #FFFFFF;
-            padding: 5px 5px;
+            max-width: 400px;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            background-color: #fff;
             border-radius: 10px;
+            text-align: center;
+        }
+
+        input[type="text"] {
+            width: calc(100% - 22px);
+            padding: 10px;
+            margin-bottom: 10px;
+            font-size: 1.2em;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            text-align: center;
+        }
+
+        button {
+            width: 100%;
+            padding: 10px;
+            font-size: 1.2em;
+            color: #fff;
+            background-color: #28a745;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-bottom: 20px;
+        }
+
+        button:disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
+        }
+
+        #result {
+            margin-bottom: 20px;
+            font-size: 1.2em;
+            font-weight: bold;
+        }
+
+        #score {
+            margin-top: 20px;
+            font-size: 1.2em;
+        }
+
+        #details {
+            margin-top: 10px;
+            font-size: 1em;
+            color: #555;
         }
     </style>
-    <title></title>
 </head>
 <body>
-    <table id="table">
-        <tbody>
-            <tr>
-                <th rowspan="3"></th>
-                <th colspan="6">
-                    <b><i>HIC, HAEC, HOC</i><br>
-                    significat apud nos esse</b>
-                    <hr>
-                </th>
-            </tr>
-            <tr>
-                <th colspan="3"><b>Singularis</b></th>
-                <th colspan="2"><b>Pluralis</b></th>
-            </tr>
-            <tr>
-                <th colspan="1"><b>Masc</b></th>
-                <th colspan="1"><b>Fem</b></th>
-                <th colspan="1"><b>Neut</b></th>
-                <th colspan="1"><b>Masc</b></th>
-                <th colspan="1"><b>Fem</b></th>
-                <th colspan="1"><b>Neut</b></th>
-            </tr>
-            <tr>
-                <th><b>Nom</b></th>
-                <td id="1"></td>
-                <td id="2"></td>
-                <td id="3"></td>
-                <td id="4"></td>
-                <td id="5"></td>
-                <td id="6"></td>
-            </tr>
-            <tr>
-                <th><b>Acc</b></th>
-                <td id="7"></td>
-                <td id="8"></td>
-                <td id="9"></td>
-                <td id="10"></td>
-                <td id="11"></td>
-                <td id="12"></td>
-            </tr>
-            <tr>
-                <th><b>Gen</b></th>
-                <td id="13"></td>
-                <td id="14"></td>
-                <td id="15"></td>
-                <td id="16"></td>
-                <td id="17"></td>
-                <td id="18"></td>
-            </tr>
-            <tr>
-                <th><b>Dat</b></th>
-                <td id="19"></td>
-                <td id="20"></td>
-                <td id="21"></td>
-                <td id="22"></td>
-                <td id="23"></td>
-                <td id="24"></td>
-            </tr>
-            <tr>
-                <th><b>Abl</b></th>
-                <td id="25"></td>
-                <td id="26"></td>
-                <td id="27"></td>
-                <td id="28"></td>
-                <td id="29"></td>
-                <td id="30"></td>
-            </tr>
-        </tbody>
-    </table>
+    <div id="game-container">
+        <div id="result">Guess the Attic Greek words:</div>
+        <input type="text" id="word-input" placeholder="Type the word here">
+        <button id="check-button" disabled>Check</button>
+        <div id="details"></div>
+        <div id="score">Right: 0 | Wrong: 0</div>
+    </div>
+
     <script>
-     var flag = 0;
-var score = 0;
-var attempts = 0; // Keeps track of attempts then reveals answer if > 3
-var dict = {
-    1: 'hic', 2: 'haec', 3: 'hoc', 4: 'hī', 5: 'hae', 6: 'haec',
-    7: 'hunc', 8: 'hanc', 9: 'hoc', 10: 'hōs', 11: 'hās', 12: 'haec',
-    13: 'huius', 14: 'huius', 15: 'huius', 16: 'hōrum', 17: 'hārum', 18: 'hōrum',
-    19: 'huic', 20: 'huic', 21: 'huic', 22: 'hīs', 23: 'hīs', 24: 'hīs',
-    25: 'hōc', 26: 'hāc', 27: 'hōc', 28: 'hīs', 29: 'hīs', 30: 'hīs'
+        const dict = {
+    1: 'ἔχω', 2: 'ἔχεις', 3: 'ἔχει', 4: 'ἔχομεν', 5: 'ἔχετε', 6: 'ἔχουσι(ν)',
+    7: 'εἶχον', 8: 'εἶχες', 9: 'εἶχε(ν)', 10: 'εἴχομεν', 11: 'εἴχετε', 12: 'εἶχον',
+    13: 'ἕξω', 14: 'ἕξεις', 15: 'ἕξει', 16: 'ἕξομεν', 17: 'ἕξετε', 18: 'ἕξουσι(ν)',
+    19: 'ἔσχον', 20: 'ἔσχες', 21: 'ἔσχε(ν)', 22: 'ἔσχομεν', 23: 'ἔσχετε', 24: 'ἔσχον',
+    25: 'ἔσχηκα', 26: 'ἔσχηκας', 27: 'ἔσχηκε(ν)', 28: 'ἐσχήκαμεν', 29: 'ἐσχήκατε', 30: 'ἐσχήκασι(ν)',
+    31: 'ἐσχήκειν', 32: 'ἐσχήκεις', 33: 'ἐσχήκει', 34: 'ἐσχήκεμεν', 35: 'ἐσχήκετε', 36: 'ἐσχήκεσαν'
 };
 
-// Debounce function
-function debounce(func, delay) {
-    let timeout;
-    return function(...args) {
-        clearTimeout(timeout);
-        timeout = setTimeout(() => func.apply(this, args), delay);
+const correctAnswers = Object.values(dict);
+let currentWordIndex = 0;
+let attempts = 0;
+let rightCount = 0;
+let wrongCount = 0;
+
+const resultDiv = document.getElementById("result");
+const scoreDiv = document.getElementById("score");
+const detailsDiv = document.getElementById("details");
+const checkButton = document.getElementById("check-button");
+const wordInput = document.getElementById("word-input");
+
+// Function to get the case and number information
+function getCaseAndNumber(word) {
+    const index = correctAnswers.indexOf(word) + 1; // +1 to adjust for 0-based index
+    if (index === 0) return null;
+
+    const tenseMap = {
+        1: 'Present',
+        7: 'Imperfect',
+        13: 'Future',
+        19: 'Aorist',
+        25: 'Perfect',
+        31: 'Pluperfect'
     };
+
+    const numberMap = {
+        1: 'Singular',
+        4: 'Plural'
+    };
+
+    const tense = tenseMap[Math.floor((index - 1) / 6) * 6 + 1];
+    const person = (index - 1) % 6 + 1;
+    const number = person >= 4 ? 'Plural' : 'Singular';
+    const caseNumber = `${tense}, ${number}`;
+
+    return caseNumber;
 }
 
-// Initialize input fields
-for (var i = 1; i < 31; i++) {
-    var element = document.createElement("input");
-    element.setAttribute("style", "width:95%;");
-    element.setAttribute("type", "text");
-    var tempID = document.getElementById(i);
-    tempID.appendChild(element);
-    element.addEventListener("input", debounce(inputFunc, 500)); // Debounced input event
-}
+function checkAnswer() {
+    const userGuess = wordInput.value.trim();
 
-function inputFunc(event) {
-    handleInput(event.target);
-}
-
-function handleInput(target) {
-    if (flag === 0) {
-        var path = target.parentElement.id;
-        var value = target.value.toLowerCase();
-        inscipitVocabulum(path, value, target);
-    }
-}
-
-function inscipitVocabulum(path, value, target) {
-    if (value === dict[path] && flag === 0) {
-        handleCorrectAnswer(target, path);
-    } else if (value === "") {
-        handleEmptyField(target);
+    if (userGuess === correctAnswers[currentWordIndex]) {
+        rightCount++;
+        resultDiv.textContent = `Correct! Move on to the next word.`;
+        currentWordIndex++;
+        attempts = 0;
+        wordInput.value = "";
+        detailsDiv.textContent = "";
     } else {
-        handleIncorrectAnswer(target, path);
-    }
-}
-
-function handleCorrectAnswer(target, path) {
-    target.value = dict[path];
-    target.parentElement.style.backgroundColor = '#7FFF00';
-    target.style.textAlign = 'center';
-    score += 1;
-    document.getElementById('response').innerHTML = getIncite() + getSmiley() + ' ' + score;
-    attempts = 0;
-
-    if (plenus()) {
-        document.getElementById('response').innerHTML = '😍<-6ft->😎 CONFECTUS!👏🥵🙌';
-        flag = 1;
-    } else {
-        setTimeout(() => focusNextInput(target), 1500); // Increased delay for mobile
-    }
-}
-
-function handleEmptyField(target) {
-    document.getElementById("response").innerHTML = "Scribe responsum in campō ⬉";
-    target.value = "";
-}
-
-function handleIncorrectAnswer(target, path) {
-    attempts += 1;
-    target.style.backgroundColor = 'red';
-    target.style.textDecoration = "line-through";
-    document.getElementById('response').innerHTML = '🔱 Minime..conare iterum';
-    score -= 1;
-    blink(target);
-    
-    if (attempts === 3 && flag === 0) {
-        showCorrectAnswer(target, path);
-    } else {
-        setTimeout(() => {
-            clearFields(target);
-            target.focus();
-        }, 1000);
-    }
-}
-
-function showCorrectAnswer(target, path) {
-    target.style.textDecoration = 'none';
-    attempts = 0;
-    document.getElementById("response").innerHTML = "Responsio ➵ " + dict[path];
-    setTimeout(() => {
-        target.value = dict[path];
-        target.parentElement.style.backgroundColor = '#7FFF00';
-        target.style.textAlign = 'center';
-        setTimeout(() => focusNextInput(target), 300); // Increased delay for mobile
-    }, 3000);
-}
-
-function clearFields(target) {
-    target.style.textDecoration = 'none';
-    target.value = '';
-    target.style.backgroundColor = 'white';
-    document.getElementById('response').innerHTML = 'Declinatitō!😤' + ' ' + score;
-}
-
-function focusNextInput(target) {
-    var inputs = document.querySelectorAll('input');
-    var index = Array.from(inputs).indexOf(target);
-    if (index > -1 && index < inputs.length - 1) {
-        setTimeout(() => {
-            inputs[index + 1].focus();
-        }, 1000); // Increased delay for mobile
-    }
-}
-
-function blink(target) {
-    setTimeout(() => {
-        target.style.display = (target.style.display === 'none' ? '' : 'none');
-    }, 400);
-    setTimeout(() => {
-        target.style.display = (target.style.display === 'none' ? '' : 'none');
-    }, 800);
-}
-
-function plenus() {
-    for (let i = 1; i < 31; i++) {
-        if (document.getElementById(i).style.backgroundColor !== 'rgb(127, 255, 0)') {
-            return false;
+        attempts++;
+        if (attempts === 2) {
+            wrongCount++;
+            const caseNumber = getCaseAndNumber(correctAnswers[currentWordIndex]);
+            resultDiv.textContent = `Wrong! The correct word was "${correctAnswers[currentWordIndex]}". Type it below to continue.`;
+            detailsDiv.textContent = `Case/Number: ${caseNumber}`;
+            wordInput.value = ""; // Clear the input
+            wordInput.placeholder = `Type: ${correctAnswers[currentWordIndex]}`;
+        } else {
+            resultDiv.textContent = `Try again! Attempt ${attempts}/2.`;
         }
     }
-    return true;
+
+    // Check if the user is done with all words
+    if (currentWordIndex >= correctAnswers.length) {
+        resultDiv.textContent = `Game over! You've completed all the words.`;
+        checkButton.disabled = true;
+        wordInput.disabled = true;
+    }
+
+    updateScore();
 }
 
-function getIncite() {
-    var incites = ['Age!', 'Bene factum!', 'BENE!', 'Macte virtute!', 'Perge!', 'Optime!', 'Recte!'];
-    return incites[Math.floor(Math.random() * incites.length)];
-}
+wordInput.addEventListener("input", () => {
+    checkButton.disabled = !wordInput.value.trim();
+});
 
-function getSmiley() {
-    var smileys = [' 😍', ' 😅', ' 😎', ' 😈', ' 😂', ' 😃', ' 😆', ' 😏'];
-    return smileys[Math.floor(Math.random() * smileys.length)];
-}
+wordInput.addEventListener("keypress", (e) => {
+    if (e.key === "Enter" && !checkButton.disabled) {
+        checkAnswer();
+    }
+});
 
+checkButton.addEventListener("click", checkAnswer);
+
+function updateScore() {
+    scoreDiv.textContent = `Right: ${rightCount} | Wrong: ${wrongCount}`;
+}
 
     </script>
-    <center>
-        <div id="response" style="color:black;font-size:20px;text-align:center;">
-            1Declinatitō! 😤
-        </div>
-    </center>
 </body>
 </html>

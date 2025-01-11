@@ -1,0 +1,210 @@
+<html lang="en">
+    <!-- 
+===============================================================================
+    Copyright © 2024 RegioXvenetia. All rights reserved.
+
+    The code of this site is protected under the copyright laws. Reproduction, 
+    redistribution or modification of the code or any part thereof is strictly 
+    prohibited without the prior written consent of regioXvenetia.com.
+===============================================================================
+-->
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ΦΡΑΣΕΙΣ VIII</title>
+
+  <!-- Google Fonts -->
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=GFS+Didot&display=swap');
+    
+    .gfs-didot-regular {
+      font-family: "GFS Didot", serif;
+      font-weight: 400;
+      font-style: normal;
+    }
+    body {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
+      font-family: "GFS Didot", serif;
+    }
+
+    .navigation {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      width: 100%;
+      background-color: #d9e6ef;
+      padding: 10px 0;
+      z-index: 1;
+    }
+
+    .navigation label {
+      margin: 0 3px;
+      margin-bottom: 5px;
+      font-family: "GFS Didot", serif;
+    }
+
+    .swiper-container {
+      width: 100%;
+      max-width: 100vw;
+      height: 70vh;
+      margin-top: 20px;
+      margin-bottom: 10px;
+    }
+
+    .swiper-slide {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      font-size: 24px;
+      color: #fff;
+      background: #007aff;
+      height: calc(70vh - 40px);
+      width: calc(100% - 20px);
+      border-radius: 20px;
+      box-sizing: border-box;
+      padding: 15px;
+      margin: 10px;
+      font-family: "GFS Didot", serif;
+    }
+
+    .swiper-pagination {
+      margin-top: 10px;
+    }
+  </style>
+</head>
+<body>
+        <div class="navigation">
+        <label><input type="radio" name="section" value="0" checked> I</label>
+        <label><input type="radio" name="section" value="1"> II</label>
+        <label><input type="radio" name="section" value="2"> III</label>
+        <label><input type="radio" name="section" value="3"> IV</label>
+    </div>
+    
+    <div class="swiper-container">
+        <div class="swiper-wrapper">
+            <!-- Slides will be dynamically added here -->
+        </div>
+    </div>
+
+    <script src="https://unpkg.com/swiper/swiper-bundle.min.js"></script>
+    <script>
+        console.log("Debug point reached");
+        const flashcards = {
+  "Sic igitur procedentes perveniunt in forum.": "Οὕτως οὖν πορευόμενοι ἀφικνοῦνται εἰς τὴν ἀγοράν.",
+  "Illic autem tanta est turba ut vix progrediantur ad Acropolim.": "Ἐκεῖ δὲ τοσοῦτός ἐστιν ὁ ὅμιλος ὥστε μόλις προχωροῦσι πρὸς τὴν Ἀκρόπολιν.",
+  "Tandem vero Dicaeopolidem sequentes in porticum quandam perveniunt, et sedentes spectant homines festinantes et clamantes et tumultum facientes.": "Τέλος δὲ τῷ Δικαιοπόλιδι ἑπόμενοι εἴς τινα στοᾱν ἀφικνοῦνται, καὶ καθιζόμενοι θεῶνται τοὺς ἀνθρώπους σπεύδοντας καὶ βοῶντας καὶ θόρυβον ποιοῦντας.",
+  "Iam vero valde esuriunt pueri.": "Ἤδη δὲ μάλα πεινῶσιν οἱ παῖδες.",
+  "Philippus autem botularium videt per turbam se trudere et merces clamantem.": "Ὁ δὲ Φίλιππος ἀλλαντοπώλην ὁρᾷ διὰ τοῦ ὁμίλου ὠθιζόμενον καὶ τὰ ὤνια βοῶντα.",
+  "Patrem igitur vocat et, \"Pater care,\" inquit, \"ecce, botularius accedit.": "Τὸν οὖν πατέρα καλεῖ καί, «πάππα φίλε,» φησίν, «ἰδού, ἀλλαντοπώλης προσχωρεῖ.",
+  "Nonne vis cibum emere? Valde enim esurimus.\"": "Ἆρ᾿ οὐκ ἐθέλεις σῖτον ὠνεῖσθαι; Μάλα γὰρ πεινῶμεν.»",
+  "Dicaeopolis igitur botularium vocat et cibum emit.": "Ὁ οὖν Δικαιόπολις τὸν ἀλλαντοπώλην καλεῖ καὶ σῖτον ὠνεῖται.",
+  "Sic igitur in porticu sedent botulos edentes et vinum bibentes.": "Οὕτως οὖν ἐν τῇ στοᾷ καθίζονται ἀλλᾶντας ἐσθίοντες καὶ οἶνον πίνοντες.",
+  "Post cenam Dicaeopolis, \"Agite,\" inquit, \"nonne vultis in Acropolim ascendere et templa spectare?\"": "Μετὰ δὲ τὸ δεῖπνον ὁ Δικαιόπολις, «ἄγετε,» φησίν, «ἆρ᾿οὐ βούλεσθε ἐπὶ τὴν Ἀκρόπολιν ἀναβαίνειν καὶ τὰ ἱερὰ θεᾶσθαι;»",
+  "Avus quidem valde defessus est nec vult ascendere, ceteri vero relinquunt eum in porticu sedentem et per turbam se trudentes in Acropolim ascendunt.": "Ὁ μὲν πάππος μάλα κάμνει καὶ οὐκ ἐθέλει ἀναβαίνειν, οἱ δὲ ἄλλοι λείπουσιν αὐτὸν ἐν τῇ στοᾷ καθιζόμενον καὶ διὰ τοῦ ὁμίλου ὠθιζόμενοι ἐπὶ τὴν Ἀκρόπολιν ἀναβαίνουσιν.",
+  "Postquam vero in summam Acropolim perveniunt et propylaea transeunt, Virginis templum vident adversum et Minervae simulacrum, maximum illud, armatum et hastam dextra ferens.": "Ἐπεὶ δὲ εἰς ἄκρᾱν τὴν Ἀκρόπολιν ἀφικνοῦνται καὶ τὰ προπύλαια διαπερῶσιν, τὸ τῆς Παρθένου ἱερὸν ὁρῶσιν ἐναντίον καὶ τὴν τῆς Ἀθηνᾶς εἰκόνα, μεγίστην οὖσαν, ἐνόπλιον καὶ δόρυ δεξιᾷ φέρουσαν.",
+  "Multum igitur tempus silent pueri deam spectantes, tandem vero Dicaeopolis, \"Agite,\" inquit, \"nonne vultis templum spectare?\"": "Πολὺν οὖν χρόνον ἡσυχάζουσιν οἱ παῖδες τὴν θεὸν θεώμενοι, τέλος δὲ ὁ Δικαιόπολις, «ἄγετε,» φησίν, «ἃρ᾿οὐ βούλεσθε τὸ ἱερὸν θεᾶσθαι;»",
+  "Et ducit eos procul.": "Καὶ ἡγεῖται αὐτοῖς πόρρω.",
+  
+  "Maximum est templum et pulcherrimum.": "Μέγιστόν ἐστι τὸ ἱερὸν καὶ κάλλιστον.",
+  "Multo tempore statuas spectant, quae totum templum ornant.": "Πολὺν χρόνον τὰ ἀγάλματα θεῶνται, ἃ τὸ πᾶν ἱερὸν κοσμεῖ.",
+  "Apertae sunt portae: ascendunt igitur pueri et ingrediuntur.": "᾿Ανεῳγμέναι εἰσὶν αἱ πύλαι: ἀναβαίνουσιν οὖν οἱ παῖδες καὶ εἰσέρχονται.",
+  "Omnia intus obscura sunt, sed adversam vix vident Minervae imaginem, pulcherrimum opus Phidiae.": "Πάντα τὰ εἴσω σκοτεινά ἐστιν, ἀλλ᾿ ἐναντίᾱν μόλις ὁρῶσι τὴν τῆς ᾿Αθηνᾶς εἰκόνα, τὸ κάλλιστον ἔργον τοῦ Φειδίου.",
+  "Dea fulget auro, dextra quidem Victoriam ferens, sinistra vero scutum.": "Ἡ θεὸς λάμπεται χρυσῷ, τῇ μὲν δεξιᾷ Νίκην φέρουσα τῇ δὲ ἀριστερᾷ τὴν ἀσπίδα.",
+  "Simul igitur timent pueri spectantes et gaudent.": "Ἅμα τ'οὖν φοβοῦνται οἱ παῖδες θεώμενοι καὶ χαίρουσιν.",
+  "Philippus autem procedit et manus attollens deae supplicat: \"O Minerva Virgo, filia Iovis, urbis custos, propitia esto et audi me supplicantem: serva urbem et serva nos ex omnibus periculis.\"": "Ὁ δὲ Φίλιππος προχωρεῖ καὶ τὰς χεῖρας ἀνέχων τῇ θεῷ εὔχεται: «Ὦ ᾿Αθηνᾶ Παρθένε, παῖ Διός, πολιοῦχε, ἵλεως ἴσθι καὶ ἄκουέ μου εὐχομένου: σῷζε τὴν πόλιν καὶ σῷζε ἡμᾶς ἐκ πάντων κινδύνων.»",
+  "Ibi tum ad Melittam redit et ducit eam e templo.": "Ἐνταῦθα δὴ πρὸς τὴν Μέλιτταν ἐπανέρχεται καὶ ἡγεῖται αὐτῇ ἐκ τοῦ ἱεροῦ.",
+  "Aliquamdiu parentes quaerunt, tandem vero inveniunt eos post templum despicientes Bacchi lucum.": "Πολύν τινα χρόνον τοὺς τεκόντας ζητοῦσιν, τέλος δὲ εὑρίσκουσιν αὐτοὺς ὄπισθεν τοῦ ἱεροῦ καθορῶντας τὸ τοῦ Διονύσου τέμενος.",
+  "Dicaeopolis autem, \"Ecce, o pueri,\" inquit, \"iam congregantur homines in lucum.": "Ὁ δὲ Δικαιόπολις, «ἰδού, ὦ παῖδες,» φησίν, «ἤδη συλλέγονται οἱ ἄνθρωποι εἰς τὸ τέμενος.",
+  "Tempus est descendere et quaerere avum.\"": "Καιρός ἐστι καταβαίνειν καὶ ζητεῖν τὸν πάππον.»",
+  "Descendunt igitur et festinant ad porticum; ibi vero inveniunt avum iratum.": "Καταβαίνουσιν οὖν καὶ σπεύδουσι πρὸς τὴν στοᾱν· ἐκεῖ δὲ εὑρίσκουσι τὸν πάππον ὀργίλως ἔχοντα.",
+  "\"O fili,\" inquit, \"quid facis? Cur me relinquis tanto tempore? Cur pompam non spectamus?\"": "«Ὦ τέκνον,» φησίν, «τί ποιεῖς; Διὰ τί με λείπεις τοσοῦτον χρόνον; Διὰ τί τὴν πομπὴν οὐ θεώμεθα;»",
+  "Dicaeopolis autem, \"Bono animo esto, ave,\" inquit; \"nunc enim ad Bacchi lucum imus; brevi enim fit pompa.": "Ὁ δὲ Δικαιόπολις, «θάρρει, πάππα,» φησίν· «νῦν γὰρ πρὸς τὸ τοῦ Διονύσου τέμενος πορευόμεθα· δι᾿ ὀλίγου γὰρ γίγνεται ἡ πομπή.",
+  "Age dum.\"": "Ἄγε δή.»",
+  "Sic dicit et ducit eos ad lucum.": "Οὕτω λέγει καὶ ἡγεῖται αὐτοῖς πρὸς τὸ τέμενος.",
+
+  "Vesper iam adest.": "Ἑσπέρα ἤδη πάρεστιν.",
+  "Brevi silent omnes homines: praeco enim accedit et clamans, \"Silete, o cives,\" inquit: \"nam pompa accedit. E via cedite.\"": "Δι᾿ ὀλίγου σιγῶσι πάντες οἱ ἄνθρωποι: ὁ γὰρ κῆρυξ προσχωρεῖ καὶ βοῶν, «σιγᾶτε, ὦ πολῖται,» φησίν: «ἡ γὰρ πομπὴ προσχωρεῖ. Ἐκποδὼν γίγνεσθε.»",
+  "Omnes igitur e via cedunt et pompam exspectant.": "Πάντες οὖν ἐκποδὼν γίγνονται καὶ τὴν πομπὴν μένουσιν.",
+  "Ibi tum pompam vident accedentem.": "Ἐνταῦθα δὴ τὴν πομπὴν ὁρῶσι προσχωροῦσαν.",
+  "Praecedunt quidem praecones; deinde virgines pulcherrimae incedunt canistra ferentes uvis plena.": "Ἡγοῦνται μὲν οἱ κήρυκες· ἔπειτα δὲ παρθένοι κάλλισται βαδίζουσι κανᾶ φέρουσαι βοτρύων πλήρη.",
+  "Sequuntur eas multi cives utres vini ferentes et multi incolae vasa ferentes.": "Ἕπονται δὲ αὐταῖς πολλοί τε πολῖται ἀσκοὺς οἴνου φέροντες καὶ πολλοὶ μέτοικοι σκάφια φέροντες.",
+  "Deinde procedit Bacchi sacerdos et simul cum eo iuvenes optimi Bacchi imaginem ferentes.": "Ἔπειτα δὲ προχωρεῖ ὁ τοῦ Διονύσου ἱερεὺς καὶ ἅμ᾽ αὐτῷ νεανίαι ἄριστοι τὴν τοῦ Διονύσου εἰκόνα φέροντες.",
+  "Postremi ministri veniunt victimas ducentes.": "Τελευταῖοι δὲ οἱ ὑπηρέται ἔρχονται τὰ ἱερεῖα ἄγοντες.",
+  "Omnes igitur gaudentes pompam sequuntur ad dei lucum.": "Πάντες οὖν χαίροντες τῇ πομπῇ ἕπονται πρὸς τὸ τοῦ θεοῦ τέμενος.",
+  "Postquam perveniunt, sacerdos quidem et iuvenes dei imaginem in templum ferunt, ministri vero victimas ad aram ducunt.": "Ἐπεὶ δὲ ἀφικνοῦνται, ὁ μὲν ἱερεὺς καὶ οἱ νεανίαι τὴν τοῦ θεοῦ εἰκόνα εἰς τὸ ἱερὸν φέρουσιν, οἱ δὲ ὑπηρέται τὰ ἱερεῖα πρὸς τὸν βωμὸν ἄγουσιν.",
+  "Deinde praeco populo proclamans, \"Favete linguis, o cives,\" inquit.": "Ἔπειτα δὲ ὁ κῆρυξ τῷ δήμῳ κηρύττων, «εὐφημεῖτε, ὦ πολῖται,» φησίν.",
+  "Silet igitur omnis turba et quieta manet.": "Σῑγᾷ οὖν ὁ πᾶς ὅμιλος καὶ ἥσυχος μένει.",
+  "Sacerdos autem manus ad caelum tollens, \"O rex Bacche,\" inquit, \"audi me precantem: Bromie, et sacrificium accipe et propitius esto populo; tu enim propitius et vites servas et auges uvas ut praebeant nobis vinum.\"": "Ὁ δὲ ἱερεὺς τὰς χεῖρας πρὸς τὸν οὐρανὸν αἴρων, «ὦ ἄναξ Διόνῡσε,» φησίν, «ἄκουέ μου εὐχομένου: Βρόμιε, τήν τε θυσίαν δέχου καὶ ἵλεως ἴσθι τῷ δήμῳ· σὺ γὰρ ἵλεως ὢν τάς τε ἀμπέλους σῴζεις καὶ αὐξάνεις τοὺς βότρυας ὥστε παρέχειν ἡμῖν τὸν οἶνον.»"
+
+};
+
+    
+
+    // Convert flashcards object into an array without shuffling it
+    let entries = Object.entries(flashcards);
+
+    const swiperWrapper = document.querySelector('.swiper-wrapper');
+
+    entries.forEach(([key, value], index) => {
+        const slideKey = document.createElement('div');
+        slideKey.className = 'swiper-slide';
+        slideKey.textContent = key;
+        slideKey.style.backgroundColor = '#007aff'; // Blue for keys
+
+        const slideValue = document.createElement('div');
+        slideValue.className = 'swiper-slide';
+        slideValue.textContent = value;
+        slideValue.style.backgroundColor = '#B19CD9'; // Purple for values
+
+        swiperWrapper.appendChild(slideKey);
+        swiperWrapper.appendChild(slideValue);
+    });
+
+    const swiper = new Swiper('.swiper-container', {
+    direction: 'vertical',
+    fadeEffect: {
+        crossFade: true
+    },
+    loop: false,
+    grabCursor: true,
+    keyboard: {
+        enabled: true,
+        onlyInViewport: false,
+    },
+    on: {
+        slideChangeTransitionEnd: function() {
+            const currentSlideElement = this.slides[this.activeIndex];
+            console.log('Slide transition ended. Current slide:', currentSlideElement);
+        }
+    }
+});
+
+// Calculate the number of flashcards per section
+let flashcardsPerSection = Math.ceil(entries.length / 4); 
+
+// Event listener for radio buttons
+document.querySelectorAll('input[name="section"]').forEach((button) => {
+    button.addEventListener('change', (event) => {
+        const section = event.target.value;
+        let slideIndex = section * flashcardsPerSection * 2; // Each flashcard has two slides
+        if (slideIndex >= entries.length * 2) { // If index is out of bounds
+            slideIndex = entries.length * 2 - 2; // Go to the last key slide
+        }
+        swiper.slideTo(slideIndex);
+    });
+});
+
+
+
+    </script>
+</body>
+</html>

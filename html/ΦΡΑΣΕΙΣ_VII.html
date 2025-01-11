@@ -1,0 +1,180 @@
+<html lang="en">
+    <!-- 
+===============================================================================
+    Copyright © 2024 RegioXvenetia. All rights reserved.
+
+    The code of this site is protected under the copyright laws. Reproduction, 
+    redistribution or modification of the code or any part thereof is strictly 
+    prohibited without the prior written consent of regioXvenetia.com.
+===============================================================================
+-->
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ΦΡΑΣΕΙΣ VI</title>
+
+  <!-- Google Fonts -->
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=GFS+Didot&display=swap');
+    
+    .gfs-didot-regular {
+      font-family: "GFS Didot", serif;
+      font-weight: 400;
+      font-style: normal;
+    }
+    body {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
+      font-family: "GFS Didot", serif;
+    }
+
+    .navigation {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      width: 100%;
+      background-color: #d9e6ef;
+      padding: 10px 0;
+      z-index: 1;
+    }
+
+    .navigation label {
+      margin: 0 3px;
+      margin-bottom: 5px;
+      font-family: "GFS Didot", serif;
+    }
+
+    .swiper-container {
+      width: 100%;
+      max-width: 100vw;
+      height: 70vh;
+      margin-top: 20px;
+      margin-bottom: 10px;
+    }
+
+    .swiper-slide {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      font-size: 24px;
+      color: #fff;
+      background: #007aff;
+      height: calc(70vh - 40px);
+      width: calc(100% - 20px);
+      border-radius: 20px;
+      box-sizing: border-box;
+      padding: 15px;
+      margin: 10px;
+      font-family: "GFS Didot", serif;
+    }
+
+    .swiper-pagination {
+      margin-top: 10px;
+    }
+  </style>
+</head>
+<body>
+        <div class="navigation">
+        <label><input type="radio" name="section" value="0" checked> I</label>
+        <label><input type="radio" name="section" value="1"> II</label>
+        <label><input type="radio" name="section" value="2"> III</label>
+        <label><input type="radio" name="section" value="3"> IV</label>
+    </div>
+    
+    <div class="swiper-container">
+        <div class="swiper-wrapper">
+            <!-- Slides will be dynamically added here -->
+        </div>
+    </div>
+
+    <script src="https://unpkg.com/swiper/swiper-bundle.min.js"></script>
+    <script>
+        console.log("Debug point reached");
+        const flashcards = {
+    "Postquam autem finit fabulam Myrrhina, Melitta dicit: \"Quam pulchra est fabula,\" inquit: \"Dic nobis aliam quandam fabulam, o mater.\"": "Ἐπεὶ δὲ περαίνει τὸν μῦθον ἡ Μυρρίνη, ἡ Μέλιττα λέγει: «ὡς καλὸς ἐστιν ὁ μῦθος,» φησίν: «λέγε ἡμῖν ἄλλον τινὰ μῦθον, ὦ μῆτερ.»",
+    "Myrrhina autem: \"Nequaquam.\" inquit: \"Nunc enim in animo habeo cenam parare.\"": "Ἡ δὲ Μυρρίνη: «οὐδαμῶς.» φησίν: «νῦν γὰρ ἐν νῷ ἔχω τὸ δεῖπνον παρασκευάζειν.»",
+    "Melitta quidem igitur lacrimat, Philippus autem: \"Ne lacrime, o Melitta,\" inquit: \"Ego enim volo tibi fabulam pulchram dicere de viro versuto, nomine Ulixis. Ulixes enim ad Troiam navigat cum Agamemnone et Achivis.\"": "Ἡ μὲν οὖν Μέλιττα δακρύει, ὁ δὲ Φίλιππος: «μὴ δάκρῦε, ὦ Μέλιττα,» φησίν: «ἐγὼ γὰρ ἐθέλω σοι μῦθον καλὸν λέγειν περὶ ἀνδρὸς πολυτρόπου, ὀνόματι ᾽Οδυσσέως. Ὁ γὰρ ᾽Οδυσσεὺς ἐπὶ τὴν Τροίαν πλέει μετὰ τοῦ τ᾿ Ἀγαμέμνονος καὶ τῶν ᾿Αχαιῶν.»",
+    "Decem quidem igitur annos circa Troiam pugnant. Tandem autem urbem capiunt.": "Δέκα μὲν οὖν ἔτη περὶ Τροίαν μάχονται. τέλος δὲ τὴν πόλιν αἱροῦσιν.",
+    "Ulixes igitur socios iubet in naves conscendere, et a Troia domum navigant.": "Ὁ οὖν ᾽Οδυσσεὺς τοὺς ἑταίρους κελεύει εἰς τὰς ναῦς εἰσβαίνειν, καὶ ἀπὸ τῆς Τροίας οἴκαδε ἀποπλέουσιν.",
+    "In via autem multa et gravia patiuntur. Saepe enim tempestates sustinent, saepe autem in alia pericula maxima incidunt.": "Ἐν δὲ τῇ ὁδῷ πολλὰ καὶ δεινὰ πάσχουσιν. Πολλάκις μὲν γὰρ χειμῶνας ὑπέχουσιν, πολλάκις δὲ εἰς ἄλλους κινδύνους μεγίστους ἐμπίπτουσιν.",
+    "Navigant aliquando ad insulam quandam parvam, egrediuntur autem e navibus et cenam faciunt in litore.": "Πλέουσί ποτε εἰς νῆσόν τινα μῖκράν, ἐκβαίνουσι δὲ ἐκ τῶν νεῶν καὶ δεῖπνον ποιοῦσιν ἐν τῷ αἰγιαλῷ.",
+    "Est autem prope alia insula: fumum vident et sonum audiunt ovium et caprarum.": "Ἔστι δὲ ἐγγὺς ἄλλη νῆσος: καπνὸν ὁρῶσι καὶ φθόγγον ἀκούουσιν προβάτων τε καὶ αἰγῶν.",
+    "Postero igitur die Ulixes socios iubet in navem conscendere: vult enim ad insulam navigare et cognoscere quinam ibi habitent.": "Τῇ οὖν ὑστεραίᾳ ὁ Ὀδυσσεὺς τοὺς ἑταίρους κελεύει εἰς τὴν ναῦν εἰσβαίνειν: βούλεται γὰρ εἰς τὴν νῆσον πλεῖν καὶ γιγνώσκειν τίνες ἐκεῖ οἰκοῦσιν.",
+    "Paulo post igitur perveniunt ad insulam. Prope mare speluncam magnam vident et multas oves et multas capras.": "Διὀλίγου οὖν ἀφικνοῦνται εἰς τὴν νῆσον. Ἐγγὺς τῆς θαλάττης ἄντρον μέγα ὁρῶσι καὶ πολλὰ τε πρόβατα καὶ πολλὰς αἶγας.",
+    "Ulixes igitur sociis, \"Vos quidem,\" inquit, \"apud navem manete.": "Ὁ οὖν Ὀδυσσεὺς τοῖς ἑταίροις, \"ὁμεῖς μέν,\" φησίν, \"πρὸς τῇ νηΐ μένετε.",
+    "Ego autem in animo habeo in speluncam intrare.\" Duodecim igitur sociorum iubet se sequi. Alii autem apud navem manent.": "Ἐγὼ δὲ ἐν νῷ ἔχω εἰς τὸ ἄντρον εἰσιέναι.\" Δώδεκα οὖν τῶν ἑταίρων κελεύει ἑαυτῷ ἕπεσθαι. Οἱ δὲ ἄλλοι πρὸς τῇ νηὶ μένουσιν.",
+    "Postquam autem ad speluncam perveniunt, neminem hominem inveniunt intus.": "Ἐπεὶ δὲ εἰς τὸ ἄντρον ἀφικνοῦνται, οὐδένα ἄνθρωπον εὑρίσκουσιν ἔνδον.",
+    "Socii igitur, \"O Ulixes,\" inquiunt, \"nemo homo est intus. Abige igitur et oves et capras ad navem et naviga quam celerrime.\"": "Οἱ οὖν ἑταῖροι, \"ὦ Ὀδυσσεῦ,\" φᾶσίν, \"οὐδεὶς ἄνθρωπός ἐστιν ἔνδον. Ἔλαυνε οὖν τά τε πρόβατα καὶ τὰς αἶγας πρὸς τὴν ναῦν καὶ ἀπόπλει ὡς τάχιστα.\"",
+    "Ulixes autem non vult hoc facere: vult enim cognoscere quis in spelunca habitet.": "Ὁ δὲ Ὀδυσσεὺς οὐκ ἐθέλει τοῦτο ποιεῖν: βούλεται γὰρ γιγνώσκειν τίς ἐν τῷ ἄντρῳ οἰκεῖ.",
+    "Socii autem valde timent: tamen Ulixi obediunt et manent in spelunca.": "Οἱ δὲ ἑταῖροι μάλα φοβοῦνται: ὅμως δὲ τῷ Ὀδυσσεῖ πείθονται καὶ μένουσιν ἐν τῷ ἄντρῳ."
+}
+
+    
+
+    // Convert flashcards object into an array without shuffling it
+    let entries = Object.entries(flashcards);
+
+    const swiperWrapper = document.querySelector('.swiper-wrapper');
+
+    entries.forEach(([key, value], index) => {
+        const slideKey = document.createElement('div');
+        slideKey.className = 'swiper-slide';
+        slideKey.textContent = key;
+        slideKey.style.backgroundColor = '#007aff'; // Blue for keys
+
+        const slideValue = document.createElement('div');
+        slideValue.className = 'swiper-slide';
+        slideValue.textContent = value;
+        slideValue.style.backgroundColor = '#B19CD9'; // Purple for values
+
+        swiperWrapper.appendChild(slideKey);
+        swiperWrapper.appendChild(slideValue);
+    });
+
+    const swiper = new Swiper('.swiper-container', {
+    direction: 'vertical',
+    fadeEffect: {
+        crossFade: true
+    },
+    loop: false,
+    grabCursor: true,
+    keyboard: {
+        enabled: true,
+        onlyInViewport: false,
+    },
+    on: {
+        slideChangeTransitionEnd: function() {
+            const currentSlideElement = this.slides[this.activeIndex];
+            console.log('Slide transition ended. Current slide:', currentSlideElement);
+        }
+    }
+});
+
+// Calculate the number of flashcards per section
+let flashcardsPerSection = Math.ceil(entries.length / 4); 
+
+// Event listener for radio buttons
+document.querySelectorAll('input[name="section"]').forEach((button) => {
+    button.addEventListener('change', (event) => {
+        const section = event.target.value;
+        let slideIndex = section * flashcardsPerSection * 2; // Each flashcard has two slides
+        if (slideIndex >= entries.length * 2) { // If index is out of bounds
+            slideIndex = entries.length * 2 - 2; // Go to the last key slide
+        }
+        swiper.slideTo(slideIndex);
+    });
+});
+
+
+
+    </script>
+</body>
+</html>

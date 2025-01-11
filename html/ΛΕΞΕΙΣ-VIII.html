@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+
+<!-- 
+===============================================================================
+    Copyright © 2024 RegioXvenetia. All rights reserved.
+
+    The code of this site is protected under the copyright laws. Reproduction, 
+    redistribution or modification of the code or any part thereof is strictly 
+    prohibited without the prior written consent of regioXvenetia.com.
+===============================================================================
+-->
+
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VIΙ</title>
+    <link rel="stylesheet" href="https://unpkg.com/swiper/swiper-bundle.min.css" />
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=GFS+Didot&display=swap');
+
+  body {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+    padding: 0;
+    overflow: auto;
+    font-family: "GFS Didot", serif;
+  }
+
+  .navigation {
+    position: fixed;
+    top: 0;
+    left: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+    background-color: #1c3446;
+    padding: 10px 0;
+    width: 100%;
+    z-index: 1000;
+  }
+
+  .navigation button {
+    margin: 3px;
+    font-size: 16px;
+    background-color: #215389;
+    border: none;
+    color: white;
+    padding: 6px 10px;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+
+    .swiper-container {
+      width: 90vw; /* Adjusted to be smaller */
+      max-width: 600px; /* Maximum width */
+      height: calc(80vh - 120px); /* Smaller height calculation */
+      margin-top: 1200px;
+      margin-bottom: 10px;
+      overflow: hidden; /* Prevent overflow within container */
+    }
+    
+    .swiper-slide {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: #007aff;
+      height: auto;
+      width: 100%;
+      border-radius: 15px;
+      box-sizing: border-box;
+      padding: 15px;
+    }
+
+  .slide-content {
+    text-align: center;
+    color: #fff;
+  }
+
+  .slide-front {
+    font-size: 32px; /* Adjust this value to make the text larger or smaller */
+    margin-bottom: 20px;
+  }
+
+  .slide-back {
+    font-size: 44px;
+  }
+
+  .swiper-pagination {
+    margin-top: 10px;
+  }
+
+  @media screen and (max-width: 600px) {
+    .navigation button {
+      font-size: 18px;
+      padding: 5px 8px;
+    }
+    .swiper-container {
+      max-width: 90vw;
+      height: calc(90vh - 150px);
+      margin-top: 120px;
+    }
+    .slide-front {
+      font-size: 42px; /* Adjust for smaller screens */
+    }
+    .slide-back {
+      font-size: 31px;
+    }
+  }
+
+  @media screen and (min-width: 601px) and (max-width: 1024px) {
+    .swiper-container {
+      max-width: 95vw;
+      height: calc(80vh - 130px);
+      margin-top: 120px;
+    }
+    .slide-front {
+      font-size: 42px; /* Adjust for medium screens */
+    }
+    .slide-back {
+      font-size: 31px;
+    }
+  }
+</style>
+</head>
+<body>
+  <div class="navigation">
+    <!-- Navigation buttons can be added here -->
+  </div>
+  <div class="info-container">
+    <span id="timer">Time: 00:00</span>
+    <span id="countdown">Cards Left: 0</span>
+  </div>    
+  <div class="swiper-container">
+    <div class="swiper-wrapper">
+      <!-- Slides will be dynamically added here -->
+    </div>
+  </div>
+
+    <script src="https://unpkg.com/swiper/swiper-bundle.min.js"></script>
+    <script>
+        const flashcards = {
+            "ΛΕΞΕΙΣ --Ρέματα": "verba",
+            "ἀνέχω": "SUSTINEO\n\n, Ὁ δὲ ἱερεὺς τὰς χεῖρας πρὸς τὸν οὐρανὸν αἴρων, «ὦ ἄναξ Διόνῡσε,» φησίν",
+            "ἀπολύω": "LIBERO\n Εἰ οὖν τὴν θυγατέρα μου ἀπολύετε, οἱ θεοὶ οἱ ἐν Ὀλύμπῳ τὰς οἰκίας ἔχοντες, καὶ μάλιστα ὁ ᾿Απόλλων, μέλλουσιν βοηθεῖν ὑμῖν",
+            "αὐξάνω": "AUGEO\n Βρόμιε, τήν τε θυσίαν δέχου καὶ ἵλεως ἴσθι τῷ δήμῳ· σὺ γὰρ ἵλεως ὢν τάς τε ἀμπέλους σῴζεις καὶ αὐξάνεις τοὺς βότρυας",
+            "γηράσκω": "SENESCO\n\n νῦν γὰρ δούλη μοῦ ἐστιν, καὶ ἐν ΓΑργει μέλλει γηράσκειν ἐν τῇ ἐμῇ οἰκίᾳ μετὰ ᾿ τῶν ἄλλων δουλῶν",
+            "διαιρέω": "DIVIDO\n\n Καὶ τὰ μὲν τῷ θεῷ παρέχουσιν ἐν τῷ βωμῷ καίοντες, τὰ δὲ τοῖς παροῦσι διαιροῦσιν",
+            "διηγέομαι": "NARRO\n\n Πολλάκις γὰρ ὁ πάππος περὶ τοῦ τε Χρύσου διηγεῖται καὶ περὶ τῆς Τροίᾶς",
+            "δοκέω": "VIDEOR\n\n δοκεῖ γὰρ ἑαυτῇ Χρύσου εἶναι θυγάτηρ, τοῦ ἱερέως κώμης τινὸς παρὰ τὴν Τροίᾶν",
+            "εὐφημέω": "BONA VERBA DICO\n\n Ἔπειτα δὲ ὁ κῆρυξ τῷ δήμῳ κηρύττων, «εὐφημεῖτε, ὦ πολῖται,» φησίν",
+            "καθοράω": "PERSPICIO\n\n Ἐνταῦθα δὴ τὴν πομπὴν ὁρῶσι προσχωροῦσαν",
+            "κατατέμνω": "DISSECO\n\n οἱ δὲ ὑπηρέται ἕτοιμοι ὄντες λαμβάνουσιν αὐτὰ καὶ κατατέμνουσιν",
+            "κηρύττω": "PRAEDICO\n\n Ἔπειτα δὲ ὁ κῆρυξ τῷ δήμῳ κηρύττων, «εὐφημεῖτε, ὦ πολῖται,» φησίν",
+            "κωμάζω": "COMMISSOR\n\n Μέση νὺξ νῦν ἐστιν, τῶν δὲ παρόντων πολλοὶ μεθύοντες κωμάζουσιν",
+            "πίνω": "BIBO\n\n Ἐνταῦθα δὴ πάντες τόν τ᾿ οἶνον πίνουσι καὶ τὰ κρέα ἐσθίουσι τῇ δαιτὶ τερπόμενοι",
+            "προσήκει": "CONVENIT\n\n οὐ προσήκει σοι κωμάζειν",
+            "σπένδω": "LIBO\n\n ὃ ἱερεὺς οἶνον σπένδει καὶ τῷ θεῷ εὔχεται",
+            "τέρπομαι": "DELECTOR\n\n Ἐνταῦθα δὴ πάντες τόν τ᾿ οἶνον πίνουσι καὶ τὰ κρέα ἐσθίουσι τῇ δαιτὶ τερπόμενοι",
+            "εἰσκαλέω": "INTRO VOCOR\n\n Ὁ ἱερεὺς τοὺς πολίτας εἰς τὸ ἱερὸν εἰσκαλεῖ",
+            "καθίζομαι": "CONSIDO\n\n Ὁ πάππος καθίζεται παρὰ τῷ βωμῷ",
+            "κοσμέω": "ORNO\n\n Αἱ παρθένοι τὸ ἄγαλμα τοῦ Διονύσου κοσμοῦσιν",
+            "λάμπομαι": "SPLENDEO\n\n Τὰ ἱερὰ σκεύη ἐν τῷ φωτὶ λάμπεται",
+            "πεινάω": "ESURIO\n\n Οἱ ἄνθρωποι μετὰ τὴν πομπὴν πεινῶσιν",
+            "συλλέγομαι": "CONGREGOR\n\n Οἱ πολῖται πρὸ τοῦ ἱεροῦ συλλέγονται",
+            "ὠθίζομαι": "CONTENDO\n\n Οἱ νεανίαι ὠθίζονται ἵνα ἐγγὺς τοῦ βωμοῦ στῶσιν",
+            "ὠνέομαι": "EMO\n\n Ὁ Δικαιόπολις βότρυας ἐν τῇ ἀγορᾷ ὠνεῖται",
+
+            "ΛΕΞΕΙΣ --Οὐσιαστικά": "substantiva",
+            
+            "τὸ ἄγαλμα, τοῦ ἀγάλματος": "SIMULACRUM\n\nΤὸ ἄγαλμα τοῦ Ἀπόλλωνος ἐν τῷ ναῷ ἵσταται",
+            "ὁ ἀλλαντοπώλης, τοῦ ἀλλαντοπώλου": "FARTOR\n\nὉ ἀλλαντοπώλης ἀλλᾶντας ἐν τῇ ἀγορᾷ πωλεῖ",
+            "ὁ ἀλλᾶς, τοῦ ἀλλᾶντος": "FARCIMEN\n\nΟἱ ἀλλᾶντες ἐν τῷ πίνακι κεῖνται",
+            "ὁ ἄναξ, τοῦ ἄνακτος": "DOMINUS\n\nὉ ἄναξ τοὺς δούλους προσκαλεῖ",
+            "ἣ ἀσπίς, τῆς ἀσπίδος": "CLIPEUS\n\nὉ στρατιώτης τὴν ἀσπίδα φέρει",
+            "ὁ βότρυς, τοῦ βότρυος": "RACEMUS\n\nΟἱ βότρυες ἐν τῷ ἀμπελῶνι αὐξάνονται",
+            "ὁ γέρων, τοῦ γέροντος": "SENEX\n\nὉ γέρων ἐν τῇ ἀγορᾷ κάθηται",
+            "ἡ δαΐς, τῆς δαιτός": "EPULUM\n\nΟἱ πολῖται τὴν δαῖτα ἑτοιμάζουσιν",
+            "ἡ δαΐς, τῆς δαιτός": "EPULUM\n\nΟἱ πολῖται τὴν δαῖτα ἑτοιμάζουσιν",
+            "ὁ δῆμος, τοῦ δήμου": "POPULUS\n\nὉ δῆμος ἐν τῇ ἀγορᾷ συλλέγεται",
+            "τὸ δόρυ, τοῦ δόρατος": "HASTA\n\nὉ στρατιώτης τὸ δόρυ φέρει",
+            "ἡ εἰκών, τῆς εἰκόνος": "IMAGO\n\nΟἱ νεανίαι τὴν τοῦ Διονύσου εἰκόνα φέρουσιν",
+            "ἡ θυσία, τῆς θυσίας": "SACRIFICIUM\n\nὉ ἱερεὺς τὴν θυσίαν ποιεῖται",
+            "τὸ ἱερεῖον, τοῦ ἱερείου": "VICTIMA\n\nΟἱ ὑπηρέται τὰ ἱερεῖα πρὸς τὸν βωμὸν ἄγουσιν",
+            "ὁ ἱερεύς, τοῦ ἱερέως": "SACERDOS\n\nὉ ἱερεὺς τὰς εὐχὰς ποιεῖται",
+            "τὸ ἱερόν, τοῦ ἱεροῦ": "TEMPLUM\n\nΟἱ πολῖται πρὸς τὸ ἱερὸν βαδίζουσιν",
+            "τὸ κανοῦν (τοῦ κανοῦ, τὰ κανᾶ)": "CANISTRUM\n\nΑἱ παρθένοι κανᾶ φέρουσιν",
+            "ὁ κῆρυξ, τοῦ κήρυκος": "PRAECO\n\nὉ κῆρυξ τὴν πομπὴν προαγγέλλει",
+            "τὸ κρέας (τὰ κρέα)": "CARO\n\nΟἱ πολῖται τὰ κρέα ἐσθίουσιν",
+            "ὁ μέτοικος, τοῦ μετοίκου": "INQUILINUS\n\nΟἱ μέτοικοι σκάφια φέρουσιν",
+            "τὸ ὄναρ, τοῦ ὀνείρατος": "SOMNIUM\n\nἩ Μέλιττα δεινὸν ὄναρ ὁρᾷ",
+            "ἡ πομπή, τῆς πομπῆς": "POMPA\n\nἩ πομπὴ πρὸς τὸ ἱερὸν προχωρεῖ",
+            "τὰ προπύλαια, τῶν προπυλαίων": "VESTIBULUM\n\nὉ δῆμος πρὸ τῶν προπυλαίων συλλέγεται",
+            "τὸ σκάφιον, τοῦ σκαφίου": "ALVEUS\n\nΟἱ μέτοικοι τὰ σκάφια κομίζουσιν",
+            "ἢ στοά, τῆς στοᾶς": "PORTICUS\n\nΟἱ πολῖται ὑπὸ τῇ στοᾷ περιπατοῦσιν",
+            "οἱ τεκόντες, τῶν τεκόντων": "PARENTES\n\nΟἱ παῖδες τοὺς τεκόντας τιμῶσιν",
+            "τὸ τέμενος, τοῦ τεμένους": "FANUM\n\nἩ πομπὴ πρὸς τὸ τοῦ θεοῦ τέμενος ἔρχεται",
+            "ὁ ὑπηρέτης, τοῦ ὑπηρέτου": "MINISTER\n\nΟἱ ὑπηρέται τὰ ἱερεῖα ἄγουσιν",
+            "τὰ ὥνια, τῶν ὠνίων": "VENALIA\n\nὉ Δικαιόπολις ὥνια ἐν τῇ ἀγορᾷ ὠνεῖται",
+
+            "ΛΕΞΕΙΣ --Κύρια Ὀνόματα": "nomina propria",
+            
+            "ὁ ᾿Απόλλων, τοῦ ᾿Απόλλωνος": "APOLLO\n\nὉ ἱερεὺς τῷ ᾿Απόλλωνι εὔχεται",
+            "ὁ Βρόμιος, τοῦ Βρομίου": "BROMIUS\n\nΟἱ πολῖται τὸν Βρόμιον ὑμνοῦσιν",
+            "οἱ Ἕλληνες, τῶν Ἑλλήνων": "GRAECI\n\nΟἱ Ἕλληνες τὴν Τροίαν πολιορκοῦσιν",
+            "ἡ Κίρκη, τῆς Κίρκης": "CIRCE\n\nἩ Κίρκη τοὺς ἑταίρους τοῦ Ὀδυσσέως μεταμορφοῖ",
+            "ἡ Νίκη, τῆς Νίκης": "VICTORIA\n\nΟἱ ᾿Αθηναῖοι τῇ Νίκῃ ναὸν οἰκοδομοῦσιν",
+            "ὃ Ὄλυμπος, τοῦ Ὀλύμπου": "OLYMPUS\n\nΟἱ θεοὶ ἐν τῷ Ὀλύμπῳ οἰκοῦσιν",
+            "ὁ Φειδίας, τοῦ Φειδίου": "PHIDIAS\n\nὉ Φειδίας τὸ τῆς ᾿Αθηνᾶς ἄγαλμα ποιεῖ",
+            "ὁ Χρύσης, τοῦ Χρύσου": "CHRYSES\n\nὉ Χρύσης τὴν θυγατέρα λύσασθαι βούλεται",
+
+            "ΛΕΞΕΙΣ --ἐπίθετα": "adiectivi",
+            
+            "ἄριστος, ἀρίστη, ἄριστον": "OPTIMUS\n\nΟἱ ἄριστοι τῶν πολιτῶν τὴν πόλιν σῴζουσιν",
+            "ἐναντίος, ἐναντία, ἐναντίον": "ADVERSUS\n\nΟἱ στρατιῶται ἐναντίοι ἀλλήλοις μάχονται",
+            "ἐνόπλιος, ἐνόπλιον": "ARMATUS\n\nΟἱ ὁπλῖται ἐνόπλιον ὄρχησιν ὀρχοῦνται",
+            "ἕτοιμος, ἑτοίμη, ἕτοιμον": "PARATUS\n\nΟἱ ὑπηρέται ἕτοιμοί εἰσιν ὑπηρετεῖν",
+            "ἥσυχος, ἥσυχον": "QUIETUS\n\nὉ δῆμος ἥσυχος καθίζει",
+            "κάλλιστος, καλλίστη, κάλλιστον": "PULCHERRIMUS\n\nΑἱ κάλλισται τῶν παρθένων τὴν θεὸν τιμῶσιν",
+            "πολιοῦχος, πολιοῦχον": "URBEM TENENS\n\nἩ ᾿Αθηνᾶ πολιοῦχος τῆς πόλεώς ἐστιν",
+            "σκοτεινός, σκοτεινή, σκοτεινόν": "OBSCURUS\n\nἩ ὁδὸς σκοτεινὴ καὶ φοβερά ἐστιν",
+            "τελευταῖος, τελευταία, τελευταῖον": "ULTIMUS\n\nΟἱ τελευταῖοι τῶν στρατιωτῶν τὴν πόλιν εἰσέρχονται",
+
+            "ΛΕΞΕΙΣ --Προθέσεις": "praepositiones",
+        
+            "παρά": "APUD/PROPE/CONTRA\n\nὉ Σωκράτης παρὰ τῷ Φαίδωνι διαλέγεται",
+
+            "ΛΕΞΕΙΣ --Ἐπιρρήματα": "adverbia",
+        
+            "ἐκποδών": "E MEDIO\n\nΟἱ πολῖται ἐκποδὼν γίγνονται ἵνα ἡ πομπὴ παρέλθῃ",
+            "πόρρω": "PROCUL\n\nΟἱ ἐχθροὶ πόρρω τῆς πόλεως στρατοπεδεύονται",
+            "χαμαί": "HUMI\n\nὉ Διογένης χαμαὶ καθεύδει",
+
+            "ΛΕΞΕΙΣ --φράσεις": "locutiones",
+        
+            "ἐκποδών γίγνομαι": "E MEDIO DISCEDO\n\nΟἱ πολῖται ἐκποδὼν γίγνονται ἵνα οἱ ὁπλῖται παρελαύνωσιν",
+            "οἱ μέν... (αἱ μέν... τὰ μέν..) οἱ δέ.. (αἱ δέ... τὰ δέ.)": "ALII... ALII...\n\nΤῶν ἀνδρῶν οἱ μὲν ἐν τοῖς ἀγροῖς ἐργάζονται, οἱ δὲ ἐν τῇ πόλει πολιτεύονται",
+            "ὀργίλως ἔχω": "IRASCOR\n\nὉ διδάσκαλος ὀργίλως ἔχει πρὸς τοὺς ἀταξίαν ποιοῦντας μαθητάς"
+           
+        
+};
+
+        // keep track of time and count
+        const timerElement = document.getElementById('timer');
+        const countdownElement = document.getElementById('countdown');
+        let startTime;
+        let timerInterval;
+        
+        function startTimer() {
+          startTime = Date.now();
+          timerInterval = setInterval(updateTimer, 1000);
+        }
+        
+        function updateTimer() {
+          const elapsedTime = Date.now() - startTime;
+          const minutes = Math.floor(elapsedTime / 60000);
+          const seconds = Math.floor((elapsedTime % 60000) / 1000);
+          const formattedTime = `${padZero(minutes)}:${padZero(seconds)}`;
+          timerElement.textContent = `Time: ${formattedTime}`;
+        }
+        
+        function padZero(number) {
+          return number.toString().padStart(2, '0');
+        }
+        
+        function updateCountdown() {
+          const remainingCards = Math.floor(entries.length - swiper.activeIndex / 2);
+          countdownElement.textContent = `Cards Left: ${remainingCards}`;
+        }
+
+           let entries = Object.entries(flashcards);
+    let sections = {};
+    let currentSection = '';
+    entries.forEach(([key, value], index) => {
+      if (key.startsWith('ΛΕΞΕΙΣ')) {
+        currentSection = key;
+        sections[currentSection] = index;
+      }
+    });
+
+    const swiperWrapper = document.querySelector('.swiper-wrapper');
+    entries.forEach(([key, value], index) => {
+      const slideKey = document.createElement('div');
+      slideKey.className = 'swiper-slide';
+      
+      const slideContentKey = document.createElement('div');
+      slideContentKey.className = 'slide-content';
+      const slideFront = document.createElement('div');
+      slideFront.className = 'slide-front';
+      slideFront.innerHTML = key;
+      slideContentKey.appendChild(slideFront);
+      slideKey.appendChild(slideContentKey);
+      slideKey.style.backgroundColor = '#007aff';
+
+      const slideValue = document.createElement('div');
+      slideValue.className = 'swiper-slide';
+
+      const slideContentValue = document.createElement('div');
+      slideContentValue.className = 'slide-content';
+      const slideBack = document.createElement('div');
+      slideBack.className = 'slide-back';
+      slideBack.innerHTML = value.replace(/\n/g, '<br>');
+      slideContentValue.appendChild(slideBack);
+      slideValue.appendChild(slideContentValue);
+      slideValue.style.backgroundColor = '#B19CD9';
+
+      swiperWrapper.appendChild(slideKey);
+      swiperWrapper.appendChild(slideValue);
+    });
+
+    const swiper = new Swiper('.swiper-container', {
+      direction: 'vertical',
+      on: {
+        slideChange: function () {
+          updateCountdown();
+        },
+      },
+    });
+
+    const navigation = document.querySelector('.navigation');
+    let buttons = '';
+    Object.keys(sections).forEach((section) => {
+      const sectionName = section.replace(/^.*--/, '').trim();
+      buttons += `<button data-section="${section}">${sectionName}</button>`;
+    });
+    navigation.innerHTML = buttons;
+    document.querySelectorAll('.navigation button').forEach((button) => {
+      button.addEventListener('click', (event) => {
+        const section = event.target.getAttribute('data-section');
+        const slideIndex = sections[section] * 2;
+        swiper.slideTo(slideIndex);
+      });
+    });
+startTimer();
+updateCountdown();
+</script>
+</body>
+</html>

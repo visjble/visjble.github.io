@@ -1,0 +1,152 @@
+<html lang="en">
+    <!-- 
+===============================================================================
+    Copyright © 2024 RegioXvenetia. All rights reserved.
+
+    The code of this site is protected under the copyright laws. Reproduction, 
+    redistribution or modification of the code or any part thereof is strictly 
+    prohibited without the prior written consent of regioXvenetia.com.
+===============================================================================
+-->
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=3.0">
+    <title>ΦΡΑΣΕΙΣ VI</title>
+    <link rel="stylesheet" href="swiper-bundle.min.css" />
+<style>
+body {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  overflow-y: hidden;
+  height: 100vh;
+  margin: 0;
+  padding: 0;
+}
+
+.navigation {
+  display: flex;
+  justify-content: center;
+  margin-top: 10px;
+  margin-bottom: 10px;
+  position: sticky;
+  top: 0;
+  background-color: #fff; /* Add a background color to the navigation container */
+  padding: 10px 0; /* Add some padding for spacing */
+  z-index: 1; /* Ensure the navigation stays on top */
+}
+
+.navigation label {
+  margin: 0 3px;
+  margin-bottom: 5px;
+}
+
+.swiper-container {
+  width: 100%;
+  height: auto;
+  max-height: 80vh;
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+
+.swiper-slide {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  font-size: 24px;
+  color: #fff;
+  background: #007aff;
+  height: 70vh;
+  width: 90vw;
+  margin: auto;
+  border-radius: 20px;
+  box-sizing: border-box;
+  padding: 15px;
+}
+
+.swiper-pagination {
+  margin-top: 10px;
+}
+</style>
+</head>
+<body>
+        <div class="navigation">
+        <label><input type="radio" name="section" value="0" checked> I</label>
+        <label><input type="radio" name="section" value="1"> II</label>
+        <label><input type="radio" name="section" value="2"> III</label>
+        <label><input type="radio" name="section" value="3"> IV</label>
+    </div>
+    
+    <div class="swiper-container">
+        <div class="swiper-wrapper">
+            <!-- Slides will be dynamically added here -->
+        </div>
+    </div>
+
+    <script src="https://unpkg.com/swiper/swiper-bundle.min.js"></script>
+    <script>
+        const flashcards = {'Minos habitat in Creta rex autem est insulae.': 'Ὁ Μίνως οἰκεῖ ἐν τῇ Κρήτῃ βασιλεὺς δέ ἐστι τῆς νήσου.', 'Et in domo Minois est labyrinthus: ibi autem habitat Minotaurus, monstrum quoddam terribile, dimidium homo, dimidium taurus.': 'Καὶ ἐν τῇ τοῦ Μίνωος οἰκίᾳ ἐστὶν ὁ λαβύρινθος: ἐκεῖ δ᾽ οἰκεῖ ὁ Μινώταυρος, θηρίον τι δεινόν, τὸ μὲν ἥμισυ ἄνθρωπος, τὸ δ᾽ ἥμισυ ταῦρος.', 'Minotaurus autem edit homines.': 'Ὁ δὲ Μινώταυρος ἐσθίει ἀνθρώπους.', 'Minos igitur cogit Athenienses septem iuvenes mittere et septem virgines quotannis ad Cretam et praebet eos Minotauro edere.': 'Ὁ οὖν Μίνως ἀναγκάζει τοὺς ᾿Αθηναίους ἑπτά τε νεᾶνίᾶς πέμπειν καὶ ἑπτὰ παρθένους κατἔτος πρὸς τὴν Κρήτην καὶ παρέχει αὐτοὺς τῷ Μινωταύρῳ ἐσθίειν.', 'Athenis autem regnat Aegeus: est autem ei filius quidam nomine Theseus.': 'Ἐν δὲ ταῖς ᾿Αθήναις βασιλεύει ὁ Αἰγεύς: ἔστι δὲ αὐτῷ παῖς τις ὀνόματι Θησεύς.', 'Ille autem postquam primum pubescit, socios miseratur et vult auxiliari eis.': 'Ὁ δὲ ἐπεὶ πρῶτον ἡβᾷ, τοὺς ἑταίρους οἰκτίρει καὶ βούλεται βοηθεῖν αὐτοῖς.', 'Accedit igitur ad patrem et, "Pater care," inquit, "socios misereor et volo servare.': 'Προσχωρεῖ οὖν τῷ πατρὶ καί, "πάππα φίλε," φησίν, "τοὺς ἑταίρους οἰκτίρω καὶ βούλομαι σῴζειν.', 'Mitte me igitur cum sociis ad Cretam."': 'Πέμπε με οὖν μετὰ τῶν ἑταίρων πρὸς τὴν Κρήτην."', 'Aegeus autem maxime timet sed tamen paret ei.': 'Ὁ δ᾽ Αἰγεὺς μάλιστα φοβεῖται ἀλλ᾽ ὅμως πείθεται αὐτῷ.', 'Theseus igitur in navem conscendit cum sociis et navigat ad Cretam.': 'Ὁ οὖν Θησεὺς εἰς τὴν ναῦν εἰσβαίνει μετὰ τῶν ἑταίρων καὶ πλεῖ πρὸς τὴν Κρήτην.', 'Postquam autem ad insulam perveniunt, rex et regina et filia eorum, nomine Ariadne, excipiunt eos et ducunt ad Cnossum (sic enim Minois urbem nominant) et custodiunt in carcere.': 'Ἐπεὶ δὲ εἰς τὴν νῆσον ἀφικνοῦνται, ὅ τε βασιλεὺς καὶ ἣ βασίλεια καὶ ἡ θυγάτηρ αὐτῶν, ὀνόματι ᾿Αριάδνη, δέχονται αὐτοὺς καὶ ἄγουσι πρὸς τὴν Κνωσσόν (οὕτω γὰρ τὴν τοῦ Μίνωος πόλιν ὀνομάζουσιν) καὶ φυλάττουσιν ἐν τῷ δεσμωτηρίῳ.', 'Ariadne autem, postquam primum videt Theseum, amat eum et vult servare.': 'Ἡ δ᾽ Αριάδνη, ἐπεὶ πρῶτον ὁρᾷ τὸν Θησέα, ἐρᾷ αὐτοῦ καὶ βούλεται σῴζειν.', 'Postquam igitur nox fit, festinat ad carcerem et Theseum vocat et, "Tace, o Theseu," inquit: "ego, Ariadne, adsum.': 'Ἐπεὶ οὖν νύξ γίγνεται, σπεύδει πρὸς τὸ δεσμωτήριον καὶ τὸν Θησέα καλεῖ καί, «σίγα, ὦ Θησεῦ," φησίν: "ἐγώ, ᾿Αριάδνη, πάρειμι.', 'Amo te et volo servare.': 'Ἐρῶ σου καὶ βούλομαι σόζειν.', 'Ecce, praebeo enim tibi hunc gladium et hunc filum.': 'Ἰδού, παρέχω γάρ σοι τοῦτο τὸ ξίφος καὶ τοῦτο τὸ λίνον.', 'Ne igitur time sed fortiter ingredere in labyrinthum et interfice Minotaurum.': 'Μὴ οὖν φοβοῦ ἀλλὰ ἀνδρείως εἴσβαινε εἰς τὸν λαβύρινθον καὶ ἀπόκτεινε τὸν Μινώταυρον.', 'Deinde autem effuge cum sociis et festina ad navem.': 'Ἔπειτα δὲ ἔκφευγε μετὰ τῶν ἑταίρων καὶ σπεῦδε πρὸς τὴν ναῦν.', 'Ego enim in animo habeo apud navem manere: volo enim a Creta effugere et tecum ad Athenas navigare."': 'Ἐγὼ γὰρ ἐν νῷ ἔχω πρὸς τῇ νηὶ μένειν: βούλομαι γὰρ ἀπὸ τῆς Κρήτης ἀποφεύγειν καὶ μετὰ σοῦ πρὸς τὰς ᾿Αθήνας πλεῖν."', 'Sic dicit et celeriter abit ad urbem.': 'Οὕτω λέγει καὶ ταχέως ἀπέρχεται πρὸς τὴν πόλιν.', 'Theseus autem valde quidem miratur, accipit autem gladium et manet diem.': 'Ὁ δὲ Θησεὺς μάλα μὲν θαυμάζει, δέχεται δὲ τὸ ξίφος καὶ μένει τὴν ἡμέρᾶν.', 'Cum autem dies fit, Minos venit ad carcerem et vocat Theseum et socios et ducit eos ad labyrinthum.': 'Ἐπεὶ δὲ ἡμέρα γίγνεται, ὁ Μίνως ἔρχεται πρὸς τὸ δεσμωτήριον καὶ καλεῖ τόν τε Θησέα καὶ τοὺς ἑταίρους καὶ ἄγει αὐτοὺς πρὸς τὸν λαβύρινθον.', 'Cum autem adveniunt, servi aperiunt portas et Athenienses intro agunt.': 'Ἐπεὶ δὲ ἀφικνοῦνται, οἱ δοῦλοι ἀνοίγουσι τὰς πύλᾶς καὶ τοὺς ᾿Αθηναίους εἰσελαύνοῦσιν.', 'Deinde autem portas claudunt et abeunt: sic enim Minotauro cibum praebent in multos dies.': 'Ἔπειτα δὲ τὰς πύλας κλείουσι καὶ ἀπέρχονται: οὕτω γὰρ τῷ Μινωταύρῳ σῖτον παρέχουσιν εἰς πολλὰς ἡμέρᾶς.', 'Socii quidem igitur maxime timent.': 'Οἱ μὲν οὖν ἑταῖροι μάλιστα φοβοῦνται.', 'Theseus autem, "Ne timeatis, o amici," inquit; "ego enim vos servabo.': 'ὁ δὲ Θησεύς, "μὴ φοβεῖσθε, ὦ φίλοι," φησίν\' "ἐγὼ γὰρ ὑμᾶς σώσω.', 'Sequimini me igitur fortiter."': 'Ἕπεσθέ μοι οὖν ἀνδρείως."', 'Sic dicit et ducit eos in labyrinthum.': 'Οὕτω λέγει καὶ ἡγεῖται αὐτοῖς εἰς τὸν λαβύρινθον.', 'Theseus quidem igitur in sinistra habet filum, in dextra autem gladium, et progreditur in tenebras.': 'Ὁ μὲν οὖν Θησεὺς ἐν μὲν τῇ ἀριστερᾷ ἔχει τὸ λίνον, ἐν δὲ τῇ δεξιᾷ τὸ ξίφος, καὶ προχωρεῖ εἰς τὸν σκότον.', 'Socii autem maxime timent sed tamen sequuntur: necessitas enim eos tenet.': 'Οἱ δὲ ἑταῖροι μάλιστα φοβοῦνται ἀλλ᾽ ὅμως ἕπονται: ἣ γὰρ ἀνάγκη αὐτοὺς ἔχει.', 'Longam igitur viam gradiuntur et saepe quidem vertuntur, saepe autem sonitus terribiles audiunt: Minotaurus enim persequitur eos in tenebris et valde terribiliter mugit.': 'Μακρὰν οὖν ὁδὸν πορεύονται καὶ πολλάκις μὲν τρέπονται, πολλάκις δὲ ψόφους δεινοὺς ἀκούουσιν: ὁ γὰρ Μιῖνώταυρος διώκει αὐτοὺς ἐν τῷ σκότῳ καὶ μάλα δεινῶς βρυχᾶται.', 'Hic iam pedum sonitum audiunt et bestiae spiritum olfaciunt, et ecce, in via adest Minotaurus.': 'Ἐνταῦθα δὴ τὸν τῶν ποδῶν ψόφον ἀκούουσι καὶ τὸ τοῦ θηρίου πνεῦμα ὀσφραίνονται, καὶ ἰδού, ἐν τῇ ὁδῷ πάρεστιν ὁ Μινώταυρος.', 'Terribiliter iam mugit et in Theseum impetum facit.': 'Δεινῶς δὴ βρῦχᾶται καὶ ἐπὶ τὸν Θησέα ὁρμᾶται.', 'Theseus autem non timet sed valde fortiter pugnat: sinistra quidem caput bestiae prehendit, dextra autem pectus percutit.': 'Ὁ δὲ Θησεὺς οὐ φοβεῖται ἀλλὰ μάλα ἀνδρείως μάχεται: τῇ μὲν γὰρ ἀριστερᾷ λαμβάνεται τῆς κεφαλῆς τοῦ θηρίου, τῇ δὲ δεξιᾷ τὸ στῆθος τύπτει.', 'Minotaurus autem terribiliter clamat et concidit ad terram.': 'Ὁ δὲ Μινώταυρος δεινῶς κλάζει καὶ κατα- πΐπτει πρὸς τὴν γῆν.', 'Socii autem, cum vident bestiam in terra iacentem, gaudent et, "O Theseu," inquiunt, "quam fortis es.': 'Οἱ δὲ ἑταῖροι, ἐπεὶ ὁρῶσι τὸ θηρίον ἐπὶ τῇ γῇ κείμενον, χαίρουσι καί, "ὦ Θησεῦ,᾽ φᾶσίν, "ὡς ἀνδρεῖος εἶ.', 'Quam te admiramur et honoramus.': 'ὡς θαυμάζομέν σε καὶ τἰὶμῶμεν.', 'Sed nunc quidem serva nos ex labyrintho et duc ad portas.': '᾿Αλλὰ νῦν γε σῷζε ἡμᾶς ἐκ τοῦ λαβυρίνθου καὶ ἡγοῦ πρὸς τὰς πύλᾶς.', 'Longa enim est via et multae tenebrae: viam autem ignoramus."': 'Μακρὰ γάρ ἐστιν ἣ ὁδὸς καὶ πολὺς ὁ σκότος: τὴν δ᾽ ὁδὸν ἀγνοοῦμεν."', 'Theseus autem non timet sed filum sumit -- sic enim viam cognoscit -- et ducit socios ad portas.': 'Ὁ δὲ Θησεὺς οὐ φοβεῖται ἀλλὰ τὸ λίνον λαμβάνει -- οὕτω γὰρ τὴν ὁδὸν γιγνώσκει --- καὶ ἡγεῖται τοῖς ἑταίροις πρὸς τὰς πύλας.', 'Cum autem adveniunt, vectem perfringunt et manent ibi; adhuc enim dies est.': 'Ἐπεὶ δ᾽ ἀφικνοῦνται, τὸν μοχλὸν διακόπτουσι καὶ μένουσιν ἐκεῖe· ἔτι γὰρ ἡμέρα ἐστίν.', 'Cum autem nox fit, exeunt ex labyrintho et properant ad navem.': 'Ἐπεὶ δὲ νύξ γίγνεται, ἐξέρχονται ἐκ τοῦ λαβυρίνθου καὶ σπεύδουσι πρὸς τὴν ναῦν.', 'Ibi autem Ariadnam vident; manet enim ad navem.': "Ἐκεῖ δὲ τὴν ᾿Αριάδνην ὁρῶσιν' μένει γὰρ πρὸς τῇ νηΐ.", 'Celeriter igitur conscendunt et navigant ad Athenas.': 'Ταχέως οὖν εἰσβαίνουσι καὶ ἀποπλέουσι πρὸς τὰς ᾿Αθήνας.', 'Sic igitur Theseus Minotaurum occidit et socios servat ad Athenas.': 'Οὕτως οὖν ὁ Θησεὺς τόν τε Μινώταυρον ἀποκτείνει καὶ τοὺς ἑταίρους σῴζει εἰς τὰς ᾿Αθήνᾶς.', 'Sic finit fabulam Myrrhine, Melitta autem, "Et Ariadna?" inquit; "Num gaudet?': "Οὕτω περαίνει τὸν μῦθον ἡ Μυρρίνη, ἣ δὲ Μέλιττα, «καὶ ἣ ᾿Αριάδνη;» φησίν' «ἄρα χαίρει;", 'Num amat eam Theseus?"': 'ἄρα φιλεῖ αὐτὴν ὁ Θησεύς;»', 'Myrrhine autem: "Nequaquam: non gaudet Ariadna neque amat eam Theseus."': 'Ἡ δὲ Μυρρίνη: «Οὐδαμῶς: οὗ χαίρει ἡ ᾿Αριάδνη οὐδὲ φιλεῖ αὐτὴν ὁ Θησεύς.»', 'Melitta autem: "Cur non amat eam Theseus?': 'Ἢ δὲ Μέλιττα- «Διὰ τί οὗ φιλεῖ αὐτὴν ὁ Θησεύς;', 'Quid fit?"': 'Τί γίγνεται;»', 'Mater autem: "Illam fabulam nolo tibi dicere nunc quidem."': "Ἡ δὲ μήτηρ' «Ἐκεῖνον τὸν μῦθον οὐκ ἐθέλω σοι λέγειν νῦν γε.»"}
+
+
+    
+
+    // Convert flashcards object into an array without shuffling it
+    let entries = Object.entries(flashcards);
+
+    const swiperWrapper = document.querySelector('.swiper-wrapper');
+
+    entries.forEach(([key, value], index) => {
+        const slideKey = document.createElement('div');
+        slideKey.className = 'swiper-slide';
+        slideKey.textContent = key;
+        slideKey.style.backgroundColor = '#007aff'; // Blue for keys
+
+        const slideValue = document.createElement('div');
+        slideValue.className = 'swiper-slide';
+        slideValue.textContent = value;
+        slideValue.style.backgroundColor = '#B19CD9'; // Purple for values
+
+        swiperWrapper.appendChild(slideKey);
+        swiperWrapper.appendChild(slideValue);
+    });
+
+    const swiper = new Swiper('.swiper-container', {
+    direction: 'vertical',
+    fadeEffect: {
+        crossFade: true
+    },
+    loop: false,
+    grabCursor: true,
+    keyboard: {
+        enabled: true,
+        onlyInViewport: false,
+    },
+    on: {
+        slideChangeTransitionEnd: function() {
+            const currentSlideElement = this.slides[this.activeIndex];
+            console.log('Slide transition ended. Current slide:', currentSlideElement);
+        }
+    }
+});
+
+// Calculate the number of flashcards per section
+let flashcardsPerSection = Math.ceil(entries.length / 4); 
+
+// Event listener for radio buttons
+document.querySelectorAll('input[name="section"]').forEach((button) => {
+    button.addEventListener('change', (event) => {
+        const section = event.target.value;
+        let slideIndex = section * flashcardsPerSection * 2; // Each flashcard has two slides
+        if (slideIndex >= entries.length * 2) { // If index is out of bounds
+            slideIndex = entries.length * 2 - 2; // Go to the last key slide
+        }
+        swiper.slideTo(slideIndex);
+    });
+});
+
+
+
+    </script>
+</body>
+</html>
