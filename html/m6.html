@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">   
+        <meta name="viewport" content="width=device-width" , initial-scale="3.0">
+        <title>ΜΕΛΕΤΗΜΑΤΑ</title>
+    <!--================STYLE=========================-->
+    <style>
+      html , body { font-family: Times New Roman , serif; font-size: 20px;}
+      #guess_field {
+    margin-top: 10px;
+}
+    </style>
+    <!--================/STYLE=========================-->
+    </head>
+      <body onload="setRandomPastelColor()">
+      <center><br>
+        <div id="header">
+        <h3 style="margin-bottom:15px; margin-top:0;">VI</h3>
+        </div>
+        <p id="easter" onclick="nuntium(words2guess);" style="color:blue;font-size:1px;" >.</p>
+        <table
+               <td>
+                        ὦ<input type="radio" id="5" onclick="macronRadial(id);">
+                        ω<input type="radio" id="6" onclick="macronRadial(id);" checked>
+                        </td>
+          <tr>
+            <th>I</th>
+            <th>II</th>
+            <th>III</th>
+            <th>IV</th>
+            <th>V</th>
+          </tr>
+          <tr>
+            <td><input type="radio" id="0" onclick="commutoCapitulum(this);" checked=true></td>
+            <td><input type="radio" id="1" onclick="commutoCapitulum(this);"></td>
+            <td><input type="radio" id="2" onclick="commutoCapitulum(this);"></td>
+            <td><input type="radio" id="3" onclick="commutoCapitulum(this);"></td>
+            <td><input type="radio" id="4" onclick="commutoCapitulum(this);"></td>
+          </tr>
+        </table>
+
+        <div id="more_to_go" style="margin-bottom: 10px;"></div>
+        <b><div id="locutio">Done , try a different exercise></div>        
+        </b>
+      <table>
+            <tbody>
+                  <tr>                       
+                        <input type="text" 
+       autocomplete="off" 
+       id="guess_field" 
+       placeholder="Ἀπόκρισις" 
+       onkeydown="matchFunc(event)"
+       oninput="removeDiacritics(event)"
+       style="font-size:18px; font-family: 'Times New Roman', serif; display: inline-block;">                        </td>
+                        <td><div id='score'>0</div></td>
+                  </tr>
+            </tbody>
+      </table>
+
+        <div id="response" style="margin-bottom: 10px";></div>
+        <div id="correct_answer"></div>
+
+        <div id='final_score' style="color:blue;font-size:50px;"></div>
+      </center>
+
+
+      <!--===========SCRIPT STARTS=========================-->
+      <script>
+        function removeDiacritics(event) {
+    if (document.getElementById('6').checked) {
+        let input = event.target;
+        let cursorPosition = input.selectionStart;
+        input.value = abstrahoMacron(input.value);
+        input.setSelectionRange(cursorPosition, cursorPosition);
+    }
+}
+         function setRandomPastelColor() {
+      // Generate random pastel color
+      const hue = Math.floor(Math.random() * 360);
+      const saturation = Math.floor(Math.random() * 25) + 75; // 75-100%
+      const lightness = Math.floor(Math.random() * 25) + 75; // 75-100%
+      const color = `hsl(${hue}, ${saturation}%, ${lightness}%)`;
+
+      // Set body background color to random pastel color
+      document.body.style.backgroundColor = color;
+         }
+         function nuntium(words2guess){
+          document.getElementById('response').innerHTML = 'The answer is: ' + words2guess;
+      }
+        document.getElementById("guess_field").focus(); //poni sagitta intra campus
+             
+        var locutionis = [
+            "Κρήτη να#ῦς ἐστιν· Μίνως αὐτῆς #βασιλεύς ἐστιν.",
+            "Ἐν τῷ τῆς Κρήτης λαβυρίν#θῳ οἰκεῖ ὁ Μινώταυρος, θηρίον δεινόν.",
+            "Ὁ Μινώταυρος #ταῦρος ἐστιν, ἀλλ'οὐχ ὅλος· τὸ γὰρ ἥ#μισυ ἄνθρωπός ἐστιν.",
+            "Ὁ Αἰγεύς #βασιλεῖ (=βασιλεύς ἐστιν) ἐν ταῖς Ἀθήνα#ις .",
+            "Ὁ Μίνως τὸν Αἰγέα παρέχειν βούλεται #ἑπτά (=7) νεανίας καὶ #ἑπτά (=7) #παρθένους (=κόρας).",
+            "Ὁ Αἰγεύς τῷ Μινωταύρῳ #πέμπει τοὺς νεανίας καὶ τὰς παρθένους κατ' #ἔτος .",
+            "Ὁ Θησεύς ἐπεὶ #ἔφηβος (=παῖς ἤδη οὐκ ἔστιν) εἰς Κρήτην ἰέναι #βούλεται (=ἐθέλει).",
+            "Ὁ νεανίας βούλεται τὸν Μινώταυρον οὐκέτι τοὺς #ἑταίρους (=φίλους) ἐσθίειν·",
+            "βούλεται οὖν #βοηθεῖν (=συλλαμβάνειν) αὐτοῖς.",
+            "Τῷ οὖν Αἰγεῖ λέγει· \"#πάππα φίλε, βούλομαι #πλεῖν (=πλοίῳ ἰέναι) πρὸς τὴν Κρήτην· ",
+            "#οἰκτίρω γὰρ τοὺς ἑταίρους.",
+            "Ὁ Αἰγεύς μάλιστα #φοβεῖται (=φόβον ἔχει), τέλος δὲ πέμπει τὸν υἱόν, αὐτῷ γὰρ #πείθεται .",
+            "Ἀλλά, #ἐπεὶ #πρῶτον (=ὅτε... αὐτίκα) ὁ Θησεὺς #ἀφικνεῖται εἰς Κρήτην καὶ ἐκβαίνει ἐκ τῆς #νεώς",
+            "ὁ βασιλεὺς καὶ ἡ #βασίλεια αὐτὸν #δέχονται .",
+            "Οἱ δοῦλοι ἄγουσι τὸν Θησέα εἰς τὴν τοῦ Μίνωος #πόλιν (=εἰς τὸ ... ἄστυ) καὶ ἐν τῷ δεσμωτ#ηρίῳ φυλάττουσιν.",
+            "Τὴν τοῦ Μίνωος πόλιν ὀνομάζο#υσιν Κνω#σσόν .",
+            "Ἡ δ'Ἀριάδνη, ἐπεὶ ὁρᾷ τὸν νεανίαν, #ἐρᾷ αὐτοῦ, καὶ βούλεται #σῴζειν αὐτόν.",
+            "Ὅτε #νύξ γίγνεται, ἡ Ἀριάδνη τῷ Θησεῖ παρέχει τὸ #ξίφος καὶ τὸ #λίνον , ἔπειτα πρὸς τὴν ναῦν #ἀπέρχεται (=ἀποβαίνει).",
+            "Ἤδη νὺξ #γίγνεται , καὶ ὁ Θησεὺς τὴν #ἡμέραν (↔νύξ) μένει.",
+            "Ἐπεὶ ὁ Θησεὺς #εἰσέρχεται εἰς τὸν λαβύρινθον, οἱ δοῦλοι #κλείουσιν τὰς πύλας καὶ #ἀπέρχονται .",
+            "Οἱ ἑταῖροι τῷ Θησεῖ #ἕπονται , ἀλλὰ μάλα #φοβοῦνται .",
+            "Ὁ Θησεὺς αὐτοῖς ἀνδρείως #ἡγεῖται , καὶ μακρὰν ὁδὸν #πορεύεται ὁ νεανίας.",
+            "Ὁ Θησεύς· \"Ὦ ἑταῖροι, μένετε καὶ #τρέπεσθε· ἆρα οὐκ #ὀσφραίνεσθε τὸ τοῦ Μινωταύρου πνεῦμα;\"",
+            "Οἱ ἑταῖροι· \"Ναί, ὦ Θησεῦ, #ὀσφραινόμεθα τὸ πνεῦμα αὐτοῦ.\"",
+            "Ἔπειτα δὲ οἱ ἑταῖροι τὸ θηρίον #ὁρμῶσιν , καὶ #βοῶσιν· ",
+            "\"Ὦ Θησεῦ, ὁ Μινώταυρος πάρεστιν, καὶ ἐπὶ σὲ #ὁρμᾷ (due possibilità: attivo e medio)· ἀνδρείως οὖν #μάχου .\"",
+            "Ὁ δὲ Θησεύς· \"Μὴ #φοβεῖσθε , ὦ ἑταῖροι, ἀλλά μοι #ἕπεσθε .\"",
+            "Ἐπὶ οὖν τὸ θηρίον #ὁρμᾶται (due possibilità: attivo e medio) ὁ νεανίας· τῇ μὲν ἀριστερᾷ τῆς κεφαλῆς αὐτοῦ #λαμβάνεται , τῇ δὲ δεξιᾷ ἀποκτείνει αὐτό.",
+            "Οἱ ἑταῖροι· \"Ὦ Θησεῦ, εἰ #βούλεις (due terminazioni possibili) #ἀφικνεῖσθαι εἰς τὰς πύλας, #ἕπου τῷ λίνῳ.\"",
+            "Τῷ οὖν λίνῳ #ἕπεται ὁ Θησεύς, καὶ ἐκ τοῦ λαβυρίνθου #ἐξ-έρχεται .",
+            "Τῇ ὑστεραίᾳ #ἔρχεται (=βαίνει) ὁ Μίνως, καὶ ἄγει τὸν Θησέᾱ εἰς τὸν λαβύρινθον.",
+            "Οἱ δοῦλοι #ἀνοίγουσι τὰς #πύλας τὰς τοῦ λαβυρίνθου καὶ εἰσέρχονται.",
+            "Ὁ Θησεὺς εἰσέρχεται· ἔπειτα δὲ οἱ δοῦλοι #κλείουσι τὰς πύλας καὶ ἀπέρχονται.",
+            "Ἐν τῷ λαβυρίνθῳ πολὺς #σκότος ἐστίν.",
+            "Ὁ Θησεὺς τοῖς ἑταίροις ἡ#γεῖται , ἐν μὲν τῇ #δεξιᾷ ἔχει τὸ ξίφος, ἐν δὲ τῇ #ἀριστερᾷ τὸ λίνον.",
+            "Μακρὰν ὁδὸν π#ορεύονται , ἀλλ'ἐξαίφνης β#ρυχᾶται τὸ πνεῦμα τὸ τοῦ Μινωταύρου καὶ τὸν ψόφον τὸν τῶν #ποδῶν αὐτοῦ ἀκούουσιν.",
+            "Οἱ οὖν ἑταῖροι #τρέπονται (=ἀναστρέφουσιν), καὶ αὐτὸν ὁρῶσιν.",
+            "Τὸ μὲν θηρίον #βρυχᾶται· \"μῦ, μῦ.\" Οἱ οὖν ἑταῖροι ἀκούουσιν αὐτοῦ, καὶ #δεινῶς (=μάλιστα) φοβοῦνται.",
+            "Ὁ Θησεὺς ὁρμᾶται ἐπὶ τὸ θηρίον· τῆς #κεφαλῆς αὐτοῦ λαμβάνεται", 
+            "ἔπειτα δὲ τὸ #στῆθος τύπτει καὶ τὸ θηρίον ἀπο#κτείνει .",
+            "Τὸ δὲ δεινῶς #κλάζει (=βοᾷ), καὶ πρὸς τὴν γῆν καταπίπτει.",
+            "Οἱ ἑταῖροι τὸν Θησέᾱ μάλιστα #τιμῶσιν .",
+            "Ἐν ταῖς πύλαις #μοχλός ἐστιν.",
+            "Οἱ ἑταῖροι τὸν μοχλὸν #διακόπτουσιν .",
+            "Οὕτως ἡ Μυρρίνη #περαίνει τὸν μῦθον."
+        ];
+       var locu_set; //placeholder for one set of sentences from locutionis
+      var flag = 1; //turn this off after first round of sencences draw
+      words2guess = []; //keep track of words in a sentence with #pound sign
+      var splitted_locutionis = splitUp(locutionis , 5); //divides locutionis in 5 sets
+      locu_set = splitted_locutionis[0]; //get first set 
+      var counter = splitted_locutionis.length; //length of array
+      var attempts = 0; //keeps track of attempts then reveals answer if > 3
+      var score = 0; //keeps trak of good/bad guesses
+      document.getElementById("more_to_go").innerHTML =
+        "Φράσεις: " + romanize(counter);
+      
+      function romanize(num) {
+        //romanize numbers for the countdown
+        var lookup = {X:10 ,IX:9 ,V:5 ,IV:4 ,I:1} ,roman = '' ,i;
+        for ( i in lookup ) {
+          while ( num >= lookup[i] ) {
+            roman += i;
+            num -= lookup[i];
+          }
+        }
+        return roman.toLowerCase();
+      }
+
+      function macronRadial(id){
+            //uncheck all other buttons              
+        for (let i = 5; i < 7; i++) {
+          const currentId = document.getElementById(String(i)).id;
+          if (currentId !== id) {
+            document.getElementById(currentId).checked = false;
+          }
+        }
+      }
+function abstrahoMacron(word) {
+  // Comprehensive mapping of Greek characters with breathing marks to their base forms
+  const breathingMap = {
+    // Alpha combinations 
+    'ἀ': 'α', 'ἁ': 'α', 'ἂ': 'α', 'ἃ': 'α', 'ἄ': 'α', 'ἅ': 'α', 'ἆ': 'α', 'ἇ': 'α', 'ὰ': 'α', 'ά': 'α',
+    'Ἀ': 'Α', 'Ἁ': 'Α', 'Ἂ': 'Α', 'Ἃ': 'Α', 'Ἄ': 'Α', 'Ἅ': 'Α', 'Ἆ': 'Α', 'Ἇ': 'Α',
+    // Epsilon combinations
+    'ἐ': 'ε', 'ἑ': 'ε', 'ἒ': 'ε', 'ἓ': 'ε', 'ἔ': 'ε', 'ἕ': 'ε', 'έ': 'ε',
+    'Ἐ': 'Ε', 'Ἑ': 'Ε', 'Ἒ': 'Ε', 'Ἓ': 'Ε', 'Ἔ': 'Ε', 'Ἕ': 'Ε',
+    // Eta combinations
+    'ἠ': 'η', 'ἡ': 'η', 'ἢ': 'η', 'ἣ': 'η', 'ἤ': 'η', 'ἥ': 'η', 'ἦ': 'η', 'ἧ': 'η', 'ή': 'η',
+    'Ἠ': 'Η', 'Ἡ': 'Η', 'Ἢ': 'Η', 'Ἣ': 'Η', 'Ἤ': 'Η', 'Ἥ': 'Η', 'Ἦ': 'Η', 'Ἧ': 'Η',
+    // Iota combinations
+    'ἰ': 'ι', 'ἱ': 'ι', 'ἲ': 'ι', 'ἳ': 'ι', 'ἴ': 'ι', 'ἵ': 'ι', 'ἶ': 'ι', 'ἷ': 'ι', 'ί': 'ι',
+    'Ἰ': 'Ι', 'Ἱ': 'Ι', 'Ἲ': 'Ι', 'Ἳ': 'Ι', 'Ἴ': 'Ι', 'Ἵ': 'Ι', 'Ἶ': 'Ι', 'Ἷ': 'Ι',
+    // Omicron combinations
+    'ὀ': 'ο', 'ὁ': 'ο', 'ὂ': 'ο', 'ὃ': 'ο', 'ὄ': 'ο', 'ὅ': 'ο', 'ό': 'o',
+    'Ὀ': 'Ο', 'Ὁ': 'Ο', 'Ὂ': 'Ο', 'Ὃ': 'Ο', 'Ὄ': 'Ο', 'Ὅ': 'Ο', 'Ό': 'O',
+    // Upsilon combinations
+    'ὐ': 'υ', 'ὑ': 'υ', 'ὒ': 'υ', 'ὓ': 'υ', 'ὔ': 'υ', 'ὕ': 'υ', 'ὖ': 'υ', 'ὗ': 'υ', 'ύ': 'υ',
+    'Ὑ': 'Υ', 'Ὓ': 'Υ', 'Ὕ': 'Υ', 'Ὗ': 'Υ',
+    // Omega combinations
+    'ὠ': 'ω', 'ὡ': 'ω', 'ὢ': 'ω', 'ὣ': 'ω', 'ὤ': 'ω', 'ὥ': 'ω', 'ὦ': 'ω', 'ὧ': 'ω', 'ώ': 'ω', 'ῷ': 'ω', 'ῳ': 'ω',
+    'Ὠ': 'Ω', 'Ὡ': 'Ω', 'Ὢ': 'Ω', 'Ὣ': 'Ω', 'Ὤ': 'Ω', 'Ὥ': 'Ω', 'Ὦ': 'Ω', 'Ὧ': 'Ω',
+    //random
+    'ᾶ': 'α', 'ῆ': 'η', 'ῖ': 'ι', 'ῦ': 'υ', 'ῶ': 'ω'
+  };
+
+  // Convert the word character by character
+  return [...word].map(char => breathingMap[char] || char).join('');
+}
+
+      
+
+      function commutoCapitulum(id){
+           //change set of phrases according to what radial button is pressed
+          document.getElementById("score").style.fontSize = "large";
+          attempts = 0;
+          score = 0;
+          document.getElementById("response").innerHTML = "";
+          words2guess = [];
+          var splitted_locutionis = splitUp(locutionis , 5); //split up locutionis in 5 sets
+          locu_set = splitted_locutionis[id.id]; //get set based on ID of radial pressed
+          counter = locu_set.length; //length of array 
+          document.getElementById("guess_field").style.visibility = "visible"; 
+          document.getElementById("more_to_go").focus();
+          document.getElementById("more_to_go").innerHTML = "Λόγοι: " + romanize(counter);
+          document.getElementById("score").innerHTML = '0';
+          document.getElementById("score").style.visibility = 'visible';
+          document.getElementById("final_score").style.visibility = "hidden";
+
+          for(i=0; i<5; i++){
+              //uncheck all other buttons
+              if(document.getElementById(String(i)).id !== id.id){
+                document.getElementById(String(i)).checked = false;
+                }
+          }
+          document.getElementById("locutio").innerHTML = firstPop(locu_set); //pop last sentenced and show         
+      }
+
+      function splitUp(arr , n) {
+          //function that splits up main array
+        var rest = arr.length % n , // how much to divide
+            restUsed = rest , // to keep track of the division over the elements
+            partLength = Math.floor(arr.length / n) ,
+            result = [];
+
+        for(var i = 0; i < arr.length; i += partLength) {
+            var end = partLength + i ,
+                add = false;
+
+            if(rest !== 0 && restUsed) { // should add one element for the division
+                end++;
+                restUsed--; // I've used one division element now
+                add = true;
+            }
+            result.push(arr.slice(i , end)); // part of the array
+            if(add) {
+                i++; // also increment i in the case we added an extra element for division
+            }
+        }
+        return result;
+    }
+
+      // pop sentence for the first time
+      if(flag==1){
+          counter = locu_set.length;
+          document.getElementById("more_to_go").innerHTML = "Λόγοι: " + romanize(counter);          
+          firstPop(locu_set); // do it once to get first questions
+          flag = 0
+      }
+      
+      function firstPop(locu_set) {     
+        // pop sentence for the first time
+        if (locu_set.length > 0) {
+          var first_sentence = blankWord(locu_set.shift()); //call function that x's words starting with # sign
+          document.getElementById("locutio").innerHTML = first_sentence;
+        } else {
+          console.log("out of words");
+        }return(first_sentence)
+      }
+
+      
+function blankWord(sentence) {
+    let x = sentence.split(" ");
+    words2guess = []; // Reset before populating
+    for (i = 0; i < x.length; i++) {
+        if (x[i].includes("#")) {
+            if (x[i].startsWith("#")) {      
+                word2guess = x[i].slice(1);
+                words2guess.push(word2guess);
+                x[i] = "_".repeat(x[i].length - 1);
+            } else {
+                let inx = x[i].indexOf('#');
+                word2guess = x[i].slice(inx + 1);
+                words2guess.push(word2guess);
+                let foo1 = x[i].substr(0, inx);
+                let foo2 = x[i].substr(inx);
+                let fooX = "_".repeat(foo2.length - 1);
+                x[i] = foo1 + fooX;
+            }
+        }
+    }
+    console.log("Words to guess:", words2guess); // Debug
+    return x.join(" ");
+}
+
+function replaceWord(word_entered) {
+    let inner = document.getElementById("locutio").innerHTML;
+    let xsx = /(_)\1*/;
+    let arr = inner.match(xsx)[0];
+    console.log("Replacing:", arr, "with:", word_entered); // Debug
+    inner = inner.replace(arr, word_entered.fontcolor("green").toLowerCase());
+    document.getElementById("locutio").innerHTML = inner;
+}
+
+
+      function getIncite(){
+            //returns random incouraging sentence
+incites = [
+    'εὖ γε!',               // Well done! (common expression of praise)
+    'καλῶς ἐποίησας!',      // You did well!
+    'καλῶς πονεῖς!',        // You work well!
+    'ἄριστά γε!',           // Excellent!
+    'εὖ μάλα!',             // Very good!
+    'ἐπαινετόν!',           // Praiseworthy!
+    'εὖγε τῆς ἀρετῆς!',     // Bravo for your excellence! (genitive of exclamation)
+    'ἀγαθός γ᾽εἶ!',         // You are good indeed!
+    'καλῶς ποιεῖς!',        // You do well!
+    'λαμπρῶς γε!',          // Splendidly indeed!
+    'πρόβαινε!',            // Go on!
+    'χώρει!',               // Proceed!
+    'πρόϊθι!',              // Go forward!
+    'βαῖνε!',               // Go on!
+    'κάλλιστα!',            // Excellent!
+    'εὖ μάλα!',             // Very well!
+    'θαυμαστόν!',           // Wonderful!
+    'εὐτυχῶς!',             // Fortunately!/Well done!
+    'ὀρθῶς!',               // Correctly!
+    'ἀληθῆ λέγεις!',        // You speak truly!
+    'δικαίως!',             // Justly!
+    'εἰκότως!'              // Reasonably!/Naturally!
+]
+          return incites[Math.floor(Math.random() * incites.length)];
+      }
+      function getSmiley(){
+          smileys = [' 😍' , ' 😅' , ' 😎' , ' 😈' , ' 😂' , ' 😃' , ' 😆' , ' 😏'];
+          return smileys[Math.floor(Math.random() * smileys.length)];
+      }
+
+      function blink() {
+         var f = document.getElementById('response');
+         setTimeout(function() {
+            f.style.display = (f.style.display == 'none' ? '' : 'none');
+         } , 200);
+         setTimeout(function() {
+            f.style.display = (f.style.display == 'none' ? '' : 'none');
+         } , 300);
+         document.getElementById("guess_field").style.color = "red";
+         document.getElementById("guess_field").style.textDecoration = "line-through";
+      }
+// =======================KEYDOWN FUNCTION========================================
+// ======================|            |========================================
+
+function matchFunc(event) {
+    var x = event.keyCode;
+if (document.getElementById('6').checked) {
+    console.log('Original target:', words2guess[0]);
+    console.log('Demacronized target:', abstrahoMacron(words2guess[0]));
+    console.log('User input:', word_entered);
+}
+    if (x == 13) { // Enter key
+      console.log("Before shift - words2guess:", words2guess); // Debug
+        var word_entered = document.getElementById("guess_field").value.trim();
+      console.log("Raw input value:", document.getElementById("guess_field").value);
+        let targetWord = words2guess[0]; // Current word to guess
+
+        // Check if "No breathing marks" is selected
+        const removeBreathingMarks = document.getElementById('6').checked;
+        if (removeBreathingMarks) {
+            // Normalize both the user input and the target word
+            word_entered = abstrahoMacron(word_entered);
+            targetWord = abstrahoMacron(targetWord);
+        }
+
+        // Compare normalized inputs
+        if (word_entered.toLowerCase() === targetWord.toLowerCase() && words2guess.length > 0) {
+            replaceWord(word_entered);
+            document.getElementById("response").innerHTML = getIncite() + getSmiley();
+            document.getElementById("score").innerHTML = score += 1;
+            document.getElementById("guess_field").value = ""; // Clear input field
+            attempts = 0;
+
+            setTimeout(clearFields, 1500);
+
+            if (words2guess.length > 1) {
+                words2guess.shift(); // Move to next word
+              console.log("After shift - words2guess:", words2guess); // Debug
+                return;
+            } else {
+                // Handle end of game logic
+                words2guess = [];
+                try {
+                    if (locu_set == 0) throw new Exception();
+                    counter--;
+                    document.getElementById("more_to_go").innerHTML = "Λόγοι: " + romanize(counter);
+                    setTimeout(() => {
+                        document.getElementById("locutio").innerHTML = blankWord(locu_set.shift());
+                    }, 1000);
+                } catch (err) {
+                    document.getElementById("locutio").innerHTML = "Πέπρακται! Ἄλλην ἄσκησιν πειρῶ";
+                    document.getElementById("more_to_go").innerHTML = "";
+                    document.getElementById("response").innerHTML = "";
+                    document.getElementById("guess_field").style.visibility = "hidden";
+                    document.getElementById("score").style.visibility = "hidden";
+                    document.getElementById("final_score").innerHTML = score;
+                    document.getElementById("final_score").style.visibility = "visible";
+                }
+            }
+        } else if (word_entered === "" && counter > 0) {
+            document.getElementById("response").innerHTML = "Γράφε τὴν ἀπόκρισιν ἐνταῦθα ⬉";
+            document.getElementById("guess_field").value = "";
+        } else if (word_entered.toLowerCase() !== targetWord.toLowerCase() && counter > 0) {
+            attempts += 1;
+            document.getElementById("response").innerHTML = "😱 Οὐδαμῶς! Αὖθις πειρῶ";
+            blink();
+            document.getElementById("score").innerHTML = score -= 1;
+            setTimeout(clearFields, 1000);
+
+            if (attempts == 3) {
+                document.getElementById("correct_answer").innerHTML = "Ἀπόκρισις: " + targetWord;
+                attempts = 0;
+            }
+        }
+    }
+}
+
+
+
+      function clearFields() {
+        // delay function to trigger at the end of exercise
+        document.getElementById("response").innerHTML = ""; 
+        document.getElementById("guess_field").value = "";
+        document.getElementById('correct_answer').innerHTML = "";
+        document.getElementById("guess_field").style.textDecoration = "none";
+        document.getElementById("guess_field").style.color = "black";
+      }           
+    </script>
+    <!--===========SCRIPT ENDS=========================-->
+
+
+    </body>
+
+</html>
