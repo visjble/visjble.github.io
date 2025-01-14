@@ -1,0 +1,925 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Flashcard Slider with Chapters</title>
+        <style>
+            body {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                min-height: 45vh;
+                margin: 0;
+                margin-top: 0;
+                background-color: #f0f8ff;
+                /* Light blue background */
+                font-family: Arial, sans-serif;
+                overflow-x: hidden;
+            }
+
+            .chapters {
+                display: grid;
+                grid-template-columns: repeat(4, 1fr);
+                gap: 5px;
+                margin-bottom: 20px;
+                max-width: 90vw;
+            }
+
+            .chapter-btn {
+                padding: 8px;
+                background-color: #e6f2ff;
+                /* Light blue button background */
+                border: 1px solid #4da6ff;
+                /* Medium blue border */
+                border-radius: 5px;
+                cursor: pointer;
+                font-size: 0.9rem;
+                text-align: center;
+            }
+
+            .chapter-btn.active {
+                background-color: #1e90ff;
+                /* Dodger blue for active state */
+                color: white;
+            }
+
+            .card-container {
+                perspective: 1000px;
+                width: 80vw;
+                max-width: 300px;
+            }
+
+            .card {
+                width: 100%;
+                height: 190px;
+                position: relative;
+                transition: transform 0.6s;
+                transform-style: preserve-3d;
+                cursor: pointer;
+                touch-action: manipulation;
+            }
+
+            .card.is-flipped {
+                transform: rotateY(180deg);
+            }
+
+            .card-side {
+                position: absolute;
+                width: 100%;
+                height: 100%;
+                backface-visibility: hidden;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                border-radius: 10px;
+                box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+                font-size: 1.5rem;
+                text-align: center;
+                padding: 10px;
+                box-sizing: border-box;
+            }
+
+            .card-front {
+                background-color: #ffffff;
+                border: 2px solid #4da6ff;
+                /* Medium blue border */
+            }
+
+            .card-back {
+                background-color: #e6f2ff;
+                /* Light blue background */
+                border: 2px solid #1e90ff;
+                /* Dodger blue border */
+                transform: rotateY(180deg);
+            }
+
+            @media (max-width: 480px) {
+                .chapters {
+                    grid-template-columns: repeat(4, 1fr);
+                }
+
+                .chapter-btn {
+                    font-size: 0.9rem;
+                    padding: 6px;
+                }
+
+                .card {
+                    height: 160px;
+                }
+
+                .card-side {
+                    font-size: 2rem;
+                }
+            }
+        </style>
+    </head>
+    <body>
+        <div id="chapterCount"></div>
+        <div id="chapters" class="chapters"></div>
+        <div class="card-container">
+            <div class="card" id="flashcard">
+                <div class="card-side card-front" id="card-front"></div>
+                <div class="card-side card-back" id="card-back"></div>
+            </div>
+        </div>
+        <script>
+            let chapters = [];
+            let currentIndex = 0;
+            let currentChapter = 0;
+
+            // function decodeDict(encoded) {
+            //   const decodedString = decodeURIComponent(escape(atob(encoded)));
+            //   return JSON.parse(decodedString);
+            // }
+            var dict = {
+                "1": {
+                    "ἐστί(ν)": "est",
+                    "λέγει": "dicit",
+                    "οἰκεῖ": "habitat",
+                    "πονεῖ": "laborat",
+                    "φιλεῖ": "amat",
+                    "χαίρει": "gaudet",
+                    "ὁ ἀγρός": "ager",
+                    "ὁ ἄνθρωπος": "homo",
+                    "ὁ αὐτουργός": "agricola",
+                    "ὁ οἶκος": "domus",
+                    "ὁ πόνος": "labor",
+                    "ὁ σῖτος": "frumentum",
+                    "καλός": "pulcher",
+                    "μακρός": "longus",
+                    "μῑκρός": "parvus",
+                    "πολύς": "multus",
+                    "οὐ, οὐκ, οὐχ": "non",
+                    "οὖν": "igitur",
+                    "ἀλλά": "sed",
+                    "γάρ": "nam",
+                    "καί": "et",
+                    "δέ": "autem",
+                    "ἐν ταῖς Ἀθήναις": "Athenis",
+                    "Ἀθηναῖος": "Atheniensis",
+                    "ὁ Δικαιóπολις": "Dicaeopolis",
+                    "αἴρει": "tollit",
+                    "βαδίζει": "ambulat",
+                    "καθίζει": "sedet",
+                    "φέρει": "fert",
+                    "ὁ ἥλιος": "sol",
+                    "ὁ χρόνος": "tempus",
+                    "αὐτόν": "eum",
+                    "ἰσχῡρός": "validus",
+                    "χαλεπός": "difficilis",
+                    "πρός + acc.": "ad"
+                },
+
+                "2": {
+                    "ἐκβαίνει": "exit",
+                    "ἐλαύνει": "agit",
+                    "ἐλθέ": "veni",
+                    "καθεύδει": "dormit",
+                    "καλεῖ": "vocat",
+                    "πάρεστι(ν)": "adest",
+                    "σπεύδει": "festinat",
+                    "τό ἄροτρον": "aratrum",
+                    "ὁ δοῦλος": "servus",
+                    "ἐγώ": "ego",
+                    "ἀργός": "piger",
+                    "μή": "ne",
+                    "οὔτως": "sic",
+                    "τί;": "cur?",
+                    "μέν...δέ": "quidem...autem",
+                    "ὁ Ξανθίᾱς": "Xanthias",
+                    "ἄγω": "duco",
+                    "εἰσάγω": "introduco",
+                    "βαίνω": "eo",
+                    "βλέπω": "video",
+                    "λαμβάνω": "capio",
+                    "συλλαμβάνω": "adiuvo",
+                    "ὁ βοῦς": "bos",
+                    "τὸ δένδρον": "arbor",
+                    "ὁ δεσπότης": "dominus",
+                    "εἰς + acc.": "in",
+                    "βραδέως": "tarde",
+                    "ἔπειτα": "deinde",
+                    "ἤδη": "iam"
+                },
+
+                "3": {
+                    "μένω": "maneo",
+                    "πίπτω": "cado",
+                    "προσχωρέω + dat.": "accedo",
+                    "φησί(ν)": "inquit",
+                    "ὁ λίθος": "lapis",
+                    "αὐτό": "id",
+                    "αὐτόν": "eum",
+                    "αἴτιος": "auctor",
+                    "δυνατός": "possibilis",
+                    "μέγας": "magnus",
+                    "ἐκ / ἐξ + gen.": "e/ex",
+                    "αὖθις": "iterum",
+                    "δεῦρο": "huc",
+                    "ἔτι": "adhuc",
+                    "οὐκέτι": "non iam",
+                    "τε...καί, τε καί": "et...et",
+                    "ὦ Ζεῦ": "o Iuppiter",
+                    "λείπω": "relinquo",
+                    "λύω": "solvo",
+                    "τὸ δεῖπνον": "cena",
+                    "ὁ / ἡ παῖς (ὦ παῖ)": "puer/puella",
+                    "ὁ πατήρ (τὸν πατέρα, ὦ πάτερ)": "pater",
+                    "σύ": "tu",
+                    "ἀνδρεῖος": "fortis",
+                    "πολλοί": "multi",
+                    "τοσοῦτος": "tantus",
+                    "ἐν + dat.": "in",
+                    "μηκέτι + imperative": "ne iam",
+                    "ἐπεί": "cum",
+                    "ὁ Φιλιππος": "Philippus"
+                },
+                "4": {
+                    "ἀκούω": "I listen; I listen to (+ gen. of person, + acc. of thing)",
+                    "ἐθέλω": "I wish; I want to (+ infin.)",
+                    "ἔχω": "I have; I hold",
+                    "θεωρέω": "I watch; I see",
+                    "ποιέω": "I do; I make",
+                    "χαίρω": "I rejoice",
+                    "χαῖρε (sg.); χαίρετε (pl.)": "greetings!",
+                    "ὁ ἄγγελος": "messenger",
+                    "ὁ ἀνήρ": "man; husband",
+                    "ἡ γυνή": "woman; wife",
+                    "ἡ ἑορτή": "festival",
+                    "ἡ θυγάτηρ": "daughter",
+                    "ὁ καιρός": "time",
+                    "ἡ κρήνη": "spring",
+                    "ἡ μήτηρ": "mother",
+                    "ἡ ὑδρία": "water jar",
+                    "ὁ χορός": "dance; chorus",
+                    "ἀργός": "lazy",
+                    "φίλος, φίλη, φίλον": "dear",
+                    "ὁ φίλος (m.) or ἡ φίλη (f.)": "friend",
+                    "ἀπό + gen.": "from",
+                    "ἀπό-": "(as prefix in compound verbs) away",
+                    "πρός": "(+dat.) at, near, by; (+acc.) to, toward",
+                    "ἰδού": "look!",
+                    "καί": "and; even; also; too",
+                    "μάλα": "very",
+                    "μόλις": "with difficulty; scarcely; reluctantly",
+                    "πρῶτον": "first",
+                    "ταχέως": "quickly; swiftly",
+                    "ἆρα": "introduces a question",
+                    "ἐν νῷ ἔχω + inf.": "I have in mind; I intend",
+                    "πείθω": "I persuade",
+                    "στενάζω": "I groan",
+                    "ἡ γῆ": "land; earth; ground",
+                    "ἡ ὁδός": "road; way; journey",
+                    "ἄλλος, ἄλλη, ἄλλο": "other; another",
+                    "ῥᾴδιος, ῥᾴδια, ῥᾴδιον": "easy",
+                    "ἀεί": "always",
+                    "μάλιστα": "most, most of all; very much; especially",
+                    "οἴκαδε": "to home; homeward",
+                    "ἑορτὴν ποιῶ": "I celebrate a festival",
+                    "τί;": "why?; what? (accent is always acute)"
+                },
+                "5": {
+                    "ἄπειμι": "absum",
+                    "βοάω": "clamo",
+                    "διώκω": "persequor",
+                    "ζητέω": "quaero",
+                    "ἴθι, (pl.) ἴτε": "i, ite",
+                    "ἴθι δή": "age",
+                    "ὁράω": "video",
+                    "τιμάω": "honoro",
+                    "τρέχω": "curro",
+                    "φεύγω": "fugio",
+                    "φυλάττω": "custodio",
+                    "ὁ/ἡ κύων": "canis",
+                    "ὁ λαγώς": "lepus",
+                    "ὁ λύκος": "lupus",
+                    "ἡ οἰκίᾱ": "domus",
+                    "τὸ ὄρος": "mons",
+                    "ὁ πάππος": "avus",
+                    "τὰ πρόβατα": "oves",
+                    "ἄκρος, ἄκρα, ἄκρον": "summus",
+                    "ἄκρον τὸ ὄροσ": "summus mons",
+                    "ῥάθυμος, ῥάθυμον": "neglegenter",
+                    "ἀνά (+ acc.)": "sursum",
+                    "κατά (+ acc.)": "deorsum",
+                    "ποῦ;": "ubi?",
+                    "οὐδέ": "nec",
+                    "οὔτε... οὔτε": "neque...neque",
+                    "ὥστε": "ut",
+                    "δι᾿ ὀλίγου": "brevi",
+                    "ἀποφεύγω": "effugio",
+                    "γιγνώσκω": "cognosco",
+                    "ἥκω": "veni",
+                    "θαυμάζω": "miror",
+                    "πάσχω": "patior",
+                    "τύπτω": "ferio",
+                    "ὁ μῦθος": "fabula",
+                    "ἡμεῖς": "nos",
+                    "ὑμεῖς": "vos",
+                    "ἀγαθός, -ή, -όν": "bonus",
+                    "ἄγριος, -α, -ον": "ferus",
+                    "πρῶτος, -η, -ον": "primus",
+                    "αὐτός, -ή, -ό": "ipse; idem; is",
+                    "ἐπί (+ dat.)": "in",
+                    "ἐπί (+ acc.)": "ad, contra",
+                    "ὑπό (+ dat./acc.)": "sub",
+                    "ἐνταῦθα": "tum; ibi",
+                    "ἐνταῦθα δὴ": "tum demum",
+                    "νῦν": "nunc",
+                    "καί... καί": "et...et",
+                    "ὅτι": "quod"
+                },
+
+                "6": {
+                    "ἀποκτείνω": "occido",
+                    "ἀφικνέομαι": "pervenio",
+                    "βασιλεύω": "regno",
+                    "βοηθέω": "auxilior (+ dat.)",
+                    "βούλομαι": "volo",
+                    "γίγνομαι": "fio",
+                    "γίγνεται": "fit",
+                    "δέχομαι": "accipio",
+                    "ἐκφεύγω": "effugio",
+                    "ἔρχομαι": "venio",
+                    "απέρχομαι": "abeo",
+                    "πείθομαι": "pareo",
+                    "πέμπω": "mitto",
+                    "πλέω": "navigo",
+                    "σῴζω": "servo",
+                    "φοβέομαι": "timeo",
+                    "ὁ βασιλεύς": "rex",
+                    "ὁ ἑταῖρος": "socius",
+                    "ἡ ἡμέρα": "dies",
+                    "ἡ ναῦς": "navis",
+                    "ἡ νύξ": "nox",
+                    "ἡ νῆσος": "insula",
+                    "ὁ πάππας": "pater",
+                    "ἡ παρθένος": "virgo",
+                    "δεινóς, -ή ,-óν": "terribilis",
+                    "μετά": "post",
+                    "ἐκεῖ": "ibi",
+                    "ἐξέρχομαι": "exeo",
+                    "ἡγέομαι": "duco",
+                    "μάχομαι": "pugno",
+                    "παρέχω": "praebeo",
+                    "πορεύομαι": "eo",
+                    "προχωρέω": "progredior",
+                    "φασί(ν)": "dicunt",
+                    "αἱ πύλαι": "porta",
+                    "οὐδαμῶς": "nullo modo",
+                    "πολλάκις": "saepe",
+                    "ὡς": "quam",
+                    "γε": "quidem",
+                    "δή": "sane"
+                },
+
+                "7": {
+                    "αἱρέω": "capio",
+                    "ἐπαίρω": "tollo",
+                    "ἐπαίρω ἐμαυτóν": "surgo",
+                    "εὑρίσκω": "invenio",
+                    "ἰέναι": "ire",
+                    "κελεύω": "iubeo",
+                    "παρασκευάζω": "paro",
+                    "ὁ/ἡ αἴξ": "capra",
+                    "ἡ θάλαττα": "mare",
+                    "τò ὄνομα": "nomen",
+                    "ἡ πóλις": "urbs",
+                    "τίς;": "quis?",
+                    "τις": "aliquis",
+                    "οὐδείς, οὐδεμία, οὐδέν": "nullus",
+                    "ἐμαυτοῦ, σεαυτοῦ, ἑαυτοῦ": "mei; tui; sui",
+                    "μέγιστος, -η, -ον": "maximus",
+                    "περί + gen.": "de",
+                    "περί + acc.": "circum",
+                    "ἀποκρίνομαι": "respondeo",
+                    "βάλλω": "iacio",
+                    "μέλλω": "paro",
+                    "ὁρμάω": "moveo",
+                    "παύω": "desino",
+                    "παύε": "desine",
+                    "ὁ ξένος, τοῦ ξένου": "hospes",
+                    "ὁ οἶνος, τοῦ οἴνου": "vinum",
+                    "ὁ ὀφθαλμóς, τοῦ ὀφθαλμοῦ": "oculus",
+                    "τò πῦρ, τοῦ πυρóς": "ignis",
+                    "ὁ χειμών, τοῦ χειμῶνος": "hiems",
+                    "δύο": "duo",
+                    "εἷς, μία, ἕν": "unus",
+                    "πᾶς, πᾶσα, πᾶv": "omnis",
+                    "σώφρων, σῶφρον": "prudens",
+                    "ἐνθάδε": "hic",
+                    "πóθεν;": "unde?",
+                    "πῶς;": "quomodo?"
+                },
+                "8": {
+                    "διαλέγομαι": "colloquor; sermones confero cum (+ dat.)",
+                    "ἕπομαι": "sequor (+ dat.)",
+                    "ἐργάζομαι": "laboro; perficio",
+                    "θεάομαι": "specto; video; aspicio",
+                    "τό ἄστυ, τοῦ ἄστεως": "urbs",
+                    "τό ἔργον, τοῦ ἔργου": "opus, factum",
+                    "ἡ ἑσπέρα, τῆς ἑσπέρας": "vesper",
+                    "ὁ θεός, τοῦ θεοῦ": "deus",
+                    "ἡ θύρα, τῆς θύρας": "ianua",
+                    "ὁ ποιητής, τοῦ ποιητοῦ": "poeta",
+                    "ἐκεῖσε": "illuc",
+                    "εὖ": "bene",
+                    "οἴκοι": "domi",
+                    "ὥσπερ": "velut",
+                    "ὅμως": "tamen",
+                    "ἐν ᾧ": "dum",
+                    "εὖ γε": "euge; bene factum",
+                    "ἀναβαίνω": "ascendo; inscendo in (+ acc.)",
+                    "ἐγείρω": "(act.) excito; (med.) expergiscor",
+                    "εὔχομαι": "precor; supplico (+ dat.); oro ut (+ subj.)",
+                    "καθίζω": "sedere facio; colloco; (act. intrans.) sedeo; (med.) consido",
+                    "ἡ ἀγορά, τῆς άγορᾶς": "forum, macellum",
+                    "ὁ βωμός, τοῦ βωμοῦ": "ara",
+                    "ὁ νεανίας, τοῦ νεανίου": "iuvenis",
+                    "ὁ πολίτης, τοῦ πολίτου": "civis",
+                    "ἡ χείρ, τῆς χειρός": "manus",
+                    "ὑπέρ + gen.": "pro, causa (+ gen.)",
+                    "τέλος": "denique; postremo",
+                    "ἐν ... τούτῳ": "interea",
+                    "τῇ ὑστεραίᾳ": "postridie",
+                    "ὁ Ζεύς, τοῦ Διός": "Iuppiter"
+                    },
+                "9": {
+                    "ἄγε, (pl.) ἄγετε": "age, (pl.) agite",
+                    "ἐπανέρχομαι": "redeo; revertor ad (+ acc.)",
+                    "ἐσθίω": "edo",
+                    "κάμνω": "aegroto; fatigo",
+                    "πίνω": "bibo",
+                    "ἡ ἀριστερά, τῆς ἀριστερᾶς": "sinistra",
+                    "ἡ δεξιά, τῆς δεξιᾶς": "dextra",
+                    "ἡ θεóς, τῆς θεοῦ": "dea",
+                    "τὸ ἱερóν, τοῦ ἱεροῦ": "templum",
+                    "ὁ κίνδυνος, τοῦ κινδύνου": "periculum",
+                    "κάλλιστος, -η, -ον": "pulcherrimus, -a, -um",
+                    "διά + gen.": "per",
+                    "ἐπί + dat.": "in, super",
+                    "ἐπί + acc.": "ad, contra, in, super",
+                    "αὐξάνω": "augeo",
+                    "καίω/κάω": "incendo, uro; (med.) ardeo, flagro",
+                    "σιγάω": "taceo",
+                    "τέρπομαι": "delector; (+ abl.) fruor; (+ inf.) iuvat me",
+                    "ὁ γέρων, τοῦ γέροντος": "senex",
+                    "ὁ δῆμος, τοῦ δήμου": "populus",
+                    "τò ἱερεῖον, τοῦ ἱερείου": "victima",
+                    "ὁ ἱερεύς, τοῦ ἱερέως": "sacerdos",
+                    "ὁ κῆρυξ, τοῦ κήρυκος": "praeco",
+                    "ὁ οὐρανóς, τοῦ οὐρανοῦ": "caelum",
+                    "ἡ πομπή, τῆς πομπῆς": "pompa",
+                    "ἄριστος, -η, -ον": "optimus, -a, -um",
+                    "γέρων, γέροντος": "senex, senis",
+                    "ἕτοιμος, -η, -ον": "paratus, -a, -um",
+                    "ἵλεως": "propitius",
+                    "μέσος, -η, -oν": "medius, -a, -um"
+                },
+                "10": {
+                    "ἀφικνέομαι, ἀφίξομαι, ἀφικóμην": "pervenio; (+ ad + acc.) advenio",
+                    "γίγνομαι, γενήσομαι, ἐγενóμην": "fio",
+                    "εὑρίσκω, εὑρήσω, ηὗρον/ εὗρον": "invenio",
+                    "θεάομαι, θεάσομαι, ἐθεασάμην": "specto, video, contemplor",
+                    "νικάω, νικήσω, ἐνίκησα": "vinco, supero",
+                    "καλῶς": "bene",
+                    "φεῦ": "eheu! (+ gen. causae)",
+                    "αἴρω, ἀρῶ, ἦρα": "tollo; (refl.) surgo",
+                    "ἀποκτείνω, ἀποκτενῶ, ἀπέκτεινα": "occido",
+                    "ἀποφεύγω, ἀποφεύξομαι, ἀπέφυγον": "effugio, evado",
+                    "δεῖ, δεήσει, ἐδέησε": "(impers.; + acc. + inf.) necesse est",
+                    "ἔξεστι(ν)": "(impers.; + dat. + inf.) licet",
+                    "ἔξεστιν ἡμῖν μένειν": "nobis licet manere",
+                    "καταλείπω, καταλείψω, κατέλιπον": "relinquo, desero",
+                    "μένω, μενῶ, ἔμεινα": "maneo; exspecto",
+                    "τρέπω, τρέψω, ἔτρεψα": "verto; (med.) me verto",
+                    "τύπτω, τυπτήσω (no other ppts in Attic)": "ferio, percutio",
+                    "ἡ βοή, τῆς βοῆς": "clamor",
+                    "ἡ κεφαλή, τῆς κεφαλῆς": "caput",
+                    "οἱ τεκóντες, τῶν τεκóντων": "parentes",
+                    "τὸ ὕδωρ, τοῦ ὕδατος": "aqua",
+                    "πρó + gen.": "(temp. vel loc.) ante",
+                    "εὐθύς": "statim, confestim",
+                    "ποτέ": "aliquando, olim, umquam"
+                },
+                "11": {
+                    "αἰτέω, αἰτήσω, ᾔτησα": "peto; posco",
+                    "ἀποθνῄσκω, ἀποθανοῦμαι, ἀπέθανον": "morior",
+                    "δακρύω, δακρύσω, ἐδάκρυσα": "lacrimo, fleo",
+                    "εἰσάγω, εἰσάξω, εἰσήγαγον": "introduco",
+                    "ἔφη": "inquit",
+                    "κομίζω, κομιῶ, ἐκóμισα": "fero, porto",
+                    "κóπτω, κóψω, ἔκοψα": "pulso, ferio",
+                    "λαμβάνω, λήψομαι, ἔλαβον": "capio; (med. + gen.) prehendo",
+                    "λείπω, λείψω, ἔλιπον": "relinquo",
+                    "μανθάνω, μαθήσομαι, ἔμαθον": "disco, intellego",
+                    "πάσχω, πείσομαι, ἔπαθον": "patior",
+                    "σκοπέω, σκέψομαι, ἐσκεψάμην": "specto, considero",
+                    "ὁ ἀδελφóς, τοῦ ἀδελφοῦ": "frater",
+                    "ὁ ἰατρóς, τοῦ ἰατροῦ": "medicus",
+                    "ὁ λóγος, τοῦ λóγου": "verbum; fabula",
+                    "σοφóς, -ή, -óν": "peritus, sapiens",
+                    "τυφλóς, -ή, -óν": "caecus",
+                    "παρά + acc.": "(de personis) ad",
+                    "αὔριον": "cras",
+                    "εἰ": "si; num",
+                    "καλῶς ἔχω": "bene valeo",
+                    "πῶς ἔχεις;": "quomodo vales?",
+                    "αἱρέω, αἱρήσω, εἷλον": "capio",
+                    "δοκεῖ, δóξει, ἔδοξε(ν)": "(impers.) videtur; (+ dat.) placet; (+ inf.) placet",
+                    "ἔρχομαι, εἶμι, ἦλθον": "venio, eo",
+                    "προσέρχομαι": "accedo (+ dat. vel ad + acc.)",
+                    "λέγω, λέξω/ἐρῶ, ἔλεξα or εἶπον": "dico; loquor",
+                    "νοσέω, νοσήσω, ἐνóσησα": "aegroto",
+                    "ὁράω, ὄψομαι, εἶδον": "video",
+                    "ὠφελέω, ὠφελήσω, ὠφέλησα": "iuvo, prosum",
+                    "τò ἀργύριον, -ου": "argentum, pecunia",
+                    "ἡ δραχμή, -ῆς": "drachma",
+                    "ὁ μισθóς, -οῦ": "merces, praemium",
+                    "ὁ ὀβολóς, -οῦ": "obolus",
+                    "ὄιμοι": "ei mihi!",
+                    "κατὰ θάλατταν": "mari",
+                    "πρóς": "(+ acc.) ad, adversus",
+                    "κατὰ θάλατταν": "mari"
+                },
+                "12": {
+                    "ἀπορέω, ἀπορήσω, ἠπόρησα": "haereo, dubito",
+                    "φροντίζω, φροντιῶ, ἐφρόντισα": "curo, sollicitus sum",
+                    "ὁ ἡμίονος, ἡμιόνου": "mulus",
+                    "ὁ λιμήν, λιμένος": "portus",
+                    "ὁ ὅμιλος, ὁμίλου": "turba",
+                    "τό τεῖχος, τείχους": "murus",
+                    "γεραιός, γεραιά, γεραιόν": "senex",
+                    "κακός, κακή, κακόν": "malus",
+                    "ὀρθός, ὀρθή, ὀρθόν": "rectus",
+                    "τάχιστα": "celerrime",
+                    "ὡς τάχιστα": "quam celerrime",
+                    "ἤ": "aut",
+                    "ἤ ... ἤ": "aut ... aut",
+                    "καίπερ + participle": "quamquam",
+                    "χαίρειν κελεύω + acc.": "valere iubeo",
+                    "ἐξηγέομαι, ἐξηγήσομαι, ἐξηγησάμην": "narro",
+                    "ἐρωτάω, ἐρωτήσω, ἠρώτησα or ἠρόμην": "rogo",
+                    "φαίνομαι, φανοῦμαι": "videor",
+                    "ὁ ἔμπορος, ἐμπόρου": "mercator",
+                    "ὁ ναύκληρος, ναυκλήρου": "navarchus",
+                    "ὁ ναύτης, ναύτου": "nauta",
+                    "πλείων / πλέων, πλέον": "plus",
+                    "πλεῖστος, πλείστη, πλεῖστον": "plurimus",
+                    "Ἀθήναζε": "Athenas",
+                    "μέγα": "valde; clare",
+                    "τότε": "tum",
+                    "μάλιστά γε": "maxime quidem"
+                },
+                "13": {
+                    "ἐρέσσω, ἤρεσα": "remigo",
+                    "ἡσυχάζω, ἡσυχάσω, ἡσύχασα": "quiesco",
+                    "ὁ ἄνεμος, τοῦ ἀνέμου": "ventus",
+                    "τὰ ἱστία, τῶν ἱστίων": "vela",
+                    "ἀλλήλων": "inter se",
+                    "βέβαιος, -α, -ον": "firmus",
+                    "λαμπρός, -ά, -όν": "clarus; splendidus",
+                    "ταχύς, ταχεῖα, ταχύ": "celer",
+                    "ἀμύνω, ἀμυνῶ, ἤμυνα": "(act.) arceo; (med.) propulso",
+                    "ὀργίζομαι, ὀργιοῦμαι, no aorist middle": "irascor (+ dat.)",
+                    "ἡ ἀρχή, ἀρχῆς": "initium",
+                    "ὁ βάρβαρος, βαρβάρου": "barbarus",
+                    "ἡ ἐλευθερία, ἐλευθερίας": "libertas",
+                    "τὸ κῦμα, κύματος": "fluctus",
+                    "ἡ μάχη, μάχης": "pugna; proelium",
+                    "τὸ ναυτικόν, ναυτικοῦ": "classis",
+                    "τὰ στενά, στενῶν": "fauces; angustiae",
+                    "ἡ τριήρης, τριήρους": "triremis",
+                    "μηδείς, μηδεμία, μηδέν": "nullus; nemo",
+                    "ὅς, ἥ, ὅ": "qui, quae, quod",
+                    "ὅσπερ, ἥπερ, ὅπερ": "qui quidem, quae quidem, quod quidem",
+                    "ἀληθής, ἀληθές": "verus",
+                    "τὰ ἀληθῆ, τῶν ἀληθῶν": "vera",
+                    "ἐκεῖνος, ἐκείνη, ἐκεῖνο": "ille",
+                    "ψευδής, -ές": "falsus",
+                    "τὰ ψευδῆ, τῶν ψευδῶν": "mendacia",
+                    "ἐγγύς + gen.": "prope",
+                    "ἅμα": "simul",
+                    "ὅτε": "cum",
+                    "ὡς": "ut",
+                    "ὡς δοκεῖ": "ut videtur",
+                    "τῷ ὄντι": "re vera"
+                },
+
+                "14": {
+                    "ἐλπίζω, ἐλπιῶ, ἤλπισα": "spero",
+                    "ἐπιπέμπω, ἐπιπέμψω, ἐπέπεμψα": "immitto",
+                    "πράττω, πράξω, ἔπραξα": "ago",
+                    "προσβάλλω, προσβαλῶ, προσέβαλον (+ dat.)": "aggredior",
+                    "συμβάλλω, συμβαλῶ, συνέβαλον": "congredior (+ dat.)",
+                    "συνέρχομαι, σύνειμι, συνῆλθον": "convenio",
+                    "χράομαι, χρήσομαι, ἐχρησάμην (+ dat.)": "utor",
+                    "ὁ ὁπλίτης, ὁπλίτου": "gravis armaturae miles",
+                    "τὀ πλῆθος, πλήθους": "multitudo",
+                    "ὁ στόλος, στόλου": "expeditio; classis",
+                    "ὁ στρατιώτης, στρατιώτου": "miles",
+                    "ὁ στρατός, στρατοῦ": "exercitus",
+                    "ὀλίγος, ὀλίγη, ὀλίγον": "paucus",
+                    "οὗτος, αὕτη, τοῦτο": "hic",
+                    "στενός, στενή, στενόν": "angustus",
+                    "ἤ (with comparatives)": "quam",
+                    "ἐν μέσῳ (+ gen.)": "inter",
+                    "κατὰ γῆν": "terra",
+                    "Ἕλλην, Ἕλληνος, ὁ": "Graecus",
+                    "ἀγγέλλω, ἀγγελῶ, ἤγγειλα": "nuntio",
+                    "ἀναχωρέω, ἀναχωρήσω, ἀνεχώρησα": "recedo",
+                    "ἀντέχω, ἀνθέξω, ἀντέσχον (+ dat.)": "resisto",
+                    "γράφω, γράψω, ἔγραψα": "scribo",
+                    "διέρχομαι, δίειμι, διῆλθον": "transeo",
+                    "παραγίγνομαι, παραγενήσομαι, παρεγενόμην": "advenio",
+                    "φράζω, φράσω, ἔφρασα": "demonstro",
+                    "ὁ πόλεμος, πολέμου": "bellum",
+                    "αἱ πύλαι, πυλῶν": "porta; fauces",
+                    "ἅπας, ἅπασα, ἅπαν": "omnis",
+                    "ὅδε, ἥδε, τόδε": "hic",
+                    "πολέμιος, πολεμία, πολέμιον": "hostilis",
+                    "οἱ πολέμιοι, πολεμίων": "hostes",
+                    "ὅπου": "ubi",
+                    "ἕως": "donec",
+                    "ὡς": "cum",
+                    "τῇ προτεραίᾳ": "pridie"
+                },
+
+                "15": {
+                    "ἀναγκάζω, ἀναγκάσω, ἠνάγκασα": "cogo",
+                    "διαφθείρω, διαφθερῶ, διέφθειρα": "perdo",
+                    "εἴκω, εἴξω, εἶξα (+dat.)": "cedo",
+                    "ἡ ἀπορίᾱ, ἀπορίᾱς": "difficultas",
+                    "ὁ ναύαρχος, ναυάρχου": "praefectus classis",
+                    "ὁ νοῦς, νοῦ": "mens",
+                    "ὁ στρατηγός, στρατηγοῦ": "dux",
+                    "ἡ φυγή, φυγῆς": "fuga",
+                    "μόνος, -η, -ον": "solus",
+                    "μηκέτι (+ imp., +inf.)": "ne amplius",
+                    "μόνον": "solum",
+                    "οὐ μόνον... ἀλλὰ καὶ": "non solum... sed etiam",
+                    "ἀνέστην": "surrexi",
+                    "βλάπτω, βλάψω, ἔβλαψα": "noceo",
+                    "δηλόω, δηλώσω, ἐδήλωσα": "ostendo",
+                    "ἐλευθερόω, ἐλευθερώσω, ἠλευθέρωσα": "libero",
+                    "ἐμπίπτω, ἐμπεσοῦμαι, ἐνέπεσον (+dat.)": "irruo",
+                    "ἐπιπλέω, ἐπιπλεύσομαι, ἐπέπλευσα (+dat., + εις + acc.)": "navigo contra",
+                    "ναυμαχέω, ναυμαχήσω, ἐναυμάχησα": "navali proelio pugno",
+                    "πειράω, πειράσω, ἐπείρᾱσα": "tento",
+                    "πιστεύω, πιστεύσω, ἐπίστευσα (+dat.)": "credo",
+                    "συμπίπτω, συμπεσοῦμαι, συνέπεσον (+dat.)": "congredior",
+                    "ὁ ἀγών, ἀγῶνος": "certamen",
+                    "ἡ ἀρετή, ἀρετῆς": "virtus",
+                    "ὁ θόρυβος, θορύβου": "tumultus",
+                    "ὁ κόσμος, κόσμου": "ordo",
+                    "κόσμῳ": "ordine",
+                    "τὸ μέρος, μέρους": "pars",
+                    "ὁ νεκρός, νεκροῦ": "mortuus",
+                    "ἡ νίκη, νίκης": "victoria",
+                    "ἡ πατρίς, πατρίδος": "patria",
+                    "ὁ πέπλος, πέπλου": "vestis",
+                    "ὁ πρόγονος, προγόνου": "maiores",
+                    "ὁ σπουδή, σπουδῆς": "festinatio",
+                    "ἡ τύχη, τύχης": "fortuna",
+                    "δεξιός, -ά, -όν": "dexter",
+                    "πεζός, -ή, -όν": "pedester",
+                    "πανταχοῦ": "ubique",
+                    "ὡς": "quod"
+                },
+
+                "16": {
+                    "δύναμαι, δυνήσομαι": "possum",
+                    "ἐπίσταμαι, ἐπιστήσομαι (no aor. mid.)": "intellego",
+                    "καταλαμβάνω, καταλήψομαι, κατέλαβον": "deprehendo",
+                    "κεῖμαι, κείσομαι, κατάκειμαι": "iaceo",
+                    "στρατεύω, στρατεύσω, ἐστράτευσα": "bellum gero; (+ in + acc.) bellum infero",
+                    "συναγείρω, συναγερῶ, συνήγειρα": "colligo",
+                    "τελευτάω, τελευτήσω, ἐτελεύτησα": "morior",
+                    "ὁ ἔνοικος, ἐνοίκου": "incola",
+                    "ὁ σύμμαχος, συμμάχου": "socius",
+                    "ἡ συμφορά, συμφορᾶς": "calamitas",
+                    "διακόσιοι, -αι, -α": "ducenti",
+                    "ἑκατόν": "centum",
+                    "πόσος, -η, -ον": "quot",
+                    "ὑπό (+ gen.)": "sub; a/ab",
+                    "ὑπό (+ dat.)": "sub",
+                    "ὑπό (+ acc.)": "sub",
+                    "οὐδαμοῦ": "nusquam",
+                    "πολλαχόσε": "in multas partes",
+                    "ὕστερον": "postea",
+                    "καὶ δὴ καί": "atque adeo",
+                    "ποῦ γῆς": "ubinam terrarum",
+                    "λυπέω, λυπήσω, ἐλύπησα": "doleo",
+                    "πολιορκέω, πολιορκήσω, ἐπολιόρκησα": "obsideo",
+                    "ὁ βίος, βίου": "vita",
+                    "ἡ εἰρήνη, εἰρήνης": "pax",
+                    "τό ἔτος, ἔτους": "annus",
+                    "ὁ θάνατος, θανάτου": "mors",
+                    "ὁ θυμός, θυμοῦ": "animus",
+                    "ὁ ποταμός, ποταμοῦ": "flumen",
+                    "ἡ σπονδή, σπονδῆς": "libatio",
+                    "αἱ σπονδαί, σπονδῶν": "foedus",
+                    "ἄξιος, -α, -ον": "dignus (+ gen.)",
+                    "ἥκιστά γε": "minime",
+                    "μάλιστά γε": "maxime quidem"
+                }
+            };
+
+            function initializeChapters() {
+                const chapterKeys = Object.keys(dict).sort( (a, b) => parseInt(a) - parseInt(b));
+
+                chapters = chapterKeys.map(chapterNum => {
+                    return Object.entries(dict[chapterNum]).map( ([greek,english]) => ({
+                        greek,
+                        english
+                    }));
+                }
+                );
+
+            }
+
+            function renderChapters() {
+                const chapterContainer = document.getElementById('chapters');
+                chapterContainer.innerHTML = '';
+
+                // Create a button for each chapter
+                chapters.forEach( (_, index) => {
+                    const button = document.createElement('button');
+                    button.innerText = `${index + 1}`;
+                    button.className = 'chapter-btn';
+                    if (index === currentChapter)
+                        button.classList.add('active');
+                    button.addEventListener('click', () => selectChapter(index));
+                    chapterContainer.appendChild(button);
+                }
+                );
+
+                document.getElementById('chapterCount').textContent = `ΚΕΘΑΛΑΙΑ`;
+                console.log(`Total buttons rendered: ${chapterContainer.children.length}`);
+            }
+
+            function selectChapter(chapterIndex) {
+                currentChapter = chapterIndex;
+                currentIndex = 0;
+                // Reset index for the new chapter
+                renderChapters();
+                showFlashcard(currentIndex);
+                // Show the first flashcard of the selected chapter
+            }
+
+            function showFlashcard(index) {
+                const flashcard = document.getElementById('flashcard');
+                flashcard.classList.remove('is-flipped');
+
+                const chapterWords = chapters[currentChapter];
+                if (!chapterWords || chapterWords.length === 0) {
+                    document.getElementById('card-front').innerText = 'No words available';
+                    document.getElementById('card-back').innerText = '';
+                    return;
+                }
+
+                const word = chapterWords[index];
+                // Invert key/value for the flashcard
+                document.getElementById('card-front').innerText = word.english;
+                // Show English on the front
+                document.getElementById('card-back').innerText = word.greek;
+                // Show Greek on the back
+            }
+
+function nextFlashcard() {
+    const flashcard = document.getElementById('flashcard');
+    const chapterWords = chapters[currentChapter];
+    
+    if (currentIndex < chapterWords.length - 1) {
+        if (flashcard.classList.contains('is-flipped')) {
+            // If card is flipped, first flip it back then change content
+            flashcard.classList.remove('is-flipped');
+            setTimeout(() => {
+                currentIndex++;
+                showFlashcard(currentIndex);
+            }, 300); // Match this with your CSS transition time
+        } else {
+            // If already on front, just change content
+            currentIndex++;
+            showFlashcard(currentIndex);
+        }
+    } else {
+        flashcard.style.animation = 'shake 0.5s';
+        setTimeout(() => {
+            flashcard.style.animation = '';
+        }, 500);
+    }
+}
+
+function previousFlashcard() {
+    const flashcard = document.getElementById('flashcard');
+    
+    if (currentIndex > 0) {
+        if (flashcard.classList.contains('is-flipped')) {
+            flashcard.classList.remove('is-flipped');
+            setTimeout(() => {
+                currentIndex--;
+                showFlashcard(currentIndex);
+            }, 300);
+        } else {
+            currentIndex--;
+            showFlashcard(currentIndex);
+        }
+    }
+}
+document.addEventListener('keydown', (event) => {
+    // Prevent default behavior for these keys
+    if (['ArrowLeft', 'ArrowRight', ' '].includes(event.key)) {
+        event.preventDefault();
+    }
+    
+    switch (event.key) {
+        case 'ArrowLeft':
+            previousFlashcard();
+            break;
+        case 'ArrowRight':
+            nextFlashcard();
+            break;
+        case ' ':
+            flipFlashcard();
+            break;
+    }
+});
+            
+// Add this CSS for the shake animation
+const styles = `
+@keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(5px); }
+    75% { transform: translateX(-5px); }
+}`;
+
+const styleSheet = document.createElement("style");
+styleSheet.textContent = styles;
+document.head.appendChild(styleSheet);
+            function flipFlashcard() {
+                const flashcard = document.getElementById('flashcard');
+                flashcard.classList.toggle('is-flipped');
+            }
+
+            function initializeFlashcard() {
+                const flashcard = document.getElementById('flashcard');
+                let startX, startY, moveX, moveY;
+                const threshold = 50;
+                // minimum distance traveled to be considered a swipe
+
+                flashcard.addEventListener('click', (event) => {
+                    // Only flip on click if it's not the end of a swipe
+                    if (!moveX && !moveY) {
+                        flipFlashcard();
+                    }
+                }
+                );
+
+                flashcard.addEventListener('touchstart', (event) => {
+                    startX = event.touches[0].clientX;
+                    startY = event.touches[0].clientY;
+                }
+                , false);
+
+                flashcard.addEventListener('touchmove', (event) => {
+                    moveX = event.touches[0].clientX - startX;
+                    moveY = event.touches[0].clientY - startY;
+                }
+                , false);
+
+                flashcard.addEventListener('touchend', (event) => {
+                    if (!moveX || !moveY) {
+                        return;
+                    }
+
+                    const distX = Math.abs(moveX);
+                    const distY = Math.abs(moveY);
+
+                    // Check if the swipe distance is greater than the threshold and more horizontal than vertical
+            if (distX > threshold && distX > distY) {
+                if (moveX > 0) {
+                    previousFlashcard(); // Swipe right
+                } else if (moveX < 0) {
+                    nextFlashcard(); // Swipe left
+                }
+            }
+            
+                                // Reset values
+                                startX = startY = moveX = moveY = null;
+                            }
+                            , false);
+            }
+            window.onload = () => {
+                initializeChapters();
+                renderChapters();
+                showFlashcard(currentIndex);
+                // Show the first flashcard on load
+                initializeFlashcard();
+            }
+            ;
+        </script>
+    </body>
+</html>
