@@ -10,7 +10,7 @@
                 flex-direction: column;
                 align-items: center;
                 justify-content: center;
-                min-height: 45vh;
+                min-height: 50vh;
                 margin: 0;
                 margin-top: 0;
                 background-color: #f0f8ff;
@@ -49,6 +49,7 @@
                 perspective: 1000px;
                 width: 80vw;
                 max-width: 300px;
+                position: relative;
             }
 
             .card {
@@ -94,6 +95,28 @@
                 /* Dodger blue border */
                 transform: rotateY(180deg);
             }
+            .counter {
+                margin-top: 10px;
+                bottom: 480px;
+                left: 50%;
+                /* transform: translateX(-50%); */
+                font-size: 1.2rem;
+                text-align: center;
+            }
+            #retryDeckBtn {
+    /* position: absolute;
+    top: -40px;
+    right: 0; */
+    padding: 8px;
+    background-color: #e6f2ff;
+    border: 1px solid #ef0707;
+    border-radius: 5px;
+    cursor: pointer;
+}
+            @keyframes swipeUp {
+                0% { transform: translateY(0); opacity: 1; }
+                100% { transform: translateY(-100px); opacity: 0; }
+            }
 
             @media (max-width: 480px) {
                 .chapters {
@@ -112,7 +135,46 @@
                 .card-side {
                     font-size: 2rem;
                 }
-            }
+            }.help-icon {
+   position: fixed;
+   top: 20px;
+   right: 20px;
+   width: 30px;
+   height: 30px;
+   border-radius: 50%;
+   background: #4da6ff;
+   color: white;
+   display: flex;
+   align-items: center;
+   justify-content: center;
+   cursor: pointer;
+   font-size: 20px;
+   z-index: 100;
+}
+
+.help-overlay {
+   display: none;
+   position: fixed;
+   top: 0;
+   left: 0;
+   width: 100%;
+   height: 100%;
+   background: rgba(0, 0, 0, 0.7);
+   z-index: 99;
+}
+
+.help-content {
+   position: absolute;
+   top: 50%;
+   left: 50%;
+   transform: translate(-50%, -50%);
+   background: white;
+   padding: 20px;
+   border-radius: 10px;
+   max-width: 80%;
+   max-height: 80vh;
+   overflow-y: auto;
+}
         </style>
     </head>
     <body>
@@ -124,10 +186,27 @@
                 <div class="card-side card-back" id="card-back"></div>
             </div>
         </div>
+        <div id="counter" class="counter"></div>
+        <button id="retryDeckBtn" onclick="switchToRetryDeck()">Review 0 Cards</button>
+        <div id="helpIcon" class="help-icon">?</div>
+<div id="helpOverlay" class="help-overlay">
+   <div class="help-content">
+        <h3>Quomodo Uti:</h3>
+        <p>• Sinistra/dextra trahe vel sagittis lateralibus ad tabellas movendas</p>
+        <p>• Tabellam tange vel spatium preme ad vertendam</p>
+        <p>• Deorsum trahe vel sagitta deorsum ad tabellam in promptuarium iterandum addere</p>
+        <p>• Preme ad tabellam vertendam</p>
+   </div>
+</div>
+        
+        
         <script>
             let chapters = [];
             let currentIndex = 0;
             let currentChapter = 0;
+            let retryDeck = [];
+            let isReviewingRetry = false;
+            const retryButton = document.getElementById('retryDeckBtn');
 
             // function decodeDict(encoded) {
             //   const decodedString = decodeURIComponent(escape(atob(encoded)));
@@ -769,24 +848,23 @@
                 // Show the first flashcard of the selected chapter
             }
 
-            function showFlashcard(index) {
-                const flashcard = document.getElementById('flashcard');
-                flashcard.classList.remove('is-flipped');
-
-                const chapterWords = chapters[currentChapter];
-                if (!chapterWords || chapterWords.length === 0) {
-                    document.getElementById('card-front').innerText = 'No words available';
-                    document.getElementById('card-back').innerText = '';
-                    return;
-                }
-
-                const word = chapterWords[index];
-                // Invert key/value for the flashcard
-                document.getElementById('card-front').innerText = word.english;
-                // Show English on the front
-                document.getElementById('card-back').innerText = word.greek;
-                // Show Greek on the back
+        function showFlashcard(index) {
+            const flashcard = document.getElementById('flashcard');
+            flashcard.classList.remove('is-flipped');
+        
+            const chapterWords = chapters[currentChapter];
+            if (!chapterWords || chapterWords.length === 0) {
+                document.getElementById('card-front').innerText = 'No words available';
+                document.getElementById('card-back').innerText = '';
+                document.getElementById('counter').innerText = '0';
+                return;
             }
+        
+            const word = chapterWords[index];
+            document.getElementById('card-front').innerText = word.english;
+            document.getElementById('card-back').innerText = word.greek;
+            document.getElementById('counter').innerText = `${index + 1}/${chapterWords.length}`;
+        }
 
 function nextFlashcard() {
     const flashcard = document.getElementById('flashcard');
@@ -859,59 +937,72 @@ const styles = `
 const styleSheet = document.createElement("style");
 styleSheet.textContent = styles;
 document.head.appendChild(styleSheet);
-            function flipFlashcard() {
-                const flashcard = document.getElementById('flashcard');
-                flashcard.classList.toggle('is-flipped');
-            }
+function initializeFlashcard() {
+   const flashcard = document.getElementById('flashcard');
+   let startX, startY, moveX, moveY;
+   const threshold = 50;
 
-            function initializeFlashcard() {
-                const flashcard = document.getElementById('flashcard');
-                let startX, startY, moveX, moveY;
-                const threshold = 50;
-                // minimum distance traveled to be considered a swipe
+   flashcard.addEventListener('click', (event) => {
+       if (!moveX && !moveY) {
+           flipFlashcard();
+       }
+   });
 
-                flashcard.addEventListener('click', (event) => {
-                    // Only flip on click if it's not the end of a swipe
-                    if (!moveX && !moveY) {
-                        flipFlashcard();
-                    }
-                }
-                );
+   flashcard.addEventListener('touchstart', (event) => {
+       startX = event.touches[0].clientX;
+       startY = event.touches[0].clientY;
+   }, false);
 
-                flashcard.addEventListener('touchstart', (event) => {
-                    startX = event.touches[0].clientX;
-                    startY = event.touches[0].clientY;
-                }
-                , false);
+   flashcard.addEventListener('touchmove', (event) => {
+       moveX = event.touches[0].clientX - startX;
+       moveY = event.touches[0].clientY - startY;
+   }, false);
 
-                flashcard.addEventListener('touchmove', (event) => {
-                    moveX = event.touches[0].clientX - startX;
-                    moveY = event.touches[0].clientY - startY;
-                }
-                , false);
-
-                flashcard.addEventListener('touchend', (event) => {
-                    if (!moveX || !moveY) {
-                        return;
-                    }
-
-                    const distX = Math.abs(moveX);
-                    const distY = Math.abs(moveY);
-
-                    // Check if the swipe distance is greater than the threshold and more horizontal than vertical
-            if (distX > threshold && distX > distY) {
-                if (moveX > 0) {
-                    previousFlashcard(); // Swipe right
-                } else if (moveX < 0) {
-                    nextFlashcard(); // Swipe left
-                }
-            }
-            
-                                // Reset values
-                                startX = startY = moveX = moveY = null;
-                            }
-                            , false);
-            }
+   flashcard.addEventListener('touchend', (event) => {
+    if (!moveX || !moveY) return;
+    const distX = Math.abs(moveX);
+    const distY = Math.abs(moveY);
+    if (distY > threshold && distY > distX && moveY > 0 && !isReviewingRetry) { // Changed to moveY > 0
+        const currentWord = chapters[currentChapter][currentIndex];
+        if (!retryDeck.includes(currentWord)) {
+            retryDeck.push(currentWord);
+            flashcard.style.animation = 'swipeDown 0.5s'; // Changed animation name
+            retryButton.textContent = `Review ${retryDeck.length} Cards`;
+            setTimeout(() => {
+                flashcard.style.animation = '';
+            }, 500);
+        }
+    } else if (distX > threshold && distX > distY) {
+        if (moveX > 0) {
+            previousFlashcard();
+        } else if (moveX < 0) {
+            nextFlashcard();
+        }
+    }
+    startX = startY = moveX = moveY = null;
+}, false);
+}
+function flipFlashcard() {
+    const flashcard = document.getElementById('flashcard');
+    flashcard.classList.toggle('is-flipped');
+}
+function switchToRetryDeck() {
+   if (retryDeck.length === 0) return;
+   
+   isReviewingRetry = true;
+   const originalChapter = chapters[currentChapter];
+   chapters[currentChapter] = retryDeck;
+   currentIndex = 0;
+   showFlashcard(currentIndex);
+   
+   // Reset after reviewing all retry cards
+   if (currentIndex === retryDeck.length - 1) {
+       chapters[currentChapter] = originalChapter;
+       retryDeck = [];
+       isReviewingRetry = false;
+   }
+    retryButton.textContent = 'Review Cards';
+}
             window.onload = () => {
                 initializeChapters();
                 renderChapters();
@@ -920,6 +1011,15 @@ document.head.appendChild(styleSheet);
                 initializeFlashcard();
             }
             ;
+
+            document.getElementById('helpIcon').addEventListener('click', (e) => {
+   e.stopPropagation();
+   document.getElementById('helpOverlay').style.display = 'block';
+});
+
+document.getElementById('helpOverlay').addEventListener('click', () => {
+   document.getElementById('helpOverlay').style.display = 'none';
+});
         </script>
     </body>
 </html>
