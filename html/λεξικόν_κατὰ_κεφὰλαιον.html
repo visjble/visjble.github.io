@@ -187,7 +187,7 @@
             </div>
         </div>
         <div id="counter" class="counter"></div>
-        <button id="retryDeckBtn" onclick="switchToRetryDeck()">Review 0 Cards</button>
+        <button id="retryDeckBtn" onclick="switchToRetryDeck()">Iterandae: 0</button>
         <div id="helpIcon" class="help-icon">?</div>
 <div id="helpOverlay" class="help-overlay">
    <div class="help-content">
@@ -967,7 +967,7 @@ function initializeFlashcard() {
         if (!retryDeck.includes(currentWord)) {
             retryDeck.push(currentWord);
             flashcard.style.animation = 'swipeDown 0.5s'; // Changed animation name
-            retryButton.textContent = `Review ${retryDeck.length} Cards`;
+            retryButton.textContent = `Iterandae: ${retryDeck.length}`;
             setTimeout(() => {
                 flashcard.style.animation = '';
             }, 500);
