@@ -95,6 +95,7 @@
                 /* Dodger blue border */
                 transform: rotateY(180deg);
             }
+
             .counter {
                 margin-top: 10px;
                 bottom: 480px;
@@ -103,19 +104,28 @@
                 font-size: 1.2rem;
                 text-align: center;
             }
+
             #retryDeckBtn {
-    /* position: absolute;
+                /* position: absolute;
     top: -40px;
     right: 0; */
-    padding: 8px;
-    background-color: #e6f2ff;
-    border: 1px solid #ef0707;
-    border-radius: 5px;
-    cursor: pointer;
-}
+                padding: 8px;
+                background-color: #e6f2ff;
+                border: 1px solid #ef0707;
+                border-radius: 5px;
+                cursor: pointer;
+            }
+
             @keyframes swipeUp {
-                0% { transform: translateY(0); opacity: 1; }
-                100% { transform: translateY(-100px); opacity: 0; }
+                0% {
+                    transform: translateY(0);
+                    opacity: 1;
+                }
+
+                100% {
+                    transform: translateY(-100px);
+                    opacity: 0;
+                }
             }
 
             @media (max-width: 480px) {
@@ -135,46 +145,48 @@
                 .card-side {
                     font-size: 2rem;
                 }
-            }.help-icon {
-   position: fixed;
-   top: 20px;
-   right: 20px;
-   width: 30px;
-   height: 30px;
-   border-radius: 50%;
-   background: #4da6ff;
-   color: white;
-   display: flex;
-   align-items: center;
-   justify-content: center;
-   cursor: pointer;
-   font-size: 20px;
-   z-index: 100;
-}
+            }
 
-.help-overlay {
-   display: none;
-   position: fixed;
-   top: 0;
-   left: 0;
-   width: 100%;
-   height: 100%;
-   background: rgba(0, 0, 0, 0.7);
-   z-index: 99;
-}
+            .help-icon {
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                width: 30px;
+                height: 30px;
+                border-radius: 50%;
+                background: #4da6ff;
+                color: white;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                cursor: pointer;
+                font-size: 20px;
+                z-index: 100;
+            }
 
-.help-content {
-   position: absolute;
-   top: 50%;
-   left: 50%;
-   transform: translate(-50%, -50%);
-   background: white;
-   padding: 20px;
-   border-radius: 10px;
-   max-width: 80%;
-   max-height: 80vh;
-   overflow-y: auto;
-}
+            .help-overlay {
+                display: none;
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: rgba(0, 0, 0, 0.7);
+                z-index: 99;
+            }
+
+            .help-content {
+                position: absolute;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                background: white;
+                padding: 20px;
+                border-radius: 10px;
+                max-width: 80%;
+                max-height: 80vh;
+                overflow-y: auto;
+            }
         </style>
     </head>
     <body>
@@ -187,19 +199,19 @@
             </div>
         </div>
         <div id="counter" class="counter"></div>
-        <button id="retryDeckBtn" onclick="switchToRetryDeck()">Iterandae: 0</button>
+        <button id="retryDeckBtn" onclick="switchToRetryDeck()">Review 0 Cards</button>
         <div id="helpIcon" class="help-icon">?</div>
-<div id="helpOverlay" class="help-overlay">
-   <div class="help-content">
-        <h3>Quomodo Uti:</h3>
-        <p>• Sinistra/dextra trahe vel sagittis lateralibus ad tabellas movendas</p>
-        <p>• Tabellam tange vel spatium preme ad vertendam</p>
-        <p>• Deorsum trahe vel sagitta deorsum ad tabellam in promptuarium iterandum addere</p>
-        <p><center>😊</center></p>
-   </div>
-</div>
-        
-        
+        <div id="helpOverlay" class="help-overlay">
+            <div class="help-content">
+                <h3>Quomodo Uti:</h3>
+                <p>• Sinistra/dextra trahe vel sagittis lateralibus ad tabellas movendas</p>
+                <p>• Tabellam tange vel spatium preme ad vertendam</p>
+                <p>• Deorsum trahe vel sagitta deorsum ad tabellam in promptuarium iterandum addere</p>
+                <p>
+                    <center>😊</center>
+                </p>
+            </div>
+        </div>
         <script>
             let chapters = [];
             let currentIndex = 0;
@@ -490,7 +502,62 @@
                     "σώφρων, σῶφρον": "prudens",
                     "ἐνθάδε": "hic",
                     "πóθεν;": "unde?",
-                    "πῶς;": "quomodo?"
+                    "πῶς;": "quomodo?",
+                    "ἀναπηδάω": "exsilio",
+                    "ἀποθνήσκω": "morior",
+                    "ἀποφέρω": "aufero",
+                    "ἁρπάζω": "rapio",
+                    "βληχάομαι": "balo",
+                    "δεύω": "madefacio",
+                    "ἐκπέμπω": "emitto",
+                    "ἐκ-ρέω": "effluo",
+                    "ἐξαίρω": "extollo",
+                    "θερμαίνω": "calefacio",
+                    "καίω": "uro",
+                    "κατα-φεύγω": "confugio",
+                    "κατ-εσθίω": "devoro",
+                    "κόπτω": "percutio",
+                    "κρύπτω": "occulto",
+                    "μεθύω": "ebrius sum",
+                    "σφάττω": "macto",
+                    "σωφρονέω": "prudens",
+                    "ὑπέχω": "sustineo",
+                    "ἡ εἴσοδος": "introitus",
+                    "ἡ εὐδίᾳ": "serenitas",
+                    "ὁ ἡγεμών": "dux",
+                    "ὁ θεός": "deus",
+                    "ὁ θησαυρός": "thesaurus",
+                    "ὁ καπνός": "fumus",
+                    "ὁ κίνδῦνος": "periculum",
+                    "ἣ λαμπάς": "fax",
+                    "ὃ λιμήν": "portus",
+                    "τὸ μέτωπον": "frons",
+                    "ὁ μυχός": "recessus",
+                    "ἣ πατρίς": "patria",
+                    "τὰ ποίμνια": "greges",
+                    "ὃ πύργος": "turris",
+                    "τὸ ῥόπαλον": "clava",
+                    "ὁ φθόγγος": "sonus",
+                    "τὸ φῶς": "lux",
+                    "δώδεκα": "duodecim",
+                    "ἐγγύς": "prope",
+                    "ἔνδον": "intus",
+                    "ποτε": "aliquando",
+                    "πρῶτον": "primum",
+                    "οἴκοι": "domi",
+                    "οὐδαμῶς": "nequaquam",
+                    "δυνατός": "potens",
+                    "ἐχθρός": "inimicus",
+                    "μέσος": "medius",
+                    "μόνος": "solus",
+                    "πολύτροπος": "versutus",
+                    "σοφός": "sapiens",
+                    "σῶος": "salvus",
+                    "τυφλός": "caecus",
+                    "φοβερός": "terribilis",
+                    "πολύμητις": "prudens",
+                    "κατὰ θάλατταν": "per mare",
+                    "ὡς τάχιστα": "quam celerrime"
                 },
                 "8": {
                     "διαλέγομαι": "colloquor; sermones confero cum (+ dat.)",
@@ -523,8 +590,77 @@
                     "τέλος": "denique; postremo",
                     "ἐν ... τούτῳ": "interea",
                     "τῇ ὑστεραίᾳ": "postridie",
-                    "ὁ Ζεύς, τοῦ Διός": "Iuppiter"
-                    },
+                    "ὁ Ζεύς, τοῦ Διός": "Iuppiter",
+                    "ἀνδρίζω": "virilis fio",
+                    "ἀνελκω": "traho",
+                    "ἀπο-βλέπω": "respicio",
+                    "ἀτιμάζω": "contemno",
+                    "γεωργέομαι": "agrum colo",
+                    "γνωρίζομαι": "cognoscor",
+                    "γυμνάζω": "exerceo",
+                    "δια-λέγομαι": "colloquor",
+                    "διατρίβω": "versor",
+                    "εἰσ-έρχομαι": "introeo",
+                    "ἐξάγω": "educo",
+                    "ἐξηγέομαι": "explico",
+                    "ἐπιμελέομαι": "curo",
+                    "ἐπι-σκοπέω": "inspicio",
+                    "ἐρείδομαι": "nitor",
+                    "ἔστω": "esto",
+                    "προσ-εύχομαι": "oro",
+                    "θαρρέω": "confido",
+                    "κατακλίνομαι": "recumbo",
+                    "κατα-σκοπέω": "exploro",
+                    "παιδοποιέω": "liberos procreo",
+                    "παύομαι": "desino",
+                    "ἀνα-παύομαι": "requiesco",
+                    "περι-σκοπέω": "circumspicio",
+                    "πράττω": "ago",
+                    "τεκνοποιέομαι": "liberos gigno",
+                    "τίκτω": "pario",
+                    "τρέφω": "nutrio",
+                    "ὑπακούω": "oboedio",
+                    "ὑφαίνω": "texo",
+                    "ἀδύνατος, ἀδύνατον": "impossibilis, impossibile",
+                    "ἀφνειός, ἀφνειόν": "dives, divitis",
+                    "πᾶς, πᾶσα, πᾶν": "omnis, omne",
+                    "πλούσιος, πλουσία, πλούσιον": "dives, divitis",
+                    "πολύμητις, πολύμητιν": "prudens, prudentis",
+                    "ὁ ἀνήρ, τοῦ ἀνδρός": "vir, viri",
+                    "ἡ αὐλή, τῆς αὐλῆς": "aula, aulae",
+                    "ἡ γεωργία, τῆς γεωργίας": "agricultura, agriculturae",
+                    "ὁ ἡμίονος, τοῦ ἡμιόνου": "mulus, muli",
+                    "τὸ θέατρον, τοῦ θεάτρου": "theatrum, theatri",
+                    "ἡ θυγάτηρ, τῆς θυγατρός": "filia, filiae",
+                    "ἡ ἰσχύς": "vis, vim",
+                    "ὁ κόσμος, τοῦ κόσμου": "mundus, mundi",
+                    "ὁ λιμός, τοῦ λιμοῦ": "fames, famis",
+                    "ὁ λυκοκτόνος, τοῦ λυκοκτόνου": "luporum occisor",
+                    "τὰ μῆλα, τῶν μήλων": "mala, malorum",
+                    "ἡ νύξ, τῆς νυκτός": "nox, noctis",
+                    "ὁ ὅμιλος, τοῦ ὁμίλου": "turba, turbae",
+                    "ὁ πέπλος, τοῦ πέπλου": "peplum, pepli",
+                    "ἡ σιγή, τῆς σιγῆς": "silentium, silentii",
+                    "ἡ σπουδή, τῆς σπουδῆς": "studium, studii",
+                    "ἡ στιβάς, τῆς στιβάδος": "stratum, strati",
+                    "ἡ σχολή, τῆς σχολῆς": "schola, scholae",
+                    "τὸ τέκνον, τοῦ τέκνου": "puer, pueri",
+                    "ὁ ὕπνος, τοῦ ὕπνου": "somnus, somni",
+                    "τὸ φύλλον, τοῦ φύλλου": "folium, folii",
+                    "ὁ χρυσός, τοῦ χρυσοῦ": "aurum, auri",
+                    "αὔριον": "cras",
+                    "ἐκεῖσε": "illuc",
+                    "μέντοι": "tamen",
+                    "διότι": "quia",
+                    "ἅμα τῇ ἡμέρᾳ": "prima luce",
+                    "ἐς ἀριθμόν": "in numerum",
+                    "κακῶς λέγω τινά": "maledico alicui",
+                    "νὴ τὸν Δία": "per Iovem",
+                    "τοῦ λοιποῦ": "in posterum",
+                    "διά (+ gen.)": "per",
+                    "ὑπέρ (+ gen.)": "super",
+                    "ἐπί (+ gen.)": "super"
+                },
                 "9": {
                     "ἄγε, (pl.) ἄγετε": "age, (pl.) agite",
                     "ἐπανέρχομαι": "redeo; revertor ad (+ acc.)",
@@ -848,161 +984,175 @@
                 // Show the first flashcard of the selected chapter
             }
 
-        function showFlashcard(index) {
-            const flashcard = document.getElementById('flashcard');
-            flashcard.classList.remove('is-flipped');
-        
-            const chapterWords = chapters[currentChapter];
-            if (!chapterWords || chapterWords.length === 0) {
-                document.getElementById('card-front').innerText = 'No words available';
-                document.getElementById('card-back').innerText = '';
-                document.getElementById('counter').innerText = '0';
-                return;
+            function showFlashcard(index) {
+                const flashcard = document.getElementById('flashcard');
+                flashcard.classList.remove('is-flipped');
+
+                const chapterWords = chapters[currentChapter];
+                if (!chapterWords || chapterWords.length === 0) {
+                    document.getElementById('card-front').innerText = 'No words available';
+                    document.getElementById('card-back').innerText = '';
+                    document.getElementById('counter').innerText = '0';
+                    return;
+                }
+
+                const word = chapterWords[index];
+                document.getElementById('card-front').innerText = word.english;
+                document.getElementById('card-back').innerText = word.greek;
+                document.getElementById('counter').innerText = `${index + 1}/${chapterWords.length}`;
             }
-        
-            const word = chapterWords[index];
-            document.getElementById('card-front').innerText = word.english;
-            document.getElementById('card-back').innerText = word.greek;
-            document.getElementById('counter').innerText = `${index + 1}/${chapterWords.length}`;
-        }
 
-function nextFlashcard() {
-    const flashcard = document.getElementById('flashcard');
-    const chapterWords = chapters[currentChapter];
-    
-    if (currentIndex < chapterWords.length - 1) {
-        if (flashcard.classList.contains('is-flipped')) {
-            // If card is flipped, first flip it back then change content
-            flashcard.classList.remove('is-flipped');
-            setTimeout(() => {
-                currentIndex++;
-                showFlashcard(currentIndex);
-            }, 300); // Match this with your CSS transition time
-        } else {
-            // If already on front, just change content
-            currentIndex++;
-            showFlashcard(currentIndex);
-        }
-    } else {
-        flashcard.style.animation = 'shake 0.5s';
-        setTimeout(() => {
-            flashcard.style.animation = '';
-        }, 500);
-    }
-}
+            function nextFlashcard() {
+                const flashcard = document.getElementById('flashcard');
+                const chapterWords = chapters[currentChapter];
 
-function previousFlashcard() {
-    const flashcard = document.getElementById('flashcard');
-    
-    if (currentIndex > 0) {
-        if (flashcard.classList.contains('is-flipped')) {
-            flashcard.classList.remove('is-flipped');
-            setTimeout(() => {
-                currentIndex--;
-                showFlashcard(currentIndex);
-            }, 300);
-        } else {
-            currentIndex--;
-            showFlashcard(currentIndex);
-        }
-    }
-}
-document.addEventListener('keydown', (event) => {
-    // Prevent default behavior for these keys
-    if (['ArrowLeft', 'ArrowRight', ' '].includes(event.key)) {
-        event.preventDefault();
-    }
-    
-    switch (event.key) {
-        case 'ArrowLeft':
-            previousFlashcard();
-            break;
-        case 'ArrowRight':
-            nextFlashcard();
-            break;
-        case ' ':
-            flipFlashcard();
-            break;
-    }
-});
-            
-// Add this CSS for the shake animation
-const styles = `
+                if (currentIndex < chapterWords.length - 1) {
+                    if (flashcard.classList.contains('is-flipped')) {
+                        // If card is flipped, first flip it back then change content
+                        flashcard.classList.remove('is-flipped');
+                        setTimeout( () => {
+                            currentIndex++;
+                            showFlashcard(currentIndex);
+                        }
+                        , 300);
+                        // Match this with your CSS transition time
+                    } else {
+                        // If already on front, just change content
+                        currentIndex++;
+                        showFlashcard(currentIndex);
+                    }
+                } else {
+                    flashcard.style.animation = 'shake 0.5s';
+                    setTimeout( () => {
+                        flashcard.style.animation = '';
+                    }
+                    , 500);
+                }
+            }
+
+            function previousFlashcard() {
+                const flashcard = document.getElementById('flashcard');
+
+                if (currentIndex > 0) {
+                    if (flashcard.classList.contains('is-flipped')) {
+                        flashcard.classList.remove('is-flipped');
+                        setTimeout( () => {
+                            currentIndex--;
+                            showFlashcard(currentIndex);
+                        }
+                        , 300);
+                    } else {
+                        currentIndex--;
+                        showFlashcard(currentIndex);
+                    }
+                }
+            }
+            document.addEventListener('keydown', (event) => {
+                // Prevent default behavior for these keys
+                if (['ArrowLeft', 'ArrowRight', ' '].includes(event.key)) {
+                    event.preventDefault();
+                }
+
+                switch (event.key) {
+                case 'ArrowLeft':
+                    previousFlashcard();
+                    break;
+                case 'ArrowRight':
+                    nextFlashcard();
+                    break;
+                case ' ':
+                    flipFlashcard();
+                    break;
+                }
+            }
+            );
+
+            // Add this CSS for the shake animation
+            const styles = `
 @keyframes shake {
     0%, 100% { transform: translateX(0); }
     25% { transform: translateX(5px); }
     75% { transform: translateX(-5px); }
 }`;
 
-const styleSheet = document.createElement("style");
-styleSheet.textContent = styles;
-document.head.appendChild(styleSheet);
-function initializeFlashcard() {
-   const flashcard = document.getElementById('flashcard');
-   let startX, startY, moveX, moveY;
-   const threshold = 50;
+            const styleSheet = document.createElement("style");
+            styleSheet.textContent = styles;
+            document.head.appendChild(styleSheet);
+            function initializeFlashcard() {
+                const flashcard = document.getElementById('flashcard');
+                let startX, startY, moveX, moveY;
+                const threshold = 50;
 
-   flashcard.addEventListener('click', (event) => {
-       if (!moveX && !moveY) {
-           flipFlashcard();
-       }
-   });
+                flashcard.addEventListener('click', (event) => {
+                    if (!moveX && !moveY) {
+                        flipFlashcard();
+                    }
+                }
+                );
 
-   flashcard.addEventListener('touchstart', (event) => {
-       startX = event.touches[0].clientX;
-       startY = event.touches[0].clientY;
-   }, false);
+                flashcard.addEventListener('touchstart', (event) => {
+                    startX = event.touches[0].clientX;
+                    startY = event.touches[0].clientY;
+                }
+                , false);
 
-   flashcard.addEventListener('touchmove', (event) => {
-       moveX = event.touches[0].clientX - startX;
-       moveY = event.touches[0].clientY - startY;
-   }, false);
+                flashcard.addEventListener('touchmove', (event) => {
+                    moveX = event.touches[0].clientX - startX;
+                    moveY = event.touches[0].clientY - startY;
+                }
+                , false);
 
-   flashcard.addEventListener('touchend', (event) => {
-    if (!moveX || !moveY) return;
-    const distX = Math.abs(moveX);
-    const distY = Math.abs(moveY);
-    if (distY > threshold && distY > distX && moveY > 0 && !isReviewingRetry) { // Changed to moveY > 0
-        const currentWord = chapters[currentChapter][currentIndex];
-        if (!retryDeck.includes(currentWord)) {
-            retryDeck.push(currentWord);
-            flashcard.style.animation = 'swipeDown 0.5s'; // Changed animation name
-            retryButton.textContent = `Iterandae: ${retryDeck.length}`;
-            setTimeout(() => {
-                flashcard.style.animation = '';
-            }, 500);
-        }
-    } else if (distX > threshold && distX > distY) {
-        if (moveX > 0) {
-            previousFlashcard();
-        } else if (moveX < 0) {
-            nextFlashcard();
-        }
-    }
-    startX = startY = moveX = moveY = null;
-}, false);
-}
-function flipFlashcard() {
-    const flashcard = document.getElementById('flashcard');
-    flashcard.classList.toggle('is-flipped');
-}
-function switchToRetryDeck() {
-   if (retryDeck.length === 0) return;
-   
-   isReviewingRetry = true;
-   const originalChapter = chapters[currentChapter];
-   chapters[currentChapter] = retryDeck;
-   currentIndex = 0;
-   showFlashcard(currentIndex);
-   
-   // Reset after reviewing all retry cards
-   if (currentIndex === retryDeck.length - 1) {
-       chapters[currentChapter] = originalChapter;
-       retryDeck = [];
-       isReviewingRetry = false;
-   }
-    retryButton.textContent = 'Review Cards';
-}
+                flashcard.addEventListener('touchend', (event) => {
+                    if (!moveX || !moveY)
+                        return;
+                    const distX = Math.abs(moveX);
+                    const distY = Math.abs(moveY);
+                    if (distY > threshold && distY > distX && moveY > 0 && !isReviewingRetry) {
+                        // Changed to moveY > 0
+                        const currentWord = chapters[currentChapter][currentIndex];
+                        if (!retryDeck.includes(currentWord)) {
+                            retryDeck.push(currentWord);
+                            flashcard.style.animation = 'swipeDown 0.5s';
+                            // Changed animation name
+                            retryButton.textContent = `Review ${retryDeck.length} Cards`;
+                            setTimeout( () => {
+                                flashcard.style.animation = '';
+                            }
+                            , 500);
+                        }
+                    } else if (distX > threshold && distX > distY) {
+                        if (moveX > 0) {
+                            previousFlashcard();
+                        } else if (moveX < 0) {
+                            nextFlashcard();
+                        }
+                    }
+                    startX = startY = moveX = moveY = null;
+                }
+                , false);
+            }
+            function flipFlashcard() {
+                const flashcard = document.getElementById('flashcard');
+                flashcard.classList.toggle('is-flipped');
+            }
+            function switchToRetryDeck() {
+                if (retryDeck.length === 0)
+                    return;
+
+                isReviewingRetry = true;
+                const originalChapter = chapters[currentChapter];
+                chapters[currentChapter] = retryDeck;
+                currentIndex = 0;
+                showFlashcard(currentIndex);
+
+                // Reset after reviewing all retry cards
+                if (currentIndex === retryDeck.length - 1) {
+                    chapters[currentChapter] = originalChapter;
+                    retryDeck = [];
+                    isReviewingRetry = false;
+                }
+                retryButton.textContent = 'Review Cards';
+            }
             window.onload = () => {
                 initializeChapters();
                 renderChapters();
@@ -1013,13 +1163,15 @@ function switchToRetryDeck() {
             ;
 
             document.getElementById('helpIcon').addEventListener('click', (e) => {
-   e.stopPropagation();
-   document.getElementById('helpOverlay').style.display = 'block';
-});
+                e.stopPropagation();
+                document.getElementById('helpOverlay').style.display = 'block';
+            }
+            );
 
-document.getElementById('helpOverlay').addEventListener('click', () => {
-   document.getElementById('helpOverlay').style.display = 'none';
-});
+            document.getElementById('helpOverlay').addEventListener('click', () => {
+                document.getElementById('helpOverlay').style.display = 'none';
+            }
+            );
         </script>
     </body>
 </html>
