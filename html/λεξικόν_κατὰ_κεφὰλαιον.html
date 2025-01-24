@@ -1102,11 +1102,11 @@
 
             // Add this CSS for the shake animation
             const styles = `
-@keyframes shake {
-    0%, 100% { transform: translateX(0); }
-    25% { transform: translateX(5px); }
-    75% { transform: translateX(-5px); }
-}`;
+                @keyframes shake {
+                    0%, 100% { transform: translateX(0); }
+                    25% { transform: translateX(5px); }
+                    75% { transform: translateX(-5px); }
+                }`;
 
             const styleSheet = document.createElement("style");
             styleSheet.textContent = styles;
@@ -1122,12 +1122,26 @@
                     }
                 }
                 );
-
-                flashcard.addEventListener('touchstart', (event) => {
-                    startX = event.touches[0].clientX;
-                    startY = event.touches[0].clientY;
+                function addCardToDeck() {
+                    const currentWord = chapters[currentChapter][currentIndex];
+                    if (!retryDeck.includes(currentWord)) {
+                        retryDeck.push(currentWord);
+                        flashcard.style.animation = 'swipeDown 0.5s';
+                        retryButton.textContent = `Review ${retryDeck.length} Cards`;
+                        setTimeout( () => {
+                            flashcard.style.animation = '';
+                        }
+                        , 500);
+                    }
                 }
-                , false);
+                let pressTimer;
+                flashcard.addEventListener('touchstart', (event) => {
+                    pressTimer = setTimeout( () => {
+                        addCardToDeck();
+                    }
+                    , 800);
+                }
+                );
 
                 flashcard.addEventListener('touchmove', (event) => {
                     moveX = event.touches[0].clientX - startX;
@@ -1135,34 +1149,11 @@
                 }
                 , false);
 
-                flashcard.addEventListener('touchend', (event) => {
-                    if (!moveX || !moveY)
-                        return;
-                    const distX = Math.abs(moveX);
-                    const distY = Math.abs(moveY);
-                    if (distY > threshold && distY > distX && moveY > 0 && !isReviewingRetry) {
-                        // Changed to moveY > 0
-                        const currentWord = chapters[currentChapter][currentIndex];
-                        if (!retryDeck.includes(currentWord)) {
-                            retryDeck.push(currentWord);
-                            flashcard.style.animation = 'swipeDown 0.5s';
-                            // Changed animation name
-                            retryButton.textContent = `Review ${retryDeck.length} Cards`;
-                            setTimeout( () => {
-                                flashcard.style.animation = '';
-                            }
-                            , 500);
-                        }
-                    } else if (distX > threshold && distX > distY) {
-                        if (moveX > 0) {
-                            previousFlashcard();
-                        } else if (moveX < 0) {
-                            nextFlashcard();
-                        }
-                    }
-                    startX = startY = moveX = moveY = null;
+                flashcard.addEventListener('touchend', () => {
+                    clearTimeout(pressTimer);
                 }
-                , false);
+                );
+
             }
             function flipFlashcard() {
                 const flashcard = document.getElementById('flashcard');
