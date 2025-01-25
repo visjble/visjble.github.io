@@ -204,7 +204,7 @@
             </div>
         </div>
         <div id="counter" class="counter"></div>
-        <button id="retryDeckBtn" onclick="switchToRetryDeck()">Review 0 Cards</button>
+        <button id="retryDeckBtn" onclick="switchToRetryDeck()">αὖθις 0</button>
         <div id="helpIcon" class="help-icon">?</div>
         <div id="helpOverlay" class="help-overlay">
             <div class="help-content">
@@ -1132,7 +1132,7 @@
                     if (!retryDeck.includes(currentWord)) {
                         retryDeck.push(currentWord);
                         flashcard.style.animation = 'swipeDown 0.5s';
-                        retryButton.textContent = `Review ${retryDeck.length} Cards`;
+                        retryButton.textContent = `αὖθις ${retryDeck.length}`;
                         setTimeout( () => {
                             flashcard.style.animation = '';
                         }
@@ -1180,7 +1180,7 @@
                     retryDeck = [];
                     isReviewingRetry = false;
                 }
-                retryButton.textContent = 'Review Cards';
+                retryButton.textContent = 'αὖθις';
             }
             window.onload = () => {
                 initializeChapters();
