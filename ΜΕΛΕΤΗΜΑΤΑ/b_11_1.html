@@ -77,177 +77,189 @@
                 color: #666;
             }
 
-@media screen and (max-width: 600px) {
-    .word {
-        padding: 4px 6px;
-        font-size: 12px;
-        margin-bottom: 2px;
-    }
+            @media screen and (max-width: 600px) {
+                .score {
+                    font-size: 18px;
+                    margin-bottom: 8px;
+                }
 
-    .columns-container {
-        flex-direction: row;
-        gap: 8px;
-    }
+                .instructions {
+                    font-size: 12px;
+                    margin-bottom: 8px;
+                }
 
-    .word-column {
-        width: 48%;
-    }
+                .word {
+                    padding: 6px 8px;
+                    font-size: 14px;
+                    margin-bottom: 3px;
+                }
 
-    .container {
-        padding: 8px;
-    }
+                .columns-container {
+                    flex-direction: row;
+                    gap: 8px;
+                    margin-bottom: 8px;
+                }
 
-    .hint {
-        font-size: 12px;
-        padding: 8px;
-        margin-top: 10px;
-    }
-}
-            </style>
-        </head>
-        <body>
-            <div class="container">
-                <div class="score">
-                    Βαθμοὶ: <span id="score">0</span>
-                </div>
-                <div class="instructions">ἐπίλεξον δύο συνώνυμα ῥήματα</div>
-                <div class="columns-container">
-                    <div id="leftColumn" class="word-column"></div>
-                    <div id="rightColumn" class="word-column"></div>
-                </div>
-                <div id="hint" class="hint"></div>
+                .word-column {
+                    width: 48%;
+                }
+
+                .container {
+                    padding: 8px 8px 12px 8px;
+                }
+
+                .hint {
+                    font-size: 12px;
+                    padding: 8px;
+                    margin-top: 8px;
+                    min-height: 40px;
+                }
+            }
+        </style>
+    </head>
+    <body>
+        <div class="container">
+            <div class="score">
+                Βαθμοὶ: <span id="score">0</span>
             </div>
-            <script>
-                const synonymPairs = [['ἡγέομαι', 'ἄγω'], ['αἱρέω', 'λαμβάνω'], ['κομίζω', 'φέρω'], ['σπήλαιον', 'ἄντρον'], ['εὔφρων', 'ἵλεως'], ['τάλας', 'πάθημα'], ['πάθος', 'χρήματα'], ['ὑπάρχω', 'εἰμι'], ['ἀργύριον', 'τλήμων']];
+            <div class="instructions">ἐπίλεξον δύο συνώνυμα ῥήματα</div>
+            <div class="columns-container">
+                <div id="leftColumn" class="word-column"></div>
+                <div id="rightColumn" class="word-column"></div>
+            </div>
+            <div id="hint" class="hint"></div>
+        </div>
+        <script>
+            const synonymPairs = [['ἡγέομαι', 'ἄγω'], ['αἱρέω', 'λαμβάνω'], ['κομίζω', 'φέρω'], ['σπήλαιον', 'ἄντρον'], ['εὔφρων', 'ἵλεως'], ['τάλας', 'πάθημα'], ['πάθος', 'χρήματα'], ['ὑπάρχω', 'εἰμι'], ['ἀργύριον', 'τλήμων']];
 
-                const latinWords = {
-                    'ἡγέομαι': 'duco (to lead)',
-                    'ἄγω': 'duco (to lead)',
-                    'αἱρέω': 'capio (to take)',
-                    'λαμβάνω': 'capio (to take)',
-                    'κομίζω': 'fero (to carry)',
-                    'φέρω': 'fero (to carry)',
-                    'σπήλαιον': 'spelunca (cave)',
-                    'ἄντρον': 'spelunca (cave)',
-                    'εὔφρων': 'propitius (favorable)',
-                    'ἵλεως': 'propitius (favorable)',
-                    'τάλας': 'miser (wretched)',
-                    'πάθημα': 'miser (wretched)',
-                    'πάθος': 'res (thing, matter)',
-                    'χρήματα': 'res (thing, matter)',
-                    'ὑπάρχω': 'sum (to be)',
-                    'εἰμι': 'sum (to be)',
-                    'ἀργύριον': 'miser (wretched)',
-                    'τλήμων': 'miser (wretched)'
-                };
-                // Create and shuffle the column words
-                const leftColumnWords = synonymPairs.map(pair => pair[0]);
-                const rightColumnWords = synonymPairs.map(pair => pair[1]);
+            const latinWords = {
+                'ἡγέομαι': 'duco (to lead)',
+                'ἄγω': 'duco (to lead)',
+                'αἱρέω': 'capio (to take)',
+                'λαμβάνω': 'capio (to take)',
+                'κομίζω': 'fero (to carry)',
+                'φέρω': 'fero (to carry)',
+                'σπήλαιον': 'spelunca (cave)',
+                'ἄντρον': 'spelunca (cave)',
+                'εὔφρων': 'propitius (favorable)',
+                'ἵλεως': 'propitius (favorable)',
+                'τάλας': 'miser (wretched)',
+                'πάθημα': 'miser (wretched)',
+                'πάθος': 'res (thing, matter)',
+                'χρήματα': 'res (thing, matter)',
+                'ὑπάρχω': 'sum (to be)',
+                'εἰμι': 'sum (to be)',
+                'ἀργύριον': 'miser (wretched)',
+                'τλήμων': 'miser (wretched)'
+            };
+            // Create and shuffle the column words
+            const leftColumnWords = synonymPairs.map(pair => pair[0]);
+            const rightColumnWords = synonymPairs.map(pair => pair[1]);
 
-                // Shuffle function
-                function shuffle(array) {
-                    for (let i = array.length - 1; i > 0; i--) {
-                        const j = Math.floor(Math.random() * (i + 1));
-                        [array[i],array[j]] = [array[j], array[i]];
-                    }
-                    return array;
+            // Shuffle function
+            function shuffle(array) {
+                for (let i = array.length - 1; i > 0; i--) {
+                    const j = Math.floor(Math.random() * (i + 1));
+                    [array[i],array[j]] = [array[j], array[i]];
+                }
+                return array;
+            }
+
+            // Shuffle both columns independently
+            shuffle(leftColumnWords);
+            shuffle(rightColumnWords);
+
+            // Latin meanings for hints
+
+            let score = 0;
+            let selectedWords = [];
+            let matchedWords = new Set();
+
+            function areSynonyms(word1, word2) {
+                return synonymPairs.some(pair => (pair[0] === word1 && pair[1] === word2) || (pair[0] === word2 && pair[1] === word1));
+            }
+
+            function createWordColumns() {
+                const leftColumn = document.getElementById('leftColumn');
+                const rightColumn = document.getElementById('rightColumn');
+
+                leftColumnWords.forEach(word => {
+                    const button = document.createElement('button');
+                    button.className = 'word';
+                    button.textContent = word;
+                    button.onclick = () => handleWordClick(word, button);
+                    leftColumn.appendChild(button);
+                }
+                );
+
+                rightColumnWords.forEach(word => {
+                    const button = document.createElement('button');
+                    button.className = 'word';
+                    button.textContent = word;
+                    button.onclick = () => handleWordClick(word, button);
+                    rightColumn.appendChild(button);
+                }
+                );
+            }
+
+            function handleWordClick(word, button) {
+                if (matchedWords.has(word))
+                    return;
+
+                if (selectedWords.includes(word)) {
+                    button.classList.remove('selected');
+                    selectedWords = selectedWords.filter(w => w !== word);
+                    return;
                 }
 
-                // Shuffle both columns independently
-                shuffle(leftColumnWords);
-                shuffle(rightColumnWords);
+                button.classList.add('selected');
+                selectedWords.push(word);
 
-                // Latin meanings for hints
-
-                let score = 0;
-                let selectedWords = [];
-                let matchedWords = new Set();
-
-                function areSynonyms(word1, word2) {
-                    return synonymPairs.some(pair => (pair[0] === word1 && pair[1] === word2) || (pair[0] === word2 && pair[1] === word1));
+                if (selectedWords.length === 2) {
+                    checkMatch();
                 }
+            }
 
-                function createWordColumns() {
-                    const leftColumn = document.getElementById('leftColumn');
-                    const rightColumn = document.getElementById('rightColumn');
+            function checkMatch() {
+                const [word1,word2] = selectedWords;
+                const isMatch = areSynonyms(word1, word2);
 
-                    leftColumnWords.forEach(word => {
-                        const button = document.createElement('button');
-                        button.className = 'word';
-                        button.textContent = word;
-                        button.onclick = () => handleWordClick(word, button);
-                        leftColumn.appendChild(button);
+                const buttons = document.querySelectorAll('.word');
+
+                if (isMatch) {
+                    score += 10;
+                    document.getElementById('score').textContent = score;
+
+                    buttons.forEach(button => {
+                        if (selectedWords.includes(button.textContent)) {
+                            button.classList.remove('selected');
+                            button.classList.add('matched');
+                            matchedWords.add(button.textContent);
+                        }
                     }
                     );
 
-                    rightColumnWords.forEach(word => {
-                        const button = document.createElement('button');
-                        button.className = 'word';
-                        button.textContent = word;
-                        button.onclick = () => handleWordClick(word, button);
-                        rightColumn.appendChild(button);
+                    document.getElementById('hint').textContent = `εὖγε! "${word1}" καὶ "${word2}" συνώνυμά ἐστιν`;
+
+                    // Check if game is complete
+                    if (matchedWords.size === leftColumnWords.length * 2) {
+                        document.getElementById('hint').textContent = 'εὖγε! τὸ παίγνιον τετέλεσται';
+                    }
+                } else {
+                    document.getElementById('hint').textContent = `οὐ συνώνυμά ἐστιν "${word1}" (${latinWords[word1]}) καὶ "${word2}" (${latinWords[word2]})`;
+
+                    buttons.forEach(button => {
+                        if (selectedWords.includes(button.textContent)) {
+                            button.classList.remove('selected');
+                        }
                     }
                     );
                 }
 
-                function handleWordClick(word, button) {
-                    if (matchedWords.has(word))
-                        return;
+                selectedWords = [];
+            }
 
-                    if (selectedWords.includes(word)) {
-                        button.classList.remove('selected');
-                        selectedWords = selectedWords.filter(w => w !== word);
-                        return;
-                    }
-
-                    button.classList.add('selected');
-                    selectedWords.push(word);
-
-                    if (selectedWords.length === 2) {
-                        checkMatch();
-                    }
-                }
-
-                function checkMatch() {
-                    const [word1,word2] = selectedWords;
-                    const isMatch = areSynonyms(word1, word2);
-
-                    const buttons = document.querySelectorAll('.word');
-
-                    if (isMatch) {
-                        score += 10;
-                        document.getElementById('score').textContent = score;
-
-                        buttons.forEach(button => {
-                            if (selectedWords.includes(button.textContent)) {
-                                button.classList.remove('selected');
-                                button.classList.add('matched');
-                                matchedWords.add(button.textContent);
-                            }
-                        }
-                        );
-
-                        document.getElementById('hint').textContent = `εὖγε! "${word1}" καὶ "${word2}" συνώνυμά ἐστιν`;
-
-                        // Check if game is complete
-                        if (matchedWords.size === leftColumnWords.length * 2) {
-                            document.getElementById('hint').textContent = 'εὖγε! τὸ παίγνιον τετέλεσται';
-                        }
-                    } else {
-                        document.getElementById('hint').textContent = `οὐ συνώνυμά ἐστιν "${word1}" (${latinWords[word1]}) καὶ "${word2}" (${latinWords[word2]})`;
-
-                        buttons.forEach(button => {
-                            if (selectedWords.includes(button.textContent)) {
-                                button.classList.remove('selected');
-                            }
-                        }
-                        );
-                    }
-
-                    selectedWords = [];
-                }
-
-                createWordColumns();
-            </script>
-        </body>
-    </html>
+            createWordColumns();
+        </script>
+    </body>
+</html>
