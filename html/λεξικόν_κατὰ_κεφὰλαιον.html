@@ -3,6 +3,13 @@
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <!-- Cache Control -->
+        <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+        <meta http-equiv="Pragma" content="no-cache">
+        <meta http-equiv="Expires" content="0">
+        <!-- Search Engines -->
+        <meta name="robots" content="noindex, nofollow">
+        <meta name="googlebot" content="noindex, nofollow">
         <title>ΚΕΘΑΛΑΙΑ</title>
         <style>
             body {
@@ -980,6 +987,19 @@
             "μάλιστά γε": "maxime quidem"
         }
     };
+    function addCardToDeck() {
+        const flashcard = document.getElementById('flashcard');
+        const currentWord = chapters[currentChapter][currentIndex];
+        if (!retryDeck.includes(currentWord)) {
+            retryDeck.push(currentWord);
+            flashcard.style.animation = 'swipeDown 0.5s';
+            retryButton.textContent = `αὖθις ${retryDeck.length}`;
+            setTimeout( () => {
+                flashcard.style.animation = '';
+            }
+            , 500);
+        }
+    }
 
     function initializeChapters() {
         const chapterKeys = Object.keys(dict).sort( (a, b) => parseInt(a) - parseInt(b));
@@ -1098,6 +1118,9 @@
             break;
         case 'ArrowRight':
             nextFlashcard();
+            break;
+        case 'ArrowDown':
+            addCardToDeck();
             break;
         case ' ':
             flipFlashcard();
