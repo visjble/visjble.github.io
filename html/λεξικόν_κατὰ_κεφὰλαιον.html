@@ -1117,47 +1117,50 @@
     const styleSheet = document.createElement("style");
     styleSheet.textContent = styles;
     document.head.appendChild(styleSheet);
-function initializeFlashcard() {
-    const flashcard = document.getElementById('flashcard');
-    let startX, startY, moveX, moveY;
-    const threshold = 50;
+    function initializeFlashcard() {
+        const flashcard = document.getElementById('flashcard');
+        let startX, startY, moveX, moveY;
+        const threshold = 50;
+        let isSwiping = false;
 
-    flashcard.addEventListener('touchstart', (event) => {
-        event.preventDefault();
-        startX = event.touches[0].clientX;
-        startY = event.touches[0].clientY;
-        moveX = 0;
-        moveY = 0;
-        pressTimer = setTimeout(() => {
-            addCardToDeck();
-        }, 800);
-    });
-
-    flashcard.addEventListener('touchmove', (event) => {
-        event.preventDefault();
-        moveX = event.touches[0].clientX - startX;
-        moveY = event.touches[0].clientY - startY;
-        
-        // Optional: Add visual feedback
-        flashcard.style.transform = `translateX(${moveX}px)`;
-    });
-
-    flashcard.addEventListener('touchend', (event) => {
-        event.preventDefault();
-        clearTimeout(pressTimer);
-        
-        flashcard.style.transform = '';
-        if (Math.abs(moveX) > threshold) {
-            if (moveX > 0) {
-                previousFlashcard();
-            } else {
-                nextFlashcard();
+        flashcard.addEventListener('touchstart', (event) => {
+            startX = event.touches[0].clientX;
+            startY = event.touches[0].clientY;
+            moveX = 0;
+            moveY = 0;
+            isSwiping = false;
+            pressTimer = setTimeout( () => {
+                addCardToDeck();
             }
+            , 800);
         }
-        moveX = 0;
-        moveY = 0;
-    });
-}
+        );
+
+        flashcard.addEventListener('touchmove', (event) => {
+            moveX = event.touches[0].clientX - startX;
+            moveY = event.touches[0].clientY - startY;
+            if (Math.abs(moveX) > 10)
+                isSwiping = true;
+            flashcard.style.transform = `translateX(${moveX}px)`;
+        }
+        );
+
+        flashcard.addEventListener('touchend', (event) => {
+            clearTimeout(pressTimer);
+            flashcard.style.transform = '';
+
+            if (Math.abs(moveX) > threshold) {
+                moveX > 0 ? previousFlashcard() : nextFlashcard();
+            } else if (!isSwiping) {
+                flipFlashcard();
+            }
+
+            moveX = 0;
+            moveY = 0;
+            isSwiping = false;
+        }
+        );
+    }
     function flipFlashcard() {
         const flashcard = document.getElementById('flashcard');
         flashcard.classList.toggle('is-flipped');
