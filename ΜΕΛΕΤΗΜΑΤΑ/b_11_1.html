@@ -77,33 +77,32 @@
                 color: #666;
             }
 
-            @media screen and (max-width: 600px) {
-                body {
-                    margin: 10px;
-                    padding: 10px;
-                }
+@media screen and (max-width: 600px) {
+    .word {
+        padding: 4px 6px;
+        font-size: 12px;
+        margin-bottom: 2px;
+    }
 
-                .container {
-                    padding: 10px;
-                }
+    .columns-container {
+        flex-direction: row;
+        gap: 8px;
+    }
 
-                .columns-container {
-                    flex-direction: column;
-                    gap: 10px;
-                }
+    .word-column {
+        width: 48%;
+    }
 
-                .word-column {
-                    width: 100%;
-                }
+    .container {
+        padding: 8px;
+    }
 
-                .word {
-                    padding: 8px 12px;
-                    font-size: 16px;
-                }
-
-                .score {
-                    font-size: 20px;
-                }
+    .hint {
+        font-size: 12px;
+        padding: 8px;
+        margin-top: 10px;
+    }
+}
             </style>
         </head>
         <body>
