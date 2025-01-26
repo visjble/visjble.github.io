@@ -115,6 +115,24 @@
                     min-height: 40px;
                 }
             }
+
+            .victory-animation {
+                animation: victoryPulse 1s ease-in-out;
+            }
+
+            @keyframes victoryPulse {
+                0% {
+                    transform: scale(1);
+                }
+
+                50% {
+                    transform: scale(1.1);
+                }
+
+                100% {
+                    transform: scale(1);
+                }
+            }
         </style>
     </head>
     <body>
@@ -130,27 +148,36 @@
             <div id="hint" class="hint"></div>
         </div>
         <script>
-            const synonymPairs = [['ἡγέομαι', 'ἄγω'], ['αἱρέω', 'λαμβάνω'], ['κομίζω', 'φέρω'], ['σπήλαιον', 'ἄντρον'], ['εὔφρων', 'ἵλεως'], ['τάλας', 'πάθημα'], ['πάθος', 'χρήματα'], ['ὑπάρχω', 'εἰμι'], ['ἀργύριον', 'τλήμων']];
+            const synonymPairs = [['ἡγέομαι', 'ἄγω'], // lead, guide
+            ['αἱρέω', 'λαμβάνω'], // take, seize
+            ['κομίζω', 'φέρω'], // carry, bring
+            ['σπήλαιον', 'ἄντρον'], // cave
+            ['εὔφρων', 'ἵλεως'], // favorable, gracious
+            ['τάλας', 'τλήμων'], // wretched, suffering
+            ['πάθος', 'πάθημα'], // suffering, misfortune
+            ['ὑπάρχω', 'εἰμι'], // be, exist
+            ['ἀργύριον', 'χρήματα']// money, wealth
+            ];
 
             const latinWords = {
-                'ἡγέομαι': 'duco (to lead)',
-                'ἄγω': 'duco (to lead)',
-                'αἱρέω': 'capio (to take)',
-                'λαμβάνω': 'capio (to take)',
-                'κομίζω': 'fero (to carry)',
-                'φέρω': 'fero (to carry)',
+                'ἡγέομαι': 'duco (to lead, guide)',
+                'ἄγω': 'duco (to lead, guide)',
+                'αἱρέω': 'capio (to take, seize)',
+                'λαμβάνω': 'capio (to take, seize)',
+                'κομίζω': 'porto (to carry, bring)',
+                'φέρω': 'fero (to carry, bring)',
                 'σπήλαιον': 'spelunca (cave)',
                 'ἄντρον': 'spelunca (cave)',
-                'εὔφρων': 'propitius (favorable)',
-                'ἵλεως': 'propitius (favorable)',
+                'εὔφρων': 'benignus (favorable, kind)',
+                'ἵλεως': 'propitius (gracious, favorable)',
                 'τάλας': 'miser (wretched)',
-                'πάθημα': 'miser (wretched)',
-                'πάθος': 'res (thing, matter)',
-                'χρήματα': 'res (thing, matter)',
-                'ὑπάρχω': 'sum (to be)',
-                'εἰμι': 'sum (to be)',
-                'ἀργύριον': 'miser (wretched)',
-                'τλήμων': 'miser (wretched)'
+                'τλήμων': 'miser (wretched)',
+                'πάθος': 'calamitas (misfortune)',
+                'πάθημα': 'calamitas (misfortune)',
+                'ὑπάρχω': 'sum (to be, exist)',
+                'εἰμι': 'sum (to be, exist)',
+                'ἀργύριον': 'pecunia (money)',
+                'χρήματα': 'pecunia (money, wealth)'
             };
             // Create and shuffle the column words
             const leftColumnWords = synonymPairs.map(pair => pair[0]);
@@ -223,7 +250,6 @@
             function checkMatch() {
                 const [word1,word2] = selectedWords;
                 const isMatch = areSynonyms(word1, word2);
-
                 const buttons = document.querySelectorAll('.word');
 
                 if (isMatch) {
@@ -239,11 +265,22 @@
                     }
                     );
 
-                    document.getElementById('hint').textContent = `εὖγε! "${word1}" καὶ "${word2}" συνώνυμά ἐστιν`;
-
-                    // Check if game is complete
                     if (matchedWords.size === leftColumnWords.length * 2) {
                         document.getElementById('hint').textContent = 'εὖγε! τὸ παίγνιον τετέλεσται';
+                        document.getElementById('hint').classList.add('victory-animation');
+
+                        // Add reset button after 1.5 seconds
+                        setTimeout( () => {
+                            const resetButton = document.createElement('button');
+                            resetButton.textContent = 'Πάλιν παίζειν';
+                            resetButton.style.cssText = 'margin-top: 10px; padding: 8px 16px; background: #2196F3; color: white; border: none; border-radius: 4px; cursor: pointer;';
+                            resetButton.onclick = resetGame;
+                            document.getElementById('hint').appendChild(document.createElement('br'));
+                            document.getElementById('hint').appendChild(resetButton);
+                        }
+                        , 1500);
+                    } else {
+                        document.getElementById('hint').textContent = `εὖγε! "${word1}" καὶ "${word2}" συνώνυμά ἐστιν`;
                     }
                 } else {
                     document.getElementById('hint').textContent = `οὐ συνώνυμά ἐστιν "${word1}" (${latinWords[word1]}) καὶ "${word2}" (${latinWords[word2]})`;
@@ -255,8 +292,26 @@
                     }
                     );
                 }
-
                 selectedWords = [];
+            }
+
+            function resetGame() {
+                score = 0;
+                document.getElementById('score').textContent = score;
+                selectedWords = [];
+                matchedWords = new Set();
+                document.getElementById('hint').textContent = '';
+                document.getElementById('hint').classList.remove('victory-animation');
+
+                shuffle(leftColumnWords);
+                shuffle(rightColumnWords);
+
+                const leftColumn = document.getElementById('leftColumn');
+                const rightColumn = document.getElementById('rightColumn');
+                leftColumn.innerHTML = '';
+                rightColumn.innerHTML = '';
+
+                createWordColumns();
             }
 
             createWordColumns();
