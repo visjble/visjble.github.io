@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Verborum</title>
+        <style>
+            body {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                min-height: 50vh;
+                margin: 0;
+                background-color: #f0f8ff;
+                font-family: Arial, sans-serif;
+                overflow-x: hidden;
+            }
+
+            .card-container {
+                perspective: 1000px;
+                width: 80vw;
+                max-width: 300px;
+                position: relative;
+                margin-top: 20px;
+            }
+
+            #flashcard {
+                user-select: none;
+                -webkit-user-select: none;
+            }
+
+            .card {
+                width: 100%;
+                height: 190px;
+                position: relative;
+                transition: transform 0.6s;
+                transform-style: preserve-3d;
+                cursor: pointer;
+                touch-action: manipulation;
+            }
+
+            .card.is-flipped {
+                transform: rotateY(180deg);
+            }
+
+            .card-side {
+                position: absolute;
+                width: 100%;
+                height: 100%;
+                backface-visibility: hidden;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                border-radius: 10px;
+                box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+                font-size: 1.5rem;
+                text-align: center;
+                padding: 10px;
+                box-sizing: border-box;
+            }
+
+            .card-front {
+                background-color: #ffffff;
+                border: 2px solid #4da6ff;
+            }
+
+            .card-back {
+                background-color: #e6f2ff;
+                border: 2px solid #1e90ff;
+                transform: rotateY(180deg);
+            }
+
+            .counter {
+                margin-top: 10px;
+                font-size: 1.2rem;
+                text-align: center;
+            }
+
+            #retryDeckBtn {
+                margin-top: 10px;
+                padding: 8px;
+                background-color: #e6f2ff;
+                border: 1px solid #ef0707;
+                border-radius: 5px;
+                cursor: pointer;
+            }
+
+            .help-icon {
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                width: 30px;
+                height: 30px;
+                border-radius: 50%;
+                background: #4da6ff;
+                color: white;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                cursor: pointer;
+                font-size: 20px;
+                z-index: 100;
+            }
+
+            .help-overlay {
+                display: none;
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: rgba(0, 0, 0, 0.7);
+                z-index: 99;
+            }
+
+            .help-content {
+                position: absolute;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                background: white;
+                padding: 20px;
+                border-radius: 10px;
+                max-width: 80%;
+            }
+
+            @keyframes swipeUp {
+                0% {
+                    transform: translateY(0);
+                    opacity: 1;
+                }
+
+                100% {
+                    transform: translateY(-100px);
+                    opacity: 0;
+                }
+            }
+
+            @keyframes shake {
+                0%, 100% {
+                    transform: translateX(0);
+                }
+
+                25% {
+                    transform: translateX(5px);
+                }
+
+                75% {
+                    transform: translateX(-5px);
+                }
+            }
+        </style>
+    </head>
+    <body>
+        <div style="text-align: center; margin: 20px 0; font-size: 20px;">ΕΝΕΣΤΩΣ ⟹ ΑΟΡΙΣΤΟΣ</div>
+        <div class="card-container">
+            <div class="card" id="flashcard">
+                <div class="card-side card-front" id="card-front"></div>
+                <div class="card-side card-back" id="card-back"></div>
+            </div>
+        </div>
+        <div id="counter" class="counter"></div>
+        <button id="retryDeckBtn">αὖθις 0</button>
+        <div id="helpIcon" class="help-icon">?</div>
+        <div id="helpOverlay" class="help-overlay">
+            <div class="help-content">
+                <h3>Quomodo Uti:</h3>
+                <p>• Sinistra/dextra trahe vel sagittis lateralibus ad tabellas movendas</p>
+                <p>• Tabellam tange vel spatium preme ad vertendam</p>
+                <p>• Diutius preme ad tabellam in promptuarium iterandum addere</p>
+                <p>• Sagittam deorsum preme ad tabellam in promptuarium iterandum addere</p>
+                <p>
+                    <center>😊</center>
+                </p>
+            </div>
+        </div>
+        <script>
+            const dict = {
+                'ἄρχω, duco': 'ἦρξα, duxi',
+                'βασιλεύω, regno': 'ἐβασίλευσα, regnavi',
+                'βλέπω, specto': 'ἔβλεψα, spectavi',
+                'δακρύω, lacrimo': 'ἐδάκρυσα, lacrimavi',
+                'δουλεύω, servio': 'ἐδούλευσα, servivi',
+                'ἐρῶ, amo': 'ἠράσθην, amavi',
+                'θαρρῶ, audeo': 'ἐθάρρησα, ausus sum',
+                'νοσῶ, aegroto': 'ἐνόσησα, aegrotavi',
+                'πλουτῶ, dives sum': 'ἐπλούτησα, dives factus sum',
+                'πολεμῶ, bello': 'ἐπολέμησα, bellavi',
+                'σιγῶ, taceo': 'ἐσίγησα, tacui',
+                'εἰσβάλλω, irrumpo': 'εἰσέβαλον, irrupi',
+                'ἐκβάλλω, eicio': 'ἐξέβαλον, eieci',
+                'προσβάλλω, aggredior': 'προσέβαλον, aggressus sum',
+                'ἀποβάλλω, abicio': 'ἀπέβαλον, abieci',
+                'καταβάλλω, deicio': 'κατέβαλον, deieci',
+                'συμβάλλω, confero': 'συνέβαλον, contuli',
+                'ἄγω, duco': 'ἤγαγον, duxi',
+                'αἴρω, tollo': 'ἦρα, sustuli',
+                'ἀφικνέομαι, pervenio': 'ἀφικόμην, perveni',
+                'βάλλω, iacio': 'ἔβαλον, ieci',
+                'ἔχω, habeo': 'ἔσχον, habui',
+                'λείπω, linquo': 'ἔλιπον, liqui',
+                'πίπτω, cado': 'ἔπεσον, cecidi',
+                'φεύγω, fugio': 'ἔφυγον, fugi',
+                'πάσχω, patior': 'ἔπαθον, passus sum',
+                'εὑρίσκω, invenio': 'ηὗρον, inveni',
+                'ἀποθνῄσκω, morior': 'ἀπέθανον, mortuus sum',
+                'λέγεις, dicis': 'εἶπες, dixisti',
+                'πίπτοντι, cadenti': 'πεσόντι, cadenti',
+                'ὅρα, vide': 'ἰδέ, vide',
+                'γίγνεται, fit': 'ἐγένετο, factus est',
+                'γίγνου, fi': 'γενοῦ, fac',
+                'μανθάνει, discit': 'ἔμαθεν, didicit'
+            };
+
+            let currentIndex = 0;
+            let retryDeck = [];
+            let cards = [];
+            const retryButton = document.getElementById('retryDeckBtn');
+
+            function shuffle(array) {
+                for (let i = array.length - 1; i > 0; i--) {
+                    const j = Math.floor(Math.random() * (i + 1));
+                    [array[i],array[j]] = [array[j], array[i]];
+                }
+                return array;
+            }
+
+            function initializeCards() {
+                cards = shuffle(Object.entries(dict)).map( ([front,back]) => ({
+                    front,
+                    back
+                }));
+            }
+            function showFlashcard(index) {
+                const flashcard = document.getElementById('flashcard');
+                flashcard.classList.remove('is-flipped');
+
+                if (!cards || cards.length === 0) {
+                    document.getElementById('card-front').innerText = 'No words available';
+                    document.getElementById('card-back').innerText = '';
+                    document.getElementById('counter').innerText = '0';
+                    return;
+                }
+
+                const word = cards[index];
+                document.getElementById('card-front').innerText = word.front;
+                document.getElementById('card-back').innerText = word.back;
+                document.getElementById('counter').innerText = `${index + 1}/${cards.length}`;
+            }
+
+            function addCardToDeck() {
+                const currentWord = cards[currentIndex];
+                if (!retryDeck.includes(currentWord)) {
+                    retryDeck.push(currentWord);
+                    const flashcard = document.getElementById('flashcard');
+                    flashcard.style.animation = 'swipeDown 0.5s';
+                    retryButton.textContent = `αὖθις ${retryDeck.length}`;
+                    setTimeout( () => {
+                        flashcard.style.animation = '';
+                    }
+                    , 500);
+                }
+            }
+
+            function nextFlashcard() {
+                const flashcard = document.getElementById('flashcard');
+                if (currentIndex < cards.length - 1) {
+                    if (flashcard.classList.contains('is-flipped')) {
+                        flashcard.classList.remove('is-flipped');
+                        setTimeout( () => {
+                            currentIndex++;
+                            showFlashcard(currentIndex);
+                        }
+                        , 300);
+                    } else {
+                        currentIndex++;
+                        showFlashcard(currentIndex);
+                    }
+                } else {
+                    flashcard.style.animation = 'shake 0.5s';
+                    setTimeout( () => {
+                        flashcard.style.animation = '';
+                    }
+                    , 500);
+                }
+            }
+
+            function previousFlashcard() {
+                const flashcard = document.getElementById('flashcard');
+                if (currentIndex > 0) {
+                    if (flashcard.classList.contains('is-flipped')) {
+                        flashcard.classList.remove('is-flipped');
+                        setTimeout( () => {
+                            currentIndex--;
+                            showFlashcard(currentIndex);
+                        }
+                        , 300);
+                    } else {
+                        currentIndex--;
+                        showFlashcard(currentIndex);
+                    }
+                }
+            }
+
+            function flipFlashcard() {
+                const flashcard = document.getElementById('flashcard');
+                flashcard.classList.toggle('is-flipped');
+            }
+
+            function initializeFlashcard() {
+                const flashcard = document.getElementById('flashcard');
+                let startX, startY, moveX, moveY;
+                const threshold = 50;
+                let isSwiping = false;
+                let pressTimer;
+
+                flashcard.addEventListener('click', () => {
+                    if (!isSwiping) {
+                        flipFlashcard();
+                    }
+                }
+                );
+
+                flashcard.addEventListener('mousedown', () => {
+                    pressTimer = setTimeout( () => {
+                        addCardToDeck();
+                    }
+                    , 800);
+                }
+                );
+
+                flashcard.addEventListener('mouseup', () => {
+                    clearTimeout(pressTimer);
+                }
+                );
+
+                flashcard.addEventListener('mouseleave', () => {
+                    clearTimeout(pressTimer);
+                }
+                );
+
+                flashcard.addEventListener('touchstart', (event) => {
+                    startX = event.touches[0].clientX;
+                    startY = event.touches[0].clientY;
+                    moveX = 0;
+                    moveY = 0;
+                    isSwiping = false;
+                    pressTimer = setTimeout( () => {
+                        addCardToDeck();
+                    }
+                    , 800);
+                }
+                );
+
+                flashcard.addEventListener('touchmove', (event) => {
+                    moveX = event.touches[0].clientX - startX;
+                    moveY = event.touches[0].clientY - startY;
+                    if (Math.abs(moveX) > 10)
+                        isSwiping = true;
+                    flashcard.style.transform = `translateX(${moveX}px)`;
+                }
+                );
+
+                flashcard.addEventListener('touchend', (event) => {
+                    clearTimeout(pressTimer);
+                    flashcard.style.transform = '';
+
+                    if (Math.abs(moveX) > threshold) {
+                        moveX > 0 ? previousFlashcard() : nextFlashcard();
+                    } else if (!isSwiping) {
+                        flipFlashcard();
+                    }
+
+                    moveX = 0;
+                    moveY = 0;
+                    isSwiping = false;
+                }
+                );
+            }
+
+            document.addEventListener('keydown', (event) => {
+                if (['ArrowLeft', 'ArrowRight', ' '].includes(event.key)) {
+                    event.preventDefault();
+                }
+
+                switch (event.key) {
+                case 'ArrowLeft':
+                    previousFlashcard();
+                    break;
+                case 'ArrowRight':
+                    nextFlashcard();
+                    break;
+                case 'ArrowDown':
+                    addCardToDeck();
+                    break;
+                case ' ':
+                    flipFlashcard();
+                    break;
+                }
+            }
+            );
+
+            retryButton.addEventListener('click', () => {
+                if (retryDeck.length === 0)
+                    return;
+                cards = [...retryDeck];
+                currentIndex = 0;
+                retryDeck = [];
+                showFlashcard(currentIndex);
+                retryButton.textContent = 'αὖθις 0';
+            }
+            );
+
+            document.getElementById('helpIcon').addEventListener('click', (e) => {
+                e.stopPropagation();
+                document.getElementById('helpOverlay').style.display = 'block';
+            }
+            );
+
+            document.getElementById('helpOverlay').addEventListener('click', () => {
+                document.getElementById('helpOverlay').style.display = 'none';
+            }
+            );
+
+            window.onload = () => {
+                initializeCards();
+                showFlashcard(currentIndex);
+                initializeFlashcard();
+            }
+            ;
+        </script>
+    </body>
+</html>
