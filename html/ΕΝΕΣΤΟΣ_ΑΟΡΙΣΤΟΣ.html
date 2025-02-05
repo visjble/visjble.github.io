@@ -150,6 +150,21 @@
                     transform: translateX(-5px);
                 }
             }
+            @keyframes storeInDeck {
+    0% {
+        transform: translate(0, 0) scale(1);
+        opacity: 1;
+    }
+    100% {
+        transform: translate(0, 100px) scale(0.7);
+        opacity: 0.5;
+    }
+}
+
+/* Add this animation when storing card */
+.storing {
+    animation: storeInDeck 0.5s ease-in forwards;
+}
         </style>
     </head>
     <body>
@@ -250,18 +265,17 @@
             }
 
             function addCardToDeck() {
-                const currentWord = cards[currentIndex];
-                if (!retryDeck.includes(currentWord)) {
-                    retryDeck.push(currentWord);
-                    const flashcard = document.getElementById('flashcard');
-                    flashcard.style.animation = 'swipeDown 0.5s';
-                    retryButton.textContent = `αὖθις ${retryDeck.length}`;
-                    setTimeout( () => {
-                        flashcard.style.animation = '';
-                    }
-                    , 500);
-                }
-            }
+    const currentWord = cards[currentIndex];
+    if (!retryDeck.includes(currentWord)) {
+        retryDeck.push(currentWord);
+        const flashcard = document.getElementById('flashcard');
+        flashcard.classList.add('storing');
+        retryButton.textContent = `αὖθις ${retryDeck.length}`;
+        setTimeout(() => {
+            flashcard.classList.remove('storing');
+        }, 500);
+    }
+}
 
             function nextFlashcard() {
                 const flashcard = document.getElementById('flashcard');
