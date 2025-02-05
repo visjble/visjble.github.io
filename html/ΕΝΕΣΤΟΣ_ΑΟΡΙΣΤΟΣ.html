@@ -263,20 +263,25 @@
                 document.getElementById('card-back').innerText = word.back;
                 document.getElementById('counter').innerText = `${index + 1}/${cards.length}`;
             }
-
-            function addCardToDeck() {
+function addCardToDeck() {
     const currentWord = cards[currentIndex];
     if (!retryDeck.includes(currentWord)) {
         retryDeck.push(currentWord);
         const flashcard = document.getElementById('flashcard');
-        flashcard.classList.add('storing');
+        
+        flashcard.style.transition = 'transform 0.4s ease-out, opacity 0.1s ease-out';
+        flashcard.style.transform = 'translateY(400px)';
+        flashcard.style.opacity = '0';
+        
         retryButton.textContent = `αὖθις ${retryDeck.length}`;
+        
         setTimeout(() => {
-            flashcard.classList.remove('storing');
-        }, 500);
+            flashcard.style.transition = 'none';
+            flashcard.style.transform = '';
+            flashcard.style.opacity = '1';
+        }, 400);
     }
 }
-
             function nextFlashcard() {
                 const flashcard = document.getElementById('flashcard');
                 if (currentIndex < cards.length - 1) {
