@@ -150,21 +150,23 @@
                     transform: translateX(-5px);
                 }
             }
-            @keyframes storeInDeck {
-    0% {
-        transform: translate(0, 0) scale(1);
-        opacity: 1;
-    }
-    100% {
-        transform: translate(0, 100px) scale(0.7);
-        opacity: 0.5;
-    }
-}
 
-/* Add this animation when storing card */
-.storing {
-    animation: storeInDeck 0.5s ease-in forwards;
-}
+            @keyframes storeInDeck {
+                0% {
+                    transform: translate(0, 0) scale(1);
+                    opacity: 1;
+                }
+
+                100% {
+                    transform: translate(0, 100px) scale(0.7);
+                    opacity: 0.5;
+                }
+            }
+
+            /* Add this animation when storing card */
+            .storing {
+                animation: storeInDeck 0.5s ease-in forwards;
+            }
         </style>
     </head>
     <body>
@@ -263,25 +265,26 @@
                 document.getElementById('card-back').innerText = word.back;
                 document.getElementById('counter').innerText = `${index + 1}/${cards.length}`;
             }
-function addCardToDeck() {
-    const currentWord = cards[currentIndex];
-    if (!retryDeck.includes(currentWord)) {
-        retryDeck.push(currentWord);
-        const flashcard = document.getElementById('flashcard');
-        
-        flashcard.style.transition = 'transform 0.4s ease-out, opacity 0.1s ease-out';
-        flashcard.style.transform = 'translateY(400px)';
-        flashcard.style.opacity = '0';
-        
-        retryButton.textContent = `αὖθις ${retryDeck.length}`;
-        
-        setTimeout(() => {
-            flashcard.style.transition = 'none';
-            flashcard.style.transform = '';
-            flashcard.style.opacity = '1';
-        }, 400);
-    }
-}
+            function addCardToDeck() {
+                const currentWord = cards[currentIndex];
+                if (!retryDeck.includes(currentWord)) {
+                    retryDeck.push(currentWord);
+                    const flashcard = document.getElementById('flashcard');
+
+                    flashcard.style.transition = 'transform 0.4s ease-out, opacity 0.4s ease-out';
+                    flashcard.style.transform = 'translateY(300px)';
+                    flashcard.style.opacity = '0';
+
+                    retryButton.textContent = `αὖθις ${retryDeck.length}`;
+
+                    setTimeout( () => {
+                        flashcard.style.transition = 'none';
+                        flashcard.style.transform = '';
+                        flashcard.style.opacity = '1';
+                    }
+                    , 400);
+                }
+            }
             function nextFlashcard() {
                 const flashcard = document.getElementById('flashcard');
                 if (currentIndex < cards.length - 1) {
@@ -327,73 +330,82 @@ function addCardToDeck() {
                 flashcard.classList.toggle('is-flipped');
             }
 
-function initializeFlashcard() {
-    const flashcard = document.getElementById('flashcard');
-    let startX, startY, moveX, moveY;
-    const threshold = 50;
-    let isSwiping = false;
-    let isLongPress = false;
-    let pressTimer;
+            function initializeFlashcard() {
+                const flashcard = document.getElementById('flashcard');
+                let startX, startY, moveX, moveY;
+                const threshold = 50;
+                let isSwiping = false;
+                let isLongPress = false;
+                let pressTimer;
 
-    flashcard.addEventListener('touchstart', (event) => {
-        startX = event.touches[0].clientX;
-        startY = event.touches[0].clientY;
-        moveX = 0;
-        moveY = 0;
-        isSwiping = false;
-        isLongPress = false;
-        pressTimer = setTimeout(() => {
-            isLongPress = true;
-            addCardToDeck();
-        }, 800);
-    });
+                flashcard.addEventListener('touchstart', (event) => {
+                    startX = event.touches[0].clientX;
+                    startY = event.touches[0].clientY;
+                    moveX = 0;
+                    moveY = 0;
+                    isSwiping = false;
+                    isLongPress = false;
+                    pressTimer = setTimeout( () => {
+                        isLongPress = true;
+                        addCardToDeck();
+                    }
+                    , 800);
+                }
+                );
 
-    flashcard.addEventListener('touchmove', (event) => {
-        moveX = event.touches[0].clientX - startX;
-        if (Math.abs(moveX) > 10) {
-            isSwiping = true;
-            flashcard.style.transform = `translateX(${moveX}px)`;
-        }
-    });
+                flashcard.addEventListener('touchmove', (event) => {
+                    moveX = event.touches[0].clientX - startX;
+                    if (Math.abs(moveX) > 10) {
+                        isSwiping = true;
+                        flashcard.style.transform = `translateX(${moveX}px)`;
+                    }
+                }
+                );
 
-    flashcard.addEventListener('touchend', (event) => {
-        clearTimeout(pressTimer);
-        flashcard.style.transform = '';
-        
-        if (Math.abs(moveX) > threshold) {
-            moveX > 0 ? previousFlashcard() : nextFlashcard();
-        } else if (!isSwiping && !isLongPress) {
-            flipFlashcard();
-        }
+                flashcard.addEventListener('touchend', (event) => {
+                    clearTimeout(pressTimer);
+                    flashcard.style.transform = '';
 
-        moveX = 0;
-        moveY = 0;
-        isSwiping = false;
-        isLongPress = false;
-    });
+                    if (Math.abs(moveX) > threshold) {
+                        moveX > 0 ? previousFlashcard() : nextFlashcard();
+                    } else if (!isSwiping && !isLongPress) {
+                        flipFlashcard();
+                    }
 
-    flashcard.addEventListener('mousedown', () => {
-        isLongPress = false;
-        pressTimer = setTimeout(() => {
-            isLongPress = true;
-            addCardToDeck();
-        }, 800);
-    });
+                    moveX = 0;
+                    moveY = 0;
+                    isSwiping = false;
+                    isLongPress = false;
+                }
+                );
 
-    flashcard.addEventListener('mouseup', () => {
-        clearTimeout(pressTimer);
-    });
+                flashcard.addEventListener('mousedown', () => {
+                    isLongPress = false;
+                    pressTimer = setTimeout( () => {
+                        isLongPress = true;
+                        addCardToDeck();
+                    }
+                    , 800);
+                }
+                );
 
-    flashcard.addEventListener('mouseleave', () => {
-        clearTimeout(pressTimer);
-    });
+                flashcard.addEventListener('mouseup', () => {
+                    clearTimeout(pressTimer);
+                }
+                );
 
-    flashcard.addEventListener('click', (event) => {
-        if (!('ontouchstart' in window) && !isLongPress) {
-            flipFlashcard();
-        }
-    });
-}
+                flashcard.addEventListener('mouseleave', () => {
+                    clearTimeout(pressTimer);
+                }
+                );
+
+                flashcard.addEventListener('click', (event) => {
+                    if (!('ontouchstart'in window) && !isLongPress) {
+                        flipFlashcard();
+                    }
+                }
+                );
+            }
 
             document.addEventListener('keydown', (event) => {
                 if (['ArrowLeft', 'ArrowRight', ' '].includes(event.key)) {
