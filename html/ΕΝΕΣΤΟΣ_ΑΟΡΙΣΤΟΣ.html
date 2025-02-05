@@ -308,76 +308,73 @@
                 flashcard.classList.toggle('is-flipped');
             }
 
-            function initializeFlashcard() {
-                const flashcard = document.getElementById('flashcard');
-                let startX, startY, moveX, moveY;
-                const threshold = 50;
-                let isSwiping = false;
-                let pressTimer;
+function initializeFlashcard() {
+    const flashcard = document.getElementById('flashcard');
+    let startX, startY, moveX, moveY;
+    const threshold = 50;
+    let isSwiping = false;
+    let isLongPress = false;
+    let pressTimer;
 
-                flashcard.addEventListener('click', () => {
-                    if (!isSwiping) {
-                        flipFlashcard();
-                    }
-                }
-                );
+    flashcard.addEventListener('touchstart', (event) => {
+        startX = event.touches[0].clientX;
+        startY = event.touches[0].clientY;
+        moveX = 0;
+        moveY = 0;
+        isSwiping = false;
+        isLongPress = false;
+        pressTimer = setTimeout(() => {
+            isLongPress = true;
+            addCardToDeck();
+        }, 800);
+    });
 
-                flashcard.addEventListener('mousedown', () => {
-                    pressTimer = setTimeout( () => {
-                        addCardToDeck();
-                    }
-                    , 800);
-                }
-                );
+    flashcard.addEventListener('touchmove', (event) => {
+        moveX = event.touches[0].clientX - startX;
+        if (Math.abs(moveX) > 10) {
+            isSwiping = true;
+            flashcard.style.transform = `translateX(${moveX}px)`;
+        }
+    });
 
-                flashcard.addEventListener('mouseup', () => {
-                    clearTimeout(pressTimer);
-                }
-                );
+    flashcard.addEventListener('touchend', (event) => {
+        clearTimeout(pressTimer);
+        flashcard.style.transform = '';
+        
+        if (Math.abs(moveX) > threshold) {
+            moveX > 0 ? previousFlashcard() : nextFlashcard();
+        } else if (!isSwiping && !isLongPress) {
+            flipFlashcard();
+        }
 
-                flashcard.addEventListener('mouseleave', () => {
-                    clearTimeout(pressTimer);
-                }
-                );
+        moveX = 0;
+        moveY = 0;
+        isSwiping = false;
+        isLongPress = false;
+    });
 
-                flashcard.addEventListener('touchstart', (event) => {
-                    startX = event.touches[0].clientX;
-                    startY = event.touches[0].clientY;
-                    moveX = 0;
-                    moveY = 0;
-                    isSwiping = false;
-                    pressTimer = setTimeout( () => {
-                        addCardToDeck();
-                    }
-                    , 800);
-                }
-                );
+    flashcard.addEventListener('mousedown', () => {
+        isLongPress = false;
+        pressTimer = setTimeout(() => {
+            isLongPress = true;
+            addCardToDeck();
+        }, 800);
+    });
 
-                flashcard.addEventListener('touchmove', (event) => {
-                    moveX = event.touches[0].clientX - startX;
-                    moveY = event.touches[0].clientY - startY;
-                    if (Math.abs(moveX) > 10)
-                        isSwiping = true;
-                    flashcard.style.transform = `translateX(${moveX}px)`;
-                }
-                );
+    flashcard.addEventListener('mouseup', () => {
+        clearTimeout(pressTimer);
+    });
 
-                flashcard.addEventListener('touchend', (event) => {
-                    clearTimeout(pressTimer);
-                    flashcard.style.transform = '';
+    flashcard.addEventListener('mouseleave', () => {
+        clearTimeout(pressTimer);
+    });
 
-                    if (Math.abs(moveX) > threshold) {
-                        moveX > 0 ? previousFlashcard() : nextFlashcard();
-                    } else if (!isSwiping) {
-                        flipFlashcard();
-                    }
-
-                    moveX = 0;
-                    moveY = 0;
-                    isSwiping = false;
-                }
-                );
-            }
+    flashcard.addEventListener('click', (event) => {
+        if (!('ontouchstart' in window) && !isLongPress) {
+            flipFlashcard();
+        }
+    });
+}
 
             document.addEventListener('keydown', (event) => {
                 if (['ArrowLeft', 'ArrowRight', ' '].includes(event.key)) {
