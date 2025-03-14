@@ -1,0 +1,1207 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Attic Greek Learning Game</title>
+        <style>
+            body {
+                font-family: Arial, sans-serif;
+                background-color: #1e293b;
+                color: white;
+                margin: 0;
+                padding: 20px;
+                display: flex;
+                justify-content: center;
+                transition: background-color 0.5s;
+            }
+
+            .container {
+                max-width: 600px;
+                width: 100%;
+            }
+
+            .game-header {
+                display: flex;
+                justify-content: space-between;
+                margin-bottom: 20px;
+                align-items: center;
+            }
+
+            .word-display {
+                font-size: 2.5rem;
+                font-weight: bold;
+                height: 60px;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                margin-bottom: 10px;
+                text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+                transition: transform 0.3s;
+            }
+
+            .word-display.pulse {
+                animation: pulse 0.5s ease-in-out;
+            }
+
+            .play-button {
+                width: 60px;
+                height: 60px;
+                background-color: #2563eb;
+                border-radius: 50%;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                cursor: pointer;
+                margin: 0 auto 20px;
+                border: none;
+                color: white;
+                box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+                transition: transform 0.2s, background-color 0.2s;
+            }
+
+            .play-button:hover {
+                background-color: #1d4ed8;
+                transform: scale(1.05);
+            }
+
+            .play-button:active {
+                transform: scale(0.95);
+            }
+
+            .grid {
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                gap: 16px;
+                margin-bottom: 20px;
+            }
+
+            .image-option {
+                position: relative;
+                background-color: #374151;
+                border-radius: 8px;
+                overflow: hidden;
+                cursor: pointer;
+                border: none;
+                padding: 0;
+                box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+                transition: transform 0.2s;
+            }
+
+            .image-option:hover {
+                background-color: #4b5563;
+                transform: translateY(-5px);
+            }
+
+            .image-option:active {
+                transform: translateY(0);
+            }
+
+            .image-container {
+                position: relative;
+                padding-bottom: 75%;
+                /* 4:3 aspect ratio */
+            }
+
+            .image-container img {
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                object-fit: cover;
+            }
+
+            .word-overlay {
+                position: absolute;
+                bottom: 0;
+                left: 0;
+                right: 0;
+                background-color: rgba(0, 0, 0, 0.7);
+                padding: 8px;
+                text-align: center;
+                transform: translateY(100%);
+                transition: transform 0.3s;
+            }
+
+            .image-option:hover .word-overlay {
+                transform: translateY(0);
+            }
+
+            .feedback-overlay {
+                position: absolute;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+            }
+
+            .correct-overlay {
+                background-color: rgba(34, 197, 94, 0.5);
+            }
+
+            .incorrect-overlay {
+                background-color: rgba(239, 68, 68, 0.5);
+            }
+
+            .check-icon, .x-icon {
+                width: 60px;
+                height: 60px;
+                stroke-width: 3;
+                filter: drop-shadow(0 0 5px rgba(255, 255, 255, 0.5));
+            }
+
+            .check-icon {
+                color: #16a34a;
+            }
+
+            .x-icon {
+                color: #dc2626;
+            }
+
+            .controls {
+                display: flex;
+                justify-content: center;
+                gap: 10px;
+            }
+
+            .control-button {
+                background-color: #374151;
+                color: white;
+                border: none;
+                padding: 8px 16px;
+                border-radius: 6px;
+                cursor: pointer;
+                transition: background-color 0.2s;
+            }
+
+            .control-button:hover {
+                background-color: #4b5563;
+            }
+
+            .start-screen, .end-screen {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                text-align: center;
+                height: 80vh;
+            }
+
+            .start-button, .play-again-button {
+                background-color: #2563eb;
+                color: white;
+                border: none;
+                padding: 12px 24px;
+                border-radius: 9999px;
+                font-weight: bold;
+                font-size: 1rem;
+                margin-top: 20px;
+                cursor: pointer;
+                box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+                transition: transform 0.2s, background-color 0.2s;
+            }
+
+            .start-button:hover, .play-again-button:hover {
+                background-color: #1d4ed8;
+                transform: translateY(-2px);
+            }
+
+            .start-button:active, .play-again-button:active {
+                transform: translateY(0);
+            }
+
+            .shake-horizontal {
+                animation: shake-horizontal 0.5s ease-in-out;
+            }
+
+            .shake-vertical {
+                animation: shake-vertical 0.5s ease-in-out;
+            }
+
+            @keyframes shake-horizontal {
+                0% {
+                    transform: translateX(0);
+                }
+
+                25% {
+                    transform: translateX(-8px);
+                }
+
+                50% {
+                    transform: translateX(8px);
+                }
+
+                75% {
+                    transform: translateX(-8px);
+                }
+
+                100% {
+                    transform: translateX(0);
+                }
+            }
+
+            @keyframes shake-vertical {
+                0% {
+                    transform: translateY(0);
+                }
+
+                25% {
+                    transform: translateY(-8px);
+                }
+
+                50% {
+                    transform: translateY(8px);
+                }
+
+                75% {
+                    transform: translateY(-8px);
+                }
+
+                100% {
+                    transform: translateY(0);
+                }
+            }
+
+            @keyframes pulse {
+                0% {
+                    transform: scale(1);
+                }
+
+                50% {
+                    transform: scale(1.1);
+                }
+
+                100% {
+                    transform: scale(1);
+                }
+            }
+
+            .hidden {
+                display: none;
+            }
+
+            .streak-counter {
+                background-color: #4b5563;
+                padding: 4px 12px;
+                border-radius: 9999px;
+                font-weight: bold;
+            }
+
+            .streak-icon {
+                color: #f59e0b;
+                margin-right: 4px;
+            }
+
+            .progress-bar-container {
+                height: 10px;
+                background-color: #374151;
+                border-radius: 5px;
+                margin-bottom: 15px;
+                width: 100%;
+            }
+
+            .progress-bar {
+                height: 100%;
+                background-color: #2563eb;
+                border-radius: 5px;
+                transition: width 0.5s;
+            }
+
+            .confetti {
+                position: fixed;
+                width: 10px;
+                height: 10px;
+                background-color: #f00;
+                transform: translateY(0) rotate(0);
+                opacity: 1;
+                pointer-events: none;
+            }
+
+            .hint-button {
+                background-color: transparent;
+                border: 1px solid #6b7280;
+                color: #d1d5db;
+                border-radius: 4px;
+                padding: 3px 8px;
+                font-size: 0.8rem;
+                cursor: pointer;
+                margin-left: 8px;
+            }
+
+            .hint-button:hover {
+                background-color: rgba(255, 255, 255, 0.1);
+            }
+
+            .time-bar-container {
+                height: 6px;
+                background-color: #374151;
+                border-radius: 3px;
+                margin-top: 15px;
+                width: 100%;
+            }
+
+            .time-bar {
+                height: 100%;
+                background-color: #f59e0b;
+                border-radius: 3px;
+                transition: width 0.1s linear;
+            }
+
+            .level-indicator {
+                margin-left: auto;
+                background-color: #374151;
+                padding: 4px 12px;
+                border-radius: 4px;
+                font-size: 0.9rem;
+            }
+
+            .stars {
+                display: flex;
+                margin-top: 10px;
+            }
+
+            .star {
+                color: #f59e0b;
+                font-size: 24px;
+                margin: 0 5px;
+            }
+
+            .star.empty {
+                color: #6b7280;
+            }
+
+            .notification-overlay {
+                position: fixed;
+                top: 50px;
+                left: 50%;
+                transform: translateX(-50%);
+                background-color: rgba(37, 99, 235, 0.9);
+                color: white;
+                padding: 12px 20px;
+                border-radius: 8px;
+                box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+                z-index: 1000;
+                transition: opacity 0.3s, transform 0.3s;
+                opacity: 0;
+                pointer-events: none;
+            }
+
+            .notification-overlay.visible {
+                opacity: 1;
+                transform: translateX(-50%) translateY(0);
+                pointer-events: auto;
+            }
+
+            .notification-overlay.hidden {
+                opacity: 0;
+                transform: translateX(-50%) translateY(-20px);
+            }
+
+            .notification-content {
+                display: flex;
+                align-items: center;
+            }
+
+            .notification-message {
+                font-weight: bold;
+                text-align: center;
+            }
+
+            /* Add a new animation for the notification */
+            @keyframes notification-slide {
+                0% {
+                    opacity: 0;
+                    transform: translateX(-50%) translateY(-20px);
+                }
+
+                10% {
+                    opacity: 1;
+                    transform: translateX(-50%) translateY(0);
+                }
+
+                90% {
+                    opacity: 1;
+                    transform: translateX(-50%) translateY(0);
+                }
+
+                100% {
+                    opacity: 0;
+                    transform: translateX(-50%) translateY(-20px);
+                }
+            }
+        </style>
+    </head>
+    <body>
+        <div class="container">
+            <!-- Start Screen -->
+            <div id="startScreen" class="start-screen">
+                <h1>Greek Vocabulary Learning</h1>
+                <p>Listen to the Greek word and select the matching image.</p>
+                <div style="margin: 20px 0; text-align: left;">
+                    <h3>Game Modes:</h3>
+                    <div>
+                        <input type="radio" id="normalMode" name="gameMode" value="normal" checked>
+                        <label for="normalMode">Normal Mode</label>
+                    </div>
+                    <div>
+                        <input type="radio" id="timeMode" name="gameMode" value="timed">
+                        <label for="timeMode">Timed Mode</label>
+                    </div>
+                    <div>
+                        <input type="radio" id="streakMode" name="gameMode" value="streak">
+                        <label for="streakMode">Streak Mode</label>
+                    </div>
+                </div>
+                <button id="startButton" class="start-button">Start Game</button>
+            </div>
+            <!-- Game Screen -->
+            <div id="gameScreen" class="hidden">
+                <div class="game-header">
+                    <div id="progress">Word: 1 / 6</div>
+                    <div id="streakContainer" class="streak-counter hidden">
+                        <span class="streak-icon">🔥</span>
+                        <span id="streakCount">0</span>
+                    </div>
+                    <div id="score">Score: 0</div>
+                </div>
+                <div class="progress-bar-container">
+                    <div id="progressBar" class="progress-bar" style="width: 0%;"></div>
+                </div>
+                <div id="wordDisplay" class="word-display"></div>
+                <div style="text-align: center;">
+                    <button id="hintButton" class="hint-button">Hint</button>
+                </div>
+                <button id="playButton" class="play-button">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="40" height="40">
+                        <path d="M8 5.14v14l11-7-11-7z"/>
+                    </svg>
+                </button>
+                <div id="optionsGrid" class="grid">
+                <!-- Image options will be inserted here -->
+                </div>
+                <div class="time-bar-container hidden" id="timeBarContainer">
+                    <div id="timeBar" class="time-bar" style="width: 100%;"></div>
+                </div>
+                <div class="controls">
+                    <button id="replayButton" class="control-button">Replay Word</button>
+                    <div id="levelIndicator" class="level-indicator">Level: 1</div>
+                </div>
+            </div>
+            <!-- End Screen -->
+            <div id="endScreen" class="end-screen hidden">
+                <h1>Game Complete!</h1>
+                <p id="finalScore">Your score: 0 / 6</p>
+                <div id="stars" class="stars">
+                <!-- Stars will be added here -->
+                </div>
+                <p id="completionMessage">Great job learning the basics!</p>
+                <button id="playAgainButton" class="play-again-button">Play Again</button>
+            </div>
+            <!-- Audio elements -->
+            <audio id="audioElement" preload="auto"></audio>
+            <audio id="correctSound" src="correct-1.mp3" preload="auto"></audio>
+            <audio id="incorrectSound" src="incorrect-1.mp3" preload="auto"></audio>
+            <div id="notificationOverlay" class="notification-overlay hidden">
+                <div class="notification-content">
+                    <div class="notification-message" id="notificationMessage"></div>
+                </div>
+            </div>
+        </div>
+        <script>
+            document.addEventListener('DOMContentLoaded', () => {
+                // Attic Greek vocabulary with English translations and articles
+                const vocabularyLevels = [// Level 1
+                [{
+                    greek: 'ἡ αἴξ',
+                    transliteration: 'hē aíx',
+                    english: 'goat',
+                    article: 'ἡ',
+                    hint: 'A farm animal with horns that says "baa"',
+                    audioStart: 0.0,
+                    audioEnd: 1.2
+                }, {
+                    greek: 'ὁ βοῦς',
+                    transliteration: 'ho boûs',
+                    english: 'cow',
+                    article: 'ὁ',
+                    hint: 'Gives milk and says "moo"',
+                    audioStart: 1.317,
+                    audioEnd: 2.5
+                }, {
+                    greek: 'ὁ ταῦρος',
+                    transliteration: 'ho taûros',
+                    english: 'bull',
+                    article: 'ὁ',
+                    hint: 'Male cow with large horns',
+                    audioStart: 2.634,
+                    audioEnd: 3.8
+                }, {
+                    greek: 'ὁ ἀνήρ',
+                    transliteration: 'ho anḗr',
+                    english: 'man',
+                    article: 'ὁ',
+                    hint: 'Adult male human',
+                    audioStart: 3.951,
+                    audioEnd: 5.1
+                }, {
+                    greek: 'τὸ πρόβατον',
+                    transliteration: 'tò próbaton',
+                    english: 'sheep',
+                    article: 'τὸ',
+                    hint: 'Wooly farm animal',
+                    audioStart: 5.268,
+                    audioEnd: 6.585
+                }, {
+                    greek: 'ἡ γυνή',
+                    transliteration: 'hē gunḗ',
+                    english: 'woman',
+                    article: 'ἡ',
+                    hint: 'Adult female human',
+                    audioStart: 6.585,
+                    audioEnd: 7.902
+                }], // Level 2 (can be expanded with more vocabulary)
+                [{
+                    greek: 'ὁ ἵππος',
+                    transliteration: 'ho híppos',
+                    english: 'horse',
+                    article: 'ὁ',
+                    hint: 'Four-legged animal that people ride',
+                    audioStart: 7.902,
+                    audioEnd: 9.219
+                }, {
+                    greek: 'ὁ κύων',
+                    transliteration: 'ho kýōn',
+                    english: 'dog',
+                    article: 'ὁ',
+                    hint: 'Loyal pet that barks',
+                    audioStart: 9.219,
+                    audioEnd: 10.536
+                }, {
+                    greek: 'ἡ γαλῆ',
+                    transliteration: 'hē galē',
+                    english: 'cat',
+                    article: 'ἡ',
+                    hint: 'Purring pet that meows',
+                    audioStart: 10.536,
+                    audioEnd: 11.853
+                }, {
+                    greek: 'τὸ ὕδωρ',
+                    transliteration: 'tò hýdōr',
+                    english: 'water',
+                    article: 'τὸ',
+                    hint: 'Essential liquid for life',
+                    audioStart: 11.853,
+                    audioEnd: 13.170
+                }, {
+                    greek: 'ὁ οἶνος',
+                    transliteration: 'ho oînos',
+                    english: 'wine',
+                    article: 'ὁ',
+                    hint: 'Alcoholic drink made from grapes',
+                    audioStart: 13.170,
+                    audioEnd: 14.487
+                }, {
+                    greek: 'ὁ ἄρτος',
+                    transliteration: 'ho ártos',
+                    english: 'bread',
+                    article: 'ὁ',
+                    hint: 'Baked food made from flour',
+                    audioStart: 14.487,
+                    audioEnd: 15.804
+                }]];
+                // Game settings
+                const settings = {
+                    timeLimit: 10,
+                    // seconds
+                    timerInterval: 100,
+                    // milliseconds
+                    minStreakForBonus: 3
+                };
+
+                // Game state
+                let currentWord = 0;
+                let score = 0;
+                let gameActive = false;
+                let streak = 0;
+                let gameMode = 'normal';
+                let timer = null;
+                let timeLeft = settings.timeLimit;
+                let currentLevel = 0;
+                let vocabulary = vocabularyLevels[currentLevel];
+
+                // DOM elements
+                const startScreen = document.getElementById('startScreen');
+                const gameScreen = document.getElementById('gameScreen');
+                const endScreen = document.getElementById('endScreen');
+                const startButton = document.getElementById('startButton');
+                const playAgainButton = document.getElementById('playAgainButton');
+                const wordDisplay = document.getElementById('wordDisplay');
+                const progressDisplay = document.getElementById('progress');
+                const scoreDisplay = document.getElementById('score');
+                const optionsGrid = document.getElementById('optionsGrid');
+                const playButton = document.getElementById('playButton');
+                const replayButton = document.getElementById('replayButton');
+                const audioElement = document.getElementById('audioElement');
+                const correctSound = document.getElementById('correctSound');
+                const incorrectSound = document.getElementById('incorrectSound');
+                const finalScore = document.getElementById('finalScore');
+                const progressBar = document.getElementById('progressBar');
+                const streakContainer = document.getElementById('streakContainer');
+                const streakCount = document.getElementById('streakCount');
+                const hintButton = document.getElementById('hintButton');
+                const timeBar = document.getElementById('timeBar');
+                const timeBarContainer = document.getElementById('timeBarContainer');
+                const levelIndicator = document.getElementById('levelIndicator');
+                const stars = document.getElementById('stars');
+                const completionMessage = document.getElementById('completionMessage');
+                const normalModeRadio = document.getElementById('normalMode');
+                const timeModeRadio = document.getElementById('timeMode');
+                const streakModeRadio = document.getElementById('streakMode');
+
+                // Fisher-Yates shuffle algorithm
+                function shuffleArray(array) {
+                    const newArray = [...array];
+                    for (let i = newArray.length - 1; i > 0; i--) {
+                        const j = Math.floor(Math.random() * (i + 1));
+                        [newArray[i],newArray[j]] = [newArray[j], newArray[i]];
+                    }
+                    return newArray;
+                }
+
+                // Find image for a vocabulary word - using simple filenames (bull.jpg, cow.jpg, etc.)
+                function findImageForCategory(category) {
+                    return `${category}.jpg`;
+                }
+
+                // Get options for current word
+                function getOptions() {
+                    const correctAnswer = vocabulary[currentWord];
+                    const otherOptions = vocabulary.filter( (_, index) => index !== currentWord);
+                    const shuffledOtherOptions = shuffleArray(otherOptions);
+                    const selectedOptions = shuffledOtherOptions.slice(0, 3);
+
+                    return shuffleArray([correctAnswer, ...selectedOptions]);
+                }
+
+                // Play audio for current word
+                function playAudio() {
+                    console.log("Play Audio function called");
+                    wordDisplay.classList.add('pulse');
+                    setTimeout( () => {
+                        wordDisplay.classList.remove('pulse');
+                    }
+                    , 500);
+
+                    const currentWordObj = vocabulary[currentWord];
+                    console.log("Current word object:", currentWordObj);
+
+                    const audioElement = document.getElementById('audioElement');
+                    console.log("Audio element found:", audioElement);
+
+                    // Set the audio source if not already set
+                    if (!audioElement.src || audioElement.src.endsWith('all_words_b.mp3') === false) {
+                        console.log("Setting audio source to all_words_b.mp3");
+                        audioElement.src = 'all_words_b.mp3';
+                    }
+
+                    // Set the current time to the start time for this word
+                    console.log("Setting currentTime to:", currentWordObj.audioStart);
+                    audioElement.currentTime = currentWordObj.audioStart;
+
+                    // Play the audio
+                    console.log("Attempting to play audio");
+                    audioElement.play().catch(e => {
+                        console.error("Error playing audio:", e);
+                    }
+                    );
+
+                    // Listen for timeupdate to stop at the right time
+                    const timeUpdateHandler = function() {
+                        console.log("Current time:", audioElement.currentTime);
+                        if (audioElement.currentTime >= currentWordObj.audioEnd) {
+                            console.log("Reached end time, pausing");
+                            audioElement.pause();
+                            audioElement.removeEventListener('timeupdate', timeUpdateHandler);
+                        }
+                    };
+
+                    audioElement.addEventListener('timeupdate', timeUpdateHandler);
+                }
+
+                // Start the timer for timed mode
+                function startTimer() {
+                    if (gameMode !== 'timed')
+                        return;
+
+                    timeLeft = settings.timeLimit;
+                    timeBar.style.width = '100%';
+                    timeBarContainer.classList.remove('hidden');
+
+                    clearInterval(timer);
+                    timer = setInterval( () => {
+                        timeLeft -= settings.timerInterval / 1000;
+                        const percentage = (timeLeft / settings.timeLimit) * 100;
+                        timeBar.style.width = `${percentage}%`;
+
+                        if (timeLeft <= 0) {
+                            clearInterval(timer);
+                            handleTimeUp();
+                        }
+                    }
+                    , settings.timerInterval);
+                }
+
+                // Handle time up in timed mode
+                function handleTimeUp() {
+                    gameActive = false;
+                    streak = 0;
+                    updateStreakDisplay();
+
+                    // Show incorrect feedback on all options
+                    const options = document.querySelectorAll('.image-option');
+                    options.forEach(option => {
+                        option.classList.add('shake-horizontal');
+                        setTimeout( () => {
+                            option.classList.remove('shake-horizontal');
+                        }
+                        , 500);
+                    }
+                    );
+
+                    incorrectSound.play().catch(e => console.error('Error playing sound:', e));
+
+                    setTimeout( () => {
+                        currentWord++;
+                        if (currentWord < vocabulary.length) {
+                            renderOptions();
+                            updateDisplay();
+                            gameActive = true;
+                            startTimer();
+                            setTimeout(playAudio, 500);
+                        } else {
+                            endGame();
+                        }
+                    }
+                    , 1500);
+                }
+
+                // Create confetti effect
+                function createConfetti() {
+                    const colors = ['#f94144', '#f3722c', '#f8961e', '#f9c74f', '#90be6d', '#43aa8b', '#577590'];
+                    const container = document.body;
+
+                    for (let i = 0; i < 50; i++) {
+                        const confetti = document.createElement('div');
+                        confetti.className = 'confetti';
+
+                        const color = colors[Math.floor(Math.random() * colors.length)];
+                        const size = Math.random() * 10 + 5;
+                        const left = Math.random() * 100;
+                        const angle = Math.random() * 360;
+
+                        confetti.style.backgroundColor = color;
+                        confetti.style.width = `${size}px`;
+                        confetti.style.height = `${size}px`;
+                        confetti.style.position = 'fixed';
+                        confetti.style.left = `${left}%`;
+                        confetti.style.top = '-20px';
+                        confetti.style.transform = `rotate(${angle}deg)`;
+                        confetti.style.animation = `fall ${Math.random() * 2 + 2}s linear forwards`;
+
+                        container.appendChild(confetti);
+
+                        // Define the fall animation for this confetti
+                        const sheet = document.styleSheets[0];
+                        const animationName = `fall-${i}`;
+                        const keyframes = `
+            @keyframes ${animationName} {
+              0% { transform: translateY(0) rotate(${angle}deg); opacity: 1; }
+              70% { opacity: 1; }
+              100% { transform: translateY(${window.innerHeight}px) rotate(${angle + Math.random() * 360}deg); opacity: 0; }
+            }
+          `;
+
+                        try {
+                            sheet.insertRule(keyframes, sheet.cssRules.length);
+                            confetti.style.animation = `${animationName} ${Math.random() * 2 + 2}s linear forwards`;
+                        } catch (e) {
+                            // Fallback if insertRule fails
+                            confetti.style.animation = 'none';
+                            confetti.style.transition = 'transform 2s, opacity 2s';
+
+                            setTimeout( () => {
+                                confetti.style.transform = `translateY(${window.innerHeight}px) rotate(${angle + Math.random() * 360}deg)`;
+                                confetti.style.opacity = '0';
+                            }
+                            , 10);
+                        }
+
+                        // Remove confetti after animation
+                        setTimeout( () => {
+                            container.removeChild(confetti);
+                        }
+                        , 4000);
+                    }
+                }
+
+                // Start the game
+                function startGame() {
+                    gameMode = document.querySelector('input[name="gameMode"]:checked').value;
+
+                    startScreen.classList.add('hidden');
+                    gameScreen.classList.remove('hidden');
+                    endScreen.classList.add('hidden');
+
+                    currentWord = 0;
+                    score = 0;
+                    streak = 0;
+                    gameActive = true;
+                    vocabulary = vocabularyLevels[currentLevel];
+
+                    // Show streak counter only in streak mode
+                    if (gameMode === 'streak') {
+                        streakContainer.classList.remove('hidden');
+                    } else {
+                        streakContainer.classList.add('hidden');
+                    }
+
+                    // Show timer only in timed mode
+                    if (gameMode === 'timed') {
+                        timeBarContainer.classList.remove('hidden');
+                    } else {
+                        timeBarContainer.classList.add('hidden');
+                    }
+
+                    updateStreakDisplay();
+                    updateDisplay();
+                    renderOptions();
+
+                    // Start timer if in timed mode
+                    if (gameMode === 'timed') {
+                        startTimer();
+                    }
+
+                    // Automatically play audio after a delay
+                    setTimeout(playAudio, 500);
+                }
+
+                // End the game
+                function endGame() {
+                    clearInterval(timer);
+                    gameScreen.classList.add('hidden');
+                    endScreen.classList.remove('hidden');
+
+                    const totalStars = calculateStars();
+                    finalScore.textContent = `Your score: ${score} / ${vocabulary.length}`;
+                    stars.innerHTML = '';
+
+                    // Create stars
+                    for (let i = 0; i < 3; i++) {
+                        const star = document.createElement('div');
+                        star.className = i < totalStars ? 'star' : 'star empty';
+                        star.textContent = '★';
+                        stars.appendChild(star);
+                    }
+
+                    // Set completion message based on stars
+                    if (totalStars === 3) {
+                        completionMessage.textContent = 'Perfect! You are a Greek master!';
+                        createConfetti();
+                    } else if (totalStars === 2) {
+                        completionMessage.textContent = 'Great job! Almost perfect!';
+                    } else if (totalStars === 1) {
+                        completionMessage.textContent = 'Good start! Keep practicing!';
+                    } else {
+                        completionMessage.textContent = 'Keep trying! You can do better!';
+                    }
+
+                    gameActive = false;
+                }
+
+                // Calculate stars based on score
+                function calculateStars() {
+                    const percentage = (score / vocabulary.length) * 100;
+                    if (percentage >= 90)
+                        return 3;
+                    if (percentage >= 70)
+                        return 2;
+                    if (percentage >= 50)
+                        return 1;
+                    return 0;
+                }
+
+                // Update streak display
+                function updateStreakDisplay() {
+                    streakCount.textContent = streak;
+                    if (streak >= settings.minStreakForBonus) {
+                        streakContainer.style.color = '#f59e0b';
+                    } else {
+                        streakContainer.style.color = 'white';
+                    }
+                }
+
+                // Update progress and score display
+                function updateDisplay() {
+                    wordDisplay.textContent = vocabulary[currentWord].greek;
+                    progressDisplay.textContent = `Word: ${currentWord + 1} / ${vocabulary.length}`;
+                    scoreDisplay.textContent = `Score: ${score}`;
+                    levelIndicator.textContent = `Level: ${currentLevel + 1}`;
+
+                    // Update progress bar
+                    const progress = (currentWord / vocabulary.length) * 100;
+                    progressBar.style.width = `${progress}%`;
+                }
+
+                // Render image options
+                function renderOptions() {
+                    optionsGrid.innerHTML = '';
+                    const options = getOptions();
+
+                    options.forEach( (option, index) => {
+                        const imageSrc = findImageForCategory(option.english);
+
+                        const optionElement = document.createElement('button');
+                        optionElement.className = 'image-option';
+                        optionElement.setAttribute('data-index', index);
+                        optionElement.setAttribute('data-word', option.english);
+
+                        optionElement.innerHTML = `
+            <div class="image-container">
+              <img src="${imageSrc}" alt="${option.english}">
+            </div>
+          `;
+
+                        optionElement.addEventListener('click', () => handleSelection(option, optionElement));
+
+                        optionsGrid.appendChild(optionElement);
+                    }
+                    );
+                }
+                function showNotification(message, duration=3000) {
+                    const overlay = document.getElementById('notificationOverlay');
+                    const messageElement = document.getElementById('notificationMessage');
+
+                    messageElement.textContent = message;
+                    overlay.classList.remove('hidden');
+                    overlay.classList.add('visible');
+
+                    // Use animation instead of setTimeout for smoother effect
+                    overlay.style.animation = `notification-slide ${duration / 1000}s ease-in-out forwards`;
+
+                    // Still use setTimeout as a fallback to ensure it gets hidden
+                    setTimeout( () => {
+                        overlay.classList.remove('visible');
+                        overlay.classList.add('hidden');
+                        overlay.style.animation = '';
+                    }
+                    , duration);
+                }
+                // Show hint
+                function showHint() {
+                    if (!gameActive)
+                        return;
+
+                    const hint = vocabulary[currentWord].hint;
+                    showNotification(`Hint: ${hint}`, 3000);
+                }
+                function advanceLevel() {
+                    currentLevel++;
+
+                    if (currentLevel >= vocabularyLevels.length) {
+                        // If completed all levels, restart from level 1
+                        currentLevel = 0;
+                        showNotification("Congratulations! You've completed all levels! Starting from the beginning.", 5000);
+                    }
+
+                    vocabulary = vocabularyLevels[currentLevel];
+                    currentWord = 0;
+                    score = 0;
+                    updateDisplay();
+                    renderOptions();
+
+                    // Start timer if in timed mode
+                    if (gameMode === 'timed') {
+                        startTimer();
+                    }
+
+                    // Automatically play audio after a delay
+                    setTimeout(playAudio, 500);
+                }
+
+                // Handle image selection
+                function handleSelection(selected, element) {
+                    if (!gameActive)
+                        return;
+
+                    // In timed mode, stop the timer
+                    if (gameMode === 'timed') {
+                        clearInterval(timer);
+                    }
+
+                    const isCorrect = selected.english === vocabulary[currentWord].english;
+
+                    // Show feedback
+                    if (isCorrect) {
+                        // Play correct sound
+                        correctSound.play().catch(e => console.error('Error playing sound:', e));
+
+                        // Add vertical shake animation
+                        element.classList.add('shake-vertical');
+
+                        // Show check mark
+                        const overlay = document.createElement('div');
+                        overlay.className = 'feedback-overlay correct-overlay';
+                        overlay.innerHTML = `
+            <svg class="check-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+            </svg>
+          `;
+                        element.querySelector('.image-container').appendChild(overlay);
+
+                        score++;
+                        streak++;
+                        updateStreakDisplay();
+
+                        // Add bonus point for streak in streak mode
+                        if (gameMode === 'streak' && streak >= settings.minStreakForBonus) {
+                            score++;
+
+                            // Show streak bonus animation
+                            const bonusIndicator = document.createElement('div');
+                            bonusIndicator.textContent = '+1 BONUS!';
+                            bonusIndicator.style.position = 'absolute';
+                            bonusIndicator.style.top = '50%';
+                            bonusIndicator.style.left = '50%';
+                            bonusIndicator.style.transform = 'translate(-50%, -50%)';
+                            bonusIndicator.style.color = '#f59e0b';
+                            bonusIndicator.style.fontWeight = 'bold';
+                            bonusIndicator.style.fontSize = '1.5rem';
+                            bonusIndicator.style.textShadow = '0 0 5px rgba(0, 0, 0, 0.5)';
+                            bonusIndicator.style.zIndex = '10';
+                            bonusIndicator.style.animation = 'fade-up 1s forwards';
+
+                            element.appendChild(bonusIndicator);
+
+                            // Add animation for bonus
+                            const sheet = document.styleSheets[0];
+                            try {
+                                sheet.insertRule(`
+                @keyframes fade-up {
+                  0% { opacity: 1; transform: translate(-50%, -50%); }
+                  100% { opacity: 0; transform: translate(-50%, -100%); }
+                }
+              `, sheet.cssRules.length);
+                            } catch (e) {
+                                console.error('Error adding animation:', e);
+                            }
+
+                            // Remove bonus indicator after animation
+                            setTimeout( () => {
+                                element.removeChild(bonusIndicator);
+                            }
+                            , 1000);
+                        }
+
+                        updateDisplay();
+
+                        // Change background color for correct answer
+                        document.body.style.backgroundColor = '#1b4332';
+
+                        // Move to next word after delay
+                        gameActive = false;
+                        setTimeout( () => {
+                            // Reset background color
+                            document.body.style.backgroundColor = '#1e293b';
+
+                            element.classList.remove('shake-vertical');
+                            currentWord++;
+
+                            if (currentWord < vocabulary.length) {
+                                renderOptions();
+                                updateDisplay();
+                                gameActive = true;
+
+                                // Start timer if in timed mode
+                                if (gameMode === 'timed') {
+                                    startTimer();
+                                }
+
+                                setTimeout(playAudio, 500);
+                            } else {
+                                // Level completed
+                                if (currentLevel < vocabularyLevels.length - 1) {
+                                    // If there are more levels, advance to next level
+                                    gameActive = false;
+                                    showNotification(`Level ${currentLevel + 1} completed! Moving to Level ${currentLevel + 2}.`, 5000);
+
+                                    // Add a longer delay before advancing to the next level (5 seconds)
+                                    setTimeout( () => {
+                                        advanceLevel();
+                                    }
+                                    , 5000);
+                                } else {
+                                    // If all levels completed, end game
+                                    endGame();
+                                }
+                            }
+                        }
+                        , 1500);
+                    } else {
+                        // Play incorrect sound
+                        incorrectSound.play().catch(e => console.error('Error playing sound:', e));
+
+                        // Reset streak in streak mode
+                        if (gameMode === 'streak') {
+                            streak = 0;
+                            updateStreakDisplay();
+                        }
+
+                        // Add horizontal shake animation
+                        element.classList.add('shake-horizontal');
+
+                        const overlay = document.createElement('div');
+                        overlay.className = 'feedback-overlay incorrect-overlay';
+                        overlay.innerHTML = `
+            <svg class="x-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          `;
+                        element.querySelector('.image-container').appendChild(overlay);
+
+                        // Change background color for incorrect answer
+                        document.body.style.backgroundColor = '#641e16';
+
+                        // Remove shake and overlay after animation
+                        gameActive = false;
+                        setTimeout( () => {
+                            // Reset background color
+                            document.body.style.backgroundColor = '#1e293b';
+
+                            element.classList.remove('shake-horizontal');
+                            element.querySelector('.feedback-overlay').remove();
+                            gameActive = true;
+
+                            // Start timer again if in timed mode
+                            if (gameMode === 'timed') {
+                                startTimer();
+                            }
+                        }
+                        , 1500);
+                    }
+                }
+
+                // Event listeners
+                startButton.addEventListener('click', startGame);
+                playAgainButton.addEventListener('click', startGame);
+                playButton.addEventListener('click', playAudio);
+                replayButton.addEventListener('click', playAudio);
+                hintButton.addEventListener('click', showHint);
+            }
+            );
+        </script>
+    </body>
+</html>
